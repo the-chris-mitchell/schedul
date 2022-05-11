@@ -1,32 +1,50 @@
-from datetime import datetime
-import itertools
+from datetime import datetime, time
 
-movies = [
-    {"name": "movie1", "time": "2011-11-04T00:05:23"},
-    {"name": "movie1", "time": "2011-12-04T00:05:23"},
-    {"name": "movie2", "time": "2011-11-04T00:05:23"},
-    {"name": "movie2", "time": "2011-14-04T00:05:23"},
-    {"name": "movie3", "time": "2011-14-04T00:05:23"},
-    {"name": "movie3", "time": "2011-11-04T00:05:23"},
-]
+from get_data import get_sessions
 
-schedules = []       
+MAX_SESSIONS = 1
 
-permutations = itertools.permutations(movies, len(movies))
+sessions = []
 
-for permutation in permutations:
-    schedule = {}
-    for p in permutation:
-        movie = p["name"]
-        time = p["time"]
-        if movie in schedule.keys():
-            continue
-        if time in schedule.values():
-            continue
-        schedule[movie] = time
-    schedules.append(schedule)
+for session in get_sessions():
+    session["date"] = datetime.fromisoformat(session["datetime"]).date()
+    session["time"] = datetime.fromisoformat(session["datetime"]).time()
+    session["day"] = session["date"].strftime("%A")
 
+    session["score"] = 0
 
-sorted_schedules = sorted(schedules, key=len)
+    if session["venue"] == "Light House Cuba":
+        session["score"] += 5
 
-print(sorted_schedules[-1])
+    match session["date"].weekday():
+        case 5 | 6:
+            if session["time"] < time(17):
+                session["score"] += 10
+            if session["time"] < time(12):
+                session["score"] += 15
+        case 4:
+            session["score"] += 2
+        case 1 | 2 | 3 | 4:
+            if session["time"] > time(18):
+                session["score"] += 1
+        case 0:
+            session["score"] = 0
+
+    sessions.append(session)
+
+schedule = []
+
+sorted_sessions = sorted(sessions, key=lambda x: x["score"],reverse=True)
+
+for session in sorted_sessions:
+    if any(entry['name'] == session["name"] for entry in schedule):
+        continue
+    if len([x for x in schedule if x["date"] == session["date"]]) == MAX_SESSIONS:
+        continue
+
+    schedule.append(session)
+
+for event in sorted(schedule, key=lambda x: x["datetime"]):
+    when = datetime.fromisoformat(event["datetime"]).strftime("%c")
+    #print(f"{when}: {event['name']} ({event['venue']}) {event['link']}")
+    print(f"{when}: {event['name']} ({event['venue']})")
