@@ -9,6 +9,7 @@ bs4 = "*"
 requests = "*"
 requests-cache = "*"
 python-dateutil = "*"
+mypy = "*"
 
 [dev-packages]
 pandas = "*"

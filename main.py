@@ -1,7 +1,7 @@
 import random
 from datetime import date, timedelta
 
-from tqdm import tqdm
+from tqdm import tqdm # type: ignore
 
 from get_data import get_sessions
 from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
@@ -61,7 +61,8 @@ for x in tqdm(range(ITERATIONS)):
 
     booked_sessions = [session for session in sessions if session.link in BOOKED]
 
-    [session.book() for session in booked_sessions]
+    for session in booked_sessions:
+        session.book()
 
     current_schedule.sessions.extend(booked_sessions)
 
@@ -86,7 +87,7 @@ best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_
 
 print(f"🎬 Generated a schedule with {len(best_schedule.sessions)} films:")
 
-sorted_best_schedule: Schedule = sorted(best_schedule.sessions, key=lambda x: x.start_time)
+sorted_best_schedule: list[Session] = sorted(best_schedule.sessions, key=lambda x: x.start_time)
 
 for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in sorted_best_schedule]))), start=1):
     print(f"\n📆 Week {position}:")

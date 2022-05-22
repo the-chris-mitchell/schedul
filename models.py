@@ -26,12 +26,11 @@ class Session:
         self.start_time_formatted = datetime.fromisoformat(str(start_time)).strftime(f"%a {self.time_bucket.name.capitalize()} (%d/%m) %I:%M%p")
         self.end_time_formatted = datetime.fromisoformat(str(self.end_time)).strftime("%I:%M%p")
 
-    def book(self) -> bool:
+    def book(self) -> None:
         self.booked = True
 
     def format(self) -> str:
         return f"{'✅' if self.booked else '👀'} {self.start_time_formatted}-{self.end_time_formatted}: {self.film.name} ({int(self.film.runtime.seconds/60)} minutes) @ {self.venue.name}"
-
 
     def get_end_time(self) -> datetime:
         return self.start_time + self.film.runtime
@@ -69,18 +68,18 @@ class Schedule:
     def __init__(self) -> None:
         self.sessions: list[Session] = []
     
-    def calculate_score(self, preferences: list[Preference]) -> int:
-        score = 0
+    def calculate_score(self, preferences: list[Preference]) -> float:
+        score: float = 0
         for position, preference in enumerate(preferences, start=1):
             position_score = 0
             if preference.date:
-                position_score+= len([session for session in self.sessions if session.start_time.date() == preference.date])
+                position_score += len([session for session in self.sessions if session.start_time.date() == preference.date])
             if preference.day_bucket:
-                position_score+= len([session for session in self.sessions if session.day_bucket == preference.day_bucket])
+                position_score += len([session for session in self.sessions if session.day_bucket == preference.day_bucket])
             if preference.time_bucket:
-                position_score+= len([session for session in self.sessions if session.time_bucket == preference.time_bucket])
+                position_score += len([session for session in self.sessions if session.time_bucket == preference.time_bucket])
             if preference.venue:
-                position_score+= len([session for session in self.sessions if session.venue.name == preference.venue.name])
+                position_score += len([session for session in self.sessions if session.venue.name == preference.venue.name])
 
             score += position_score / position
 
