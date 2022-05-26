@@ -25,12 +25,12 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
 
         current_schedule = Schedule(festival)
 
-        # booked_sessions = [session for session in sessions if session.link in BOOKED]
+        booked_sessions = [session for session in sessions if session.link in options.booked_links]
 
-        # for session in booked_sessions:
-        #     session.book()
+        for session in booked_sessions:
+            session.book()
 
-        # current_schedule.sessions.extend(booked_sessions)
+        current_schedule.sessions.extend(booked_sessions)
 
         shuffled_sessions: list[Session] = random.sample(sessions, k=len(sessions))
 
@@ -56,7 +56,7 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
     return best_schedule
 
 def print_schedule(schedule: Schedule):
-    print(f"🎬 Schedule for {schedule.festival} with {len(schedule.sessions)} films")
+    print(f"🎬 Schedule for {schedule.festival} with {len(schedule.sessions)} films:")
     for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in schedule.sessions]))), start=1):
         print(f"\n📆 Week {position}:")
         print("─" * 10)

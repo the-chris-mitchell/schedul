@@ -1,3 +1,4 @@
+import base64
 from datetime import date, datetime, time, timedelta
 
 from enums import DayBucket, TimeBucket
@@ -24,6 +25,11 @@ class Session:
         self.time_bucket = self.get_time_bucket()
         self.start_time_formatted = datetime.fromisoformat(str(start_time)).strftime(f"%a {self.time_bucket.name.capitalize()} (%d/%m) %I:%M%p")
         self.end_time_formatted = datetime.fromisoformat(str(self.end_time)).strftime("%I:%M%p")
+        self.sesion_id = self.generate_id()
+
+    def generate_id(self) -> str:
+        combined = (self.film.name + self.venue.name + datetime.fromisoformat(str(self.start_time)).strftime("%d/%m%I:%M%p")).replace(" ", "")
+        return base64.b85encode(combined.encode()).decode()
 
     def book(self) -> None:
         self.booked = True
@@ -66,7 +72,7 @@ class Preference:
 class Schedule:
     def __init__(self, festival: str) -> None:
         self.sessions: list[Session] = []
-        self.festival: str = festival
+        self.festival = festival
     
     def calculate_score(self, preferences: list[Preference]) -> float:
         score: float = 0
@@ -89,8 +95,9 @@ class Schedule:
         self.sessions = sorted(self.sessions, key=lambda x: x.start_time)
 
 class Options:
-    def __init__(self, iterations: int, max_sessions: int, preferences: list[Preference], excluded_dates: list[date]) -> None:
-        self.iterations: int = iterations
-        self.max_sessions: int = max_sessions
-        self.preferences: list[Preference] = preferences
-        self.excluded_dates: list[date] = excluded_dates
+    def __init__(self, iterations: int, max_sessions: int, preferences: list[Preference], excluded_dates: list[date], booked_links: list[str]) -> None:
+        self.iterations = iterations
+        self.max_sessions = max_sessions
+        self.preferences = preferences
+        self.excluded_dates = excluded_dates
+        self.booked_links = booked_links
