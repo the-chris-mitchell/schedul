@@ -1,5 +1,4 @@
 from datetime import date, datetime, time, timedelta
-from enum import Enum
 
 from enums import DayBucket, TimeBucket
 
@@ -65,8 +64,9 @@ class Preference:
         self.venue = venue
 
 class Schedule:
-    def __init__(self) -> None:
+    def __init__(self, festival: str) -> None:
         self.sessions: list[Session] = []
+        self.festival: str = festival
     
     def calculate_score(self, preferences: list[Preference]) -> float:
         score: float = 0
@@ -84,3 +84,13 @@ class Schedule:
             score += position_score / position
 
         return score
+
+    def sort(self) -> None:
+        self.sessions = sorted(self.sessions, key=lambda x: x.start_time)
+
+class Options:
+    def __init__(self, iterations: int, max_sessions: int, preferences: list[Preference], excluded_dates: list[date]) -> None:
+        self.iterations: int = iterations
+        self.max_sessions: int = max_sessions
+        self.preferences: list[Preference] = preferences
+        self.excluded_dates: list[date] = excluded_dates
