@@ -56,7 +56,9 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
     return best_schedule
 
 def print_schedule(schedule: Schedule):
+    print("=" * 50)
     print(f"🎬 Schedule for {schedule.festival} with {len(schedule.sessions)} films:")
+    print("=" * 50)
     for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in schedule.sessions]))), start=1):
         print(f"\n📆 Week {position}:")
         print("─" * 10)
