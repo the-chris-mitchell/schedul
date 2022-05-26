@@ -3,7 +3,7 @@ from datetime import date, timedelta
 
 from tqdm import tqdm # type: ignore
 
-from get_data import get_sessions
+from fff import get_sessions
 from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
 
 
