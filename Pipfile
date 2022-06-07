@@ -10,6 +10,8 @@ requests = "*"
 requests-cache = "*"
 python-dateutil = "*"
 mypy = "*"
+selenium = "*"
+webdriver-manager = "*"
 
 [dev-packages]
 pandas = "*"
