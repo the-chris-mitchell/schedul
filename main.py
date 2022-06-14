@@ -4,7 +4,7 @@ from fff import get_sessions as get_fff_sessions
 from models import (DayBucket, Options, Preference, Schedule, Session,
                     TimeBucket, Venue)
 from nziff import get_sessions as get_nziff_sessions
-from process import get_schedule, print_schedule
+from process import get_schedule
 
 MAX_SESSIONS: int = 2
 ITERATIONS: int = 100
@@ -47,7 +47,7 @@ fff_schedule: Schedule = get_schedule(options, fff_sessions, "French Film Festiv
 nziff_schedule: Schedule = get_schedule(options, nziff_sessions, "Whānau Mārama: NZIFF")
 
 
-print_schedule(fff_schedule)
+fff_schedule.print()
 
 print("\n")
 
