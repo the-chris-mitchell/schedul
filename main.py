@@ -48,8 +48,9 @@ nziff_schedule: Schedule = get_schedule(options, nziff_sessions, "Whānau Māram
 
 
 fff_schedule.print()
+fff_schedule.calendar()
 
-print("\n")
+# print("\n")
 
-print_schedule(nziff_schedule)
+# print_schedule(nziff_schedule)
 
