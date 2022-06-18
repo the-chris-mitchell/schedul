@@ -1,7 +1,7 @@
 import re
 from datetime import timedelta
 
-import arrow
+import arrow # type: ignore
 from clients.soup import get_cached_soup
 from models.film import Film
 from models.session import Session
