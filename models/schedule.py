@@ -1,4 +1,3 @@
-
 from ics import Calendar, Event # type: ignore
 import arrow
 
@@ -45,7 +44,7 @@ class Schedule:
                     lines.append(f"↪️ 🔗 {session.link}")
         return "\n".join(lines)
     
-    def save_calendar(self) -> None:
+    def save_calendar(self, filename: str) -> None:
         calendar = Calendar()
         for session in self.sessions:
             event = Event()
@@ -54,5 +53,6 @@ class Schedule:
             event.end = arrow.get(session.end_time).to('utc')
             event.location = session.venue.name
             calendar.events.add(event)
-        with open('movies.ics', 'w') as file:
+        with open(filename, 'w') as file:
             file.writelines(calendar)
+        print(f"Saved calendar to {filename}")

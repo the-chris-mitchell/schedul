@@ -85,8 +85,8 @@ def get_sessions() -> list[Session]:
                 else:
                     venue = Venue(venue_name)
 
-                session_date = re.search("(.+)\|(.+m)", session_html.text)[1].strip()
-                session_time = re.search("(.+)\|(.+m)", session_html.text)[2].strip().replace(".", ":")
+                session_date = re.search("(.+)\|(.+m)", session_html.text)[1].strip() # type: ignore
+                session_time = re.search("(.+)\|(.+m)", session_html.text)[2].strip().replace(".", ":") # type: ignore
 
                 session = Session(
                     film,
