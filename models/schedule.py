@@ -31,19 +31,21 @@ class Schedule:
     def sort(self) -> None:
         self.sessions = sorted(self.sessions, key=lambda x: x.start_time)
 
-    def print(self) -> None:
-        print("=" * 50)
-        print(f"🎬 Schedule for {self.festival} with {len(self.sessions)} films:")
-        print("=" * 50)
-        for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in self.sessions]))), start=1):
-            print(f"\n📆 Week {position}:")
-            print("─" * 10)
+    def get_formatted(self) -> str:
+        lines: list[str] = []
+        lines.append("=" * 50)
+        lines.append(f"🎬 Schedule for {self.festival} with {len(self.sessions)} films:")
+        lines.append("=" * 50)
+        for position, week in enumerate(sorted(list({session.start_time.isocalendar()[1] for session in self.sessions})), start=1):
+            lines.append(f"\n📆 Week {position}:")
+            lines.append("─" * 10)
             for session in [session for session in self.sessions if session.start_time.isocalendar()[1] == week]:
-                print(session.format())
+                lines.append(session.format())
                 if not session.booked:
-                    print(f"↪️ 🔗 {session.link}")
+                    lines.append(f"↪️ 🔗 {session.link}")
+        return "\n".join(lines)
     
-    def calendar(self) -> None:
+    def save_calendar(self) -> None:
         calendar = Calendar()
         for session in self.sessions:
             event = Event()

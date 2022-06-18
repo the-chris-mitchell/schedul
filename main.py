@@ -51,8 +51,8 @@ fff_schedule: Schedule = get_schedule(options, fff_sessions, "French Film Festiv
 nziff_schedule: Schedule = get_schedule(options, nziff_sessions, "Whānau Mārama: NZIFF")
 
 
-fff_schedule.print()
-fff_schedule.calendar()
+print(fff_schedule.get_formatted())
+fff_schedule.save_calendar()
 
 # print("\n")
 
