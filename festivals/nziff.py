@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from clients import get_cached_soup
+from clients.soup import get_cached_soup
 from models.film import Film
 from models.session import Session
 from models.venue import Venue

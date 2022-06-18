@@ -5,11 +5,11 @@ from models.enums import DayBucket, TimeBucket
 from festivals.fff import get_sessions as get_fff_sessions
 from models.options import Options
 from models.preference import Preference
-from models.schedule import Schedule
+from models.schedule import Schedule, get_schedule
 from models.session import Session
 from models.venue import Venue
 from festivals.nziff import get_sessions as get_nziff_sessions
-from process import get_schedule
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", choices=['print', 'calendar'], help="What mode to run")

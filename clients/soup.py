@@ -9,8 +9,8 @@ from webdriver_manager.chrome import ChromeDriverManager # type: ignore
 from selenium.webdriver.chrome.options import Options
 
 
-def get_cached_soup(url: str, cache: str, expiry: timedelta = None) -> BeautifulSoup:
-    requests_session = requests_cache.CachedSession(cache, expire_after=expiry)
+def get_cached_soup(url: str, cache_name: str, expiry: timedelta = None) -> BeautifulSoup:
+    requests_session = requests_cache.CachedSession(f".cache/{cache_name}", expire_after=expiry)
     html = requests_session.get(url).text
     return BeautifulSoup(html, features="html.parser")    
 
