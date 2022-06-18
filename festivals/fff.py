@@ -1,8 +1,6 @@
 import re
 from datetime import timedelta
 
-import requests_cache
-from bs4 import BeautifulSoup # type: ignore
 import arrow
 from clients.soup import get_cached_soup
 from models.film import Film
