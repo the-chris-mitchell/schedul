@@ -1,8 +1,12 @@
 from datetime import date
+from enums import DayBucket, TimeBucket
 
 from fff import get_sessions as get_fff_sessions
-from models import (DayBucket, Options, Preference, Schedule, Session,
-                    TimeBucket, Venue)
+from models.options import Options
+from models.preference import Preference
+from models.schedule import Schedule
+from models.session import Session
+from models.venue import Venue
 from nziff import get_sessions as get_nziff_sessions
 from process import get_schedule
 
