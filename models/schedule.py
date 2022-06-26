@@ -91,6 +91,8 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
 
         for preference in options.preferences:
             for session in shuffled_sessions:
+                if session.start_time < arrow.utcnow():
+                    continue
                 if preference.date and session.start_time.date() != preference.date:
                     continue
                 if preference.day_bucket and session.day_bucket != preference.day_bucket:
