@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 *.sqlite
-*.ics
 
-watchlist.csv
+*.ics
+*.csv
 config.yaml
