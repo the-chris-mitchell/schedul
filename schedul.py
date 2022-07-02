@@ -3,17 +3,22 @@ from datetime import date
 
 from strictyaml import (Datetime, EmptyList, EmptyNone, Enum,  # type: ignore
                         Int, Map, Optional, Seq, Str, load)
+from festivals import get_festivals
 
-from festivals.fff import get_sessions as get_fff_sessions
-from festivals.nziff import get_sessions as get_nziff_sessions
+from festivals.fff import FrenchFilmFestival
+from festivals.flicks import Flicks
+from festivals.nziff import NZInternationalFilmFestival
 from models.enums import DayBucket, TimeBucket
 from models.options import Options
 from models.preference import Preference
 from models.schedule import Schedule, get_schedule
 
+
+festivals = get_festivals()
+
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", choices=['print', 'calendar'], help="What mode to run")
-parser.add_argument("festival", choices=['fff', 'nziff'], help="Specify Festival")
+parser.add_argument("festival", choices=[festival.short_name for festival in festivals], help="Specify Festival")
 args = parser.parse_args()
 
 preferences_schema = Seq(Map({
@@ -57,14 +62,13 @@ options = Options(ITERATIONS, MAX_SESSIONS, PREFERENCES, EXCLUDED_DATES, BOOKED_
 
 schedule: Schedule
 
-match args.festival:
-    case "fff":
-        schedule = get_schedule(options, get_fff_sessions(), "French Film Festival")
-    case "nziff":
-        schedule = get_schedule(options, get_nziff_sessions(), "Whānau Mārama: NZIFF")
+
+selected_festival = [festival for festival in festivals if festival.short_name == args.festival][0]
+
+schedule = get_schedule(options, selected_festival.sessions, selected_festival.full_name)
 
 match args.mode:
     case "print":
         print(schedule.get_formatted())
     case "calendar":
-        schedule.save_calendar("movies.ics")
+        schedule.save_calendar(f"{args.festival}.ics")
