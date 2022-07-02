@@ -1,5 +1,6 @@
 import base64
 from datetime import datetime, time
+
 from models.enums import DayBucket, TimeBucket
 from models.film import Film
 from models.venue import Venue

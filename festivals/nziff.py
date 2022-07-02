@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
+
 from clients.soup import get_cached_soup
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
-
 
 BASE_URL = "https://www.nziff.co.nz"
 URL = f"{BASE_URL}/nziff-2022/2022/films/title/"

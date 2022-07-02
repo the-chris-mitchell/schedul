@@ -1,13 +1,11 @@
 import csv
-from math import ceil
 import re
-import pandas as pd
-
-from tqdm import tqdm
-from .soup import get_rendered_soup
-from .soup import get_cached_soup
 from datetime import timedelta
+from math import ceil
 
+from tqdm import tqdm # type: ignore
+
+from .soup import get_cached_soup, get_rendered_soup
 
 USER = "chrismitchell"
 URL = f"https://letterboxd.com/{USER}/watchlist"

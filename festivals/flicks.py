@@ -1,13 +1,10 @@
 from datetime import timedelta
-from dateutil import parser # type: ignore
 
 from clients.soup import get_cached_soup, get_selenium_soup
+from dateutil import parser  # type: ignore
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
-
-
-
 
 BASE_URL = "https://www.flicks.co.nz"
 VENUES_URL = f"{BASE_URL}/cinemas/wellington/"

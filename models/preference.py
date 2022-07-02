@@ -1,4 +1,3 @@
-from datetime import date
 from models.enums import DayBucket, TimeBucket
 from models.venue import Venue
 
