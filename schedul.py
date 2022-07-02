@@ -5,9 +5,6 @@ from strictyaml import (Datetime, EmptyList, EmptyNone, Enum,  # type: ignore
                         Int, Map, Optional, Seq, Str, load)
 from festivals import get_festivals
 
-from festivals.fff import FrenchFilmFestival
-from festivals.flicks import Flicks
-from festivals.nziff import NZInternationalFilmFestival
 from models.enums import DayBucket, TimeBucket
 from models.options import Options
 from models.preference import Preference
