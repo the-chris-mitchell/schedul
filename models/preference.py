@@ -4,8 +4,8 @@ from models.venue import Venue
 
 
 class Preference:
-    def __init__(self, time_bucket: TimeBucket=None, day_bucket: DayBucket=None, date: date=None, venue: Venue = None) -> None:
-        self.day_bucket = day_bucket
-        self.time_bucket = time_bucket
-        self.date = date
-        self.venue = venue
+    def __init__(self, time_bucket: str=None, day_bucket: str=None, venue: str = None) -> None:
+        self.day_bucket = DayBucket[day_bucket.upper()] if day_bucket else None
+        self.time_bucket = TimeBucket[time_bucket.upper()] if time_bucket else None
+        self.venue = Venue(venue) if venue else None
+        self.date = None # to implement

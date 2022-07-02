@@ -132,3 +132,4 @@ dmypy.json
 *.ics
 
 watchlist.csv
+config.yaml
