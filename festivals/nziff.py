@@ -34,12 +34,19 @@ class NZInternationalFilmFestival(Festival):
 
             try:
                 minutes = film_html.find("span", itemprop="duration").text.split(" ")[0]
+                duration = timedelta(minutes=int(minutes))
             except AttributeError:
-                minutes = 0
+                duration = timedelta(minutes=0)
 
-            duration_delta = timedelta(minutes=int(minutes))
+            try:
+                year = int(film_html.find("span", class_="year").text)
+            except (AttributeError, ValueError):
+                year = None
 
-            film = Film(title, duration_delta)
+            if film_html.find("section", class_="screening-collection"):
+                continue
+
+            film = Film(title, duration, year)
 
             session = Session(film, Venue("Venue"), arrow.utcnow(), "http://google.com")
 
