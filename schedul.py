@@ -15,7 +15,7 @@ festivals = get_festivals()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("festival", choices=[festival.short_name for festival in festivals], help="Select a festival")
-parser.add_argument("mode", choices=['sessions', 'schedule', 'cal'], help="What mode to run")
+parser.add_argument("mode", choices=['sessions', 'schedule', 'films', 'cal'], help="What mode to run")
 args = parser.parse_args()
 
 preferences_schema = Seq(Map({
@@ -66,6 +66,9 @@ match args.mode:
         print(selected_festival.get_schedule(options).get_formatted())
     case "sessions":
         print("=" * 20, f"🎬 {selected_festival.full_name} sessions", "=" * 20)
-        print(selected_festival.get_formatted())
+        print(selected_festival.get_formatted_sessions())
+    case "films":
+        print("=" * 20, f"🎬 {selected_festival.full_name} films", "=" * 20)
+        print(selected_festival.get_formatted_films())
     case "cal":
         selected_festival.get_schedule(options).save_calendar(f"{args.festival}.ics")

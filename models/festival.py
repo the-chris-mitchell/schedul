@@ -26,7 +26,11 @@ class Festival(ABC):
     def get_sessions(self) -> None:
         pass
 
-    def get_formatted(self) -> str:
+    def get_formatted_films(self) -> str:
+        film_names = list({session.film.name for session in self.sessions})
+        return "\n".join(film_names)
+
+    def get_formatted_sessions(self) -> str:
         lines: list[str] = []
 
         film_names = list({session.film.name for session in self.sessions})
