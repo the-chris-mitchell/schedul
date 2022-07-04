@@ -56,6 +56,8 @@ class Schedule:
         print(f"Saved calendar to {filename}")
 
     def try_add_session(self, session: Session) -> None:
+        if session.start_time < arrow.utcnow():
+            return
         if session.start_time.date() in CONFIG.excluded_dates:
             return
         if any(entry.film.name == session.film.name for entry in self.sessions):

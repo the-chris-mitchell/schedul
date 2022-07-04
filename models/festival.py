@@ -84,8 +84,6 @@ class Festival(ABC):
 
             for preference in CONFIG.preferences:
                 for session in shuffled_sessions:
-                    if session.start_time < arrow.utcnow():
-                        continue
                     if preference.date and session.start_time.date() != preference.date:
                         continue
                     if preference.day_bucket and session.day_bucket != preference.day_bucket:
