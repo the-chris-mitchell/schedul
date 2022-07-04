@@ -39,7 +39,7 @@ class Session:
                 return DayBucket.WEEKEND
             case 4:
                 return DayBucket.FRIDAY
-            case 1 | 2 | 3:
+            case 0 | 1 | 2 | 3:
                 return DayBucket.WEEKDAY
             case _:
                 return DayBucket.NONE
