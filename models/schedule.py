@@ -22,8 +22,8 @@ class Schedule:
                 position_score += len([session for session in self.sessions if session.day_bucket == preference.day_bucket])
             if preference.time_bucket:
                 position_score += len([session for session in self.sessions if session.time_bucket == preference.time_bucket])
-            if Venue(preference.venue):
-                position_score += len([session for session in self.sessions if session.venue.name == Venue(preference.venue).name])
+            if preference.venue:
+                position_score += len([session for session in self.sessions if session.venue.name == preference.venue])
 
             score += position_score / position
 
