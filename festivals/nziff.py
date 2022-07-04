@@ -48,8 +48,12 @@ class NZInternationalFilmFestival(Festival):
 
             film = Film(title, duration, year)
 
-            session = Session(film, Venue("Venue"), arrow.utcnow(), "http://google.com")
+            sessions_html = film_html.find_all("table", class_="session")
 
-            sessions.append(session)
+            for session_html in sessions_html:
+                venue_name = session_html.find("span", attrs={"itemprop": "location"}).text
+                start_time = session_html.find("meta", attrs={"itemprop": "startDate"})["content"]
+                session = Session(film, Venue(venue_name), arrow.get(start_time), BASE_URL + url)
+                sessions.append(session)
 
         self.sessions = sessions
