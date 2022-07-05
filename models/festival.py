@@ -63,23 +63,34 @@ class Festival(ABC):
             lines.extend(session.format() for session in sorted(film_sessions, key=lambda x: x.start_time))
 
         return "\n".join(lines)
+    def shuffle(self, sessions: list[Session]) -> list[Session]:
+        return random.sample(sessions, k=len(sessions))
     
     def get_schedule(self) -> Schedule:
 
         all_schedules: list[Schedule] = []
         watchlist_sessions = [session for session in self.sessions if session.film.watchlist]
+        #watchlist_sessions = [session for session in self.sessions]
+
+        sessions_per_film = Counter(session.film.name for session in watchlist_sessions)
+
+        single_session_films = [key for key, value in sessions_per_film.items() if value == 1]
+        one_off_sessions = [session for session in watchlist_sessions if session.film.name in single_session_films]
+
+        multi_session_films = [key for key, value in sessions_per_film.items() if value > 1]
+        one_of_many_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_films]
 
         for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"):
             current_schedule = Schedule()
 
-            booked_sessions = [session for session in watchlist_sessions if session.link in CONFIG.booked_sessions]
+            booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
 
             for session in booked_sessions:
                 session.book()
 
             current_schedule.sessions.extend(booked_sessions)
 
-            shuffled_sessions: list[Session] = random.sample(watchlist_sessions, k=len(watchlist_sessions))
+            shuffled_sessions = self.shuffle(one_off_sessions) + self.shuffle(one_of_many_sessions)
 
             for preference in CONFIG.preferences:
                 for session in shuffled_sessions:
