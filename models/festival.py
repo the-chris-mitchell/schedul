@@ -78,13 +78,13 @@ class Festival(ABC):
         multi_session_films = [key for key, value in sessions_per_film.items() if value > 1]
         one_of_many_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_films]
 
+        booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
+
+        for session in booked_sessions:
+            session.book()
+
         for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"):
             current_schedule = Schedule()
-
-            booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
-
-            for session in booked_sessions:
-                session.book()
 
             current_schedule.sessions.extend(booked_sessions)
 
