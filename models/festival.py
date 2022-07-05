@@ -55,12 +55,8 @@ class Festival(ABC):
     def get_formatted_sessions(self) -> str:
         lines: list[str] = []
 
-        film_names = list({session.film.name for session in self.sessions})
-
-        for film_name in sorted(film_names):
-            lines.extend((f"\n🎬 {film_name}:", "─" * 10))
-            film_sessions = [session for session in self.sessions if session.film.name == film_name]
-            lines.extend(session.format() for session in sorted(film_sessions, key=lambda x: x.start_time))
+        for session in sorted(self.sessions, key=lambda x: x.start_time):
+            lines.append(session.format())
 
         return "\n".join(lines)
     def shuffle(self, sessions: list[Session]) -> list[Session]:
