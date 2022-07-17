@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/festivals", response_model=list[Dict[str, str]])
+@app.get("/festivals")
 def get_festivals() -> list[Festival]:
     return FESTIVALS
 
