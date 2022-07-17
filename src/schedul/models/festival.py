@@ -4,16 +4,17 @@ import random
 import csv
 
 from tqdm import tqdm # type: ignore
-from models.film import Film  # type: ignore
+from models.film import Film
 from models.schedule import Schedule
 from models.session import Session
+from models.venue import Venue
 from utils.config import CONFIG
 
 
 class Festival(ABC):
     def __init__(self) -> None:
-        self.sessions: list[Session] = []
-
+        self.sessions: set[Session] = set()
+        
     @property
     @abstractmethod
     def full_name(self) -> str:
@@ -28,14 +29,17 @@ class Festival(ABC):
     def get_sessions(self) -> None:
         pass
 
-    def get_films(self) -> list[Film]:
-        return sorted(list({session.film for session in self.sessions}), key=lambda x: x.name)
+    def get_films(self) -> set[Film]:
+        return set(sorted({session.film for session in self.sessions}, key=lambda x: x.name))
 
-    def get_watchlist(self) -> list[Film]:
-        return [film for film in self.get_films() if film.watchlist]
+    def get_venues(self) -> set[Venue]:
+        return set(sorted({session.venue for session in self.sessions}, key=lambda x: x.name))
+
+    def get_watchlist(self) -> set[Film]:
+        return {film for film in self.get_films() if film.watchlist}
 
     def get_formatted_films(self) -> str:
-        lines = []
+        lines: list[str] = []
         for film in self.get_films():
             formatted_film_elements = [film.name]
             if film.year:
@@ -48,37 +52,33 @@ class Festival(ABC):
 
     def save_films_csv(self) -> None:
         films_dict_list = [{"title": film.name, "year": film.year} for film in self.get_films()]
-        with open(f"{self.short_name}.csv", "w") as file:
+        with open(f"../../{self.short_name}.csv", "w") as file:
             dict_writer = csv.DictWriter(file, films_dict_list[0].keys())
             dict_writer.writeheader()
             dict_writer.writerows(films_dict_list)
 
     def get_formatted_sessions(self) -> str:
-        lines: list[str] = []
-
-        for session in sorted(self.sessions, key=lambda x: x.start_time):
-            lines.append(session.format())
-
+        lines: list[str] = [session.formatted for session in sorted(self.sessions, key=lambda x: x.start_time)]
         return "\n".join(lines)
 
-    def shuffle(self, sessions: list[Session]) -> list[Session]:
-        return random.sample(sessions, k=len(sessions))
+    def shuffle(self, sessions: set[Session]) -> set[Session]:
+        return set(random.sample(sessions, k=len(sessions)))
     
     def get_schedule(self) -> Schedule:
 
         all_schedules: list[Schedule] = []
-        watchlist_sessions = [session for session in self.sessions if session.film.watchlist]
-        #watchlist_sessions = [session for session in self.sessions]
+        watchlist_sessions = {session for session in self.sessions if session.film.watchlist}
+        non_watchlist_sessions = {session for session in self.sessions if not session.film.watchlist}
 
-        sessions_per_film = Counter(session.film.name for session in watchlist_sessions)
+        sessions_per_watchlist_film = Counter(session.film.name for session in watchlist_sessions)
 
-        single_session_films = [key for key, value in sessions_per_film.items() if value == 1]
-        one_off_sessions = [session for session in watchlist_sessions if session.film.name in single_session_films]
+        single_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value == 1}
+        one_off_watchlist_sessions = {session for session in watchlist_sessions if session.film.name in single_session_watchlist_films}
 
-        multi_session_films = [key for key, value in sessions_per_film.items() if value > 1]
-        one_of_many_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_films]
+        multi_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value > 1}
+        one_of_many_watchlist_sessions = {session for session in watchlist_sessions if session.film.name in multi_session_watchlist_films}
 
-        booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
+        booked_sessions = {session for session in self.sessions if session.id in CONFIG.booked_sessions}
 
         for session in booked_sessions:
             session.book()
@@ -88,7 +88,7 @@ class Festival(ABC):
 
             current_schedule.sessions.extend(booked_sessions)
 
-            shuffled_sessions = self.shuffle(one_off_sessions) + self.shuffle(one_of_many_sessions)
+            shuffled_sessions = self.shuffle(one_off_watchlist_sessions) | self.shuffle(one_of_many_watchlist_sessions) | self.shuffle(non_watchlist_sessions)
 
             for preference in CONFIG.preferences:
                 for session in shuffled_sessions:
@@ -98,7 +98,7 @@ class Festival(ABC):
                         continue
                     if preference.time_bucket and session.time_bucket != preference.time_bucket:
                         continue
-                    if preference.venue and session.venue.name != preference.venue:
+                    if preference.venue and session.venue.normalised_name != preference.venue:
                         continue
                     current_schedule.try_add_session(session)
 

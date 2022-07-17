@@ -35,13 +35,13 @@ def set_watchlist() -> None:
             movies.append({"title": title, "year": year})
 
 
-    with open('watchlist.csv', 'w', newline='') as file:
+    with open('../../watchlist.csv', 'w', newline='') as file:
         dict_writer = csv.DictWriter(file, movies[0].keys())
         dict_writer.writeheader()
         dict_writer.writerows(movies)
 
 
 def get_watchlist() -> list[str]:
-    with open('watchlist.csv', 'r') as file:
+    with open('../../watchlist.csv', 'r') as file:
         dict_reader = csv.DictReader(file)
         return [film["title"] for film in dict_reader]
