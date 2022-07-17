@@ -4,7 +4,6 @@ from utils.args import ARGS
 from utils.format import header
 
 selected_festival: Festival = [festival for festival in FESTIVALS if festival.short_name == ARGS.festival][0]
-selected_festival.get_sessions()
 
 match ARGS.mode:
     case "schedule":

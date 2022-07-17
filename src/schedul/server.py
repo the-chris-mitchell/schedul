@@ -1,7 +1,9 @@
+from typing import Dict
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn # type: ignore
 from festivals import FESTIVALS
+from models.festival import Festival
 
 from models.film import Film
 from models.session import Session
@@ -22,26 +24,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/festivals", response_model=list[str])
-def get_festivals() -> list[str]:
-    return [festival.short_name for festival in FESTIVALS]
+@app.get("/festivals", response_model=list[Dict[str, str]])
+def get_festivals() -> list[Festival]:
+    return FESTIVALS
 
-@app.get("/festivals/{festival_short_name}/films", response_model=list[Film])
-def get_films(festival_short_name: str) -> list[Film]:
+@app.get("/festivals/{festival_short_name}/films", response_model=set[Film])
+def get_films(festival_short_name: str) -> set[Film]:
     festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    festival.get_sessions()
     return festival.get_films()
 
 @app.get("/festivals/{festival_short_name}/venues", response_model=list[Venue])
 def get_venues(festival_short_name: str):
     festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    festival.get_sessions()
     return festival.get_venues()
 
 @app.get("/festivals/{festival_short_name}/sessions", response_model=list[Session])
 def get_sessions(festival_short_name: str):
     festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    festival.get_sessions()
     return festival.sessions
 
 if __name__ == "__main__":
