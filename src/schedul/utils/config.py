@@ -12,7 +12,7 @@ class Preference(BaseModel):
     day_bucket: Optional[DayBucket]
     time_bucket: Optional[TimeBucket]
     venue: Optional[str]
-    date: Optional[str]
+    date: Optional[date]
 
 class NormalisedVenue(BaseModel):
     replace: str

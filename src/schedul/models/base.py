@@ -46,7 +46,5 @@ class Base(BaseModel):
 
         return attribs
 
-    # class Config:
-    #     frozen=True
     class Config:
         keep_untouched = (cached_property,)
