@@ -7,6 +7,9 @@ from models.festival import Festival
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
+from models.festival_sql import FestivalSQL
+from models.session_sql  import SessionSQL
+from sqlmodel import SQLModel, create_engine
 
 
 app = FastAPI()
@@ -23,8 +26,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+engine = create_engine("sqlite:///db.sqlite")
+
 def get_festival(festival_short_name:str) -> Festival:
     return [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
+
+@app.on_event("startup")
+def on_startup():
+    SQLModel.metadata.create_all(engine)
+
 
 @app.get("/festivals")
 def get_festivals() -> list[Festival]:

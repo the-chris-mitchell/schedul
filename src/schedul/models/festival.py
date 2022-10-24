@@ -58,11 +58,19 @@ class Festival(ABC, Base):
             dict_writer.writerows(films_dict_list)
 
     def get_formatted_sessions(self) -> str:
-        lines: list[str] = [session.formatted for session in sorted(self.sessions, key=lambda x: x.start_time)]
+        lines: list[str] = [f"{session.id}: {session.formatted}" for session in sorted(self.sessions, key=lambda x: x.start_time)]
         return "\n".join(lines)
 
     def shuffle(self, sessions: list[Session]) -> list[Session]:
         return random.sample(sessions, k=len(sessions))
+
+    def get_booked_schedule(self) -> Schedule:
+        booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
+        for session in booked_sessions:
+            session.book()
+        schedule = Schedule()
+        schedule.sessions.extend(booked_sessions)
+        return schedule
     
     def get_schedule(self) -> Schedule:
 
