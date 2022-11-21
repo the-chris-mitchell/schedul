@@ -49,11 +49,11 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4",
-                "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"
+                "sha256:29adc2665447e5191d0e7c568fde78b21f9672d344281d0c6e1ab085429b22b6",
+                "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
-            "version": "==21.4.0"
+            "markers": "python_version >= '3.5'",
+            "version": "==22.1.0"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -99,7 +99,7 @@
                 "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828",
                 "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"
             ],
-            "markers": "python_full_version >= '3.10.0' and python_full_version < '4.0.0'",
+            "markers": "python_version < '3.11'",
             "version": "==1.0.4"
         },
         "fastapi": {
@@ -328,11 +328,11 @@
         },
         "requests-cache": {
             "hashes": [
-                "sha256:5343132acc8ca4d7810305aa1e8e46367e9c7c8379f7aea4e8c05f401499fc43",
-                "sha256:bd67575f541f9c10f44f8b49d8d449fb55db8af2e27d93c56349f227b78e4b70"
+                "sha256:3f57badcd8406ecda7f8eaa8145afd0b180c5ae4ff05165a2c4d40f3dc88a6e5",
+                "sha256:b7c26ea98143bac7058fad6e773d56c3442eabc0da9ea7480af5edfc134ff515"
             ],
             "index": "pypi",
-            "version": "==0.9.5"
+            "version": "==0.9.7"
         },
         "selenium": {
             "hashes": [
@@ -508,7 +508,7 @@
         },
         "urllib3": {
             "extras": [
-                "socks"
+
             ],
             "hashes": [
                 "sha256:3fa96cf423e6987997fc326ae8df396db2a8b7c667747d47ddd8ecba91f4a74e",
