@@ -20,7 +20,7 @@ match ARGS.mode:
         print(header(f"🎬 {selected_festival.full_name} films"))
         print(selected_festival.get_formatted_films())
         print(header(f"{len(selected_festival.get_films())} films (watchlist: {len(selected_festival.get_watchlist())})"))
-    case "csv":
+    case "films-csv":
         selected_festival.save_films_csv()
     case "cal":
         selected_festival.get_schedule().save_calendar(f"{ARGS.festival}.ics")
