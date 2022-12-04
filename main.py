@@ -7,8 +7,8 @@ import random
 
 from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
 
-MAX_SESSIONS = 2
-ITERATIONS = 100
+MAX_SESSIONS: int = 2
+ITERATIONS: int = 100
 
 PREFERENCES: list[Preference] = [
     Preference(venue=Venue("Embassy Theatre The Grand")),
@@ -21,7 +21,7 @@ PREFERENCES: list[Preference] = [
     Preference(TimeBucket.EVENING, DayBucket.WEEKDAY),
 ]
 
-EXCLUDED_DATES = [
+EXCLUDED_DATES: list[date] = [
     date(2022, 6, 10), # Parents visiting weekend
     date(2022, 6, 11), # Parents visiting weekend
     date(2022, 6, 12), # Parents visiting weekend
@@ -29,7 +29,7 @@ EXCLUDED_DATES = [
     date(2022, 6, 20), # Wellington Film Society
 ]
 
-BOOKED = [
+BOOKED: list[str] = [
     "https://www.eventcinemas.co.nz/Orders/Tickets#sessionId=1633596&bookingSource=www|movies",
     "https://www.eventcinemas.co.nz/Orders/Tickets#sessionId=1633599&bookingSource=www|movies",
     "https://ticketing.oz.veezi.com/purchase/85571?siteToken=jjyv8y2k8xe3rn5wxqrp2pym64",
@@ -67,7 +67,6 @@ for x in tqdm(range(ITERATIONS)):
 
     shuffled_sessions: list[Session] = random.sample(sessions, k=len(sessions))
 
-    preference: Preference
     for preference in PREFERENCES:
         for session in shuffled_sessions:
             if preference.date and session.start_time.date() != preference.date:
@@ -87,11 +86,11 @@ best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_
 
 print(f"🎬 Generated a schedule with {len(best_schedule.sessions)} films:")
 
-sorted_best_schedule = sorted(best_schedule.sessions, key=lambda x: x.start_time)
+sorted_best_schedule: Schedule = sorted(best_schedule.sessions, key=lambda x: x.start_time)
 
 for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in sorted_best_schedule]))), start=1):
     print(f"\n📆 Week {position}:")
-    print("─" * 37)
+    print("─" * 10)
     for session in [session for session in sorted_best_schedule if session.start_time.isocalendar()[1] == week]:
         print(session.format())
         if not session.booked:
