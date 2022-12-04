@@ -1,14 +1,21 @@
+import argparse
 from datetime import date
-from enums import DayBucket, TimeBucket
+from models.enums import DayBucket, TimeBucket
 
-from fff import get_sessions as get_fff_sessions
+from festivals.fff import get_sessions as get_fff_sessions
 from models.options import Options
 from models.preference import Preference
 from models.schedule import Schedule
 from models.session import Session
 from models.venue import Venue
-from nziff import get_sessions as get_nziff_sessions
+from festivals.nziff import get_sessions as get_nziff_sessions
 from process import get_schedule
+
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", choices=['print', 'calendar'], help="What mode to run")
+parser.add_argument("festival", choices=['fff', 'nziff'], help="Specify Festival")
+args = parser.parse_args()
+
 
 MAX_SESSIONS: int = 2
 ITERATIONS: int = 100
@@ -43,18 +50,17 @@ BOOKED_LINKS: list[str] = [
 
 options = Options(ITERATIONS, MAX_SESSIONS, PREFERENCES, EXCLUDED_DATES, BOOKED_LINKS)
 
-fff_sessions: list[Session] = get_fff_sessions()
-nziff_sessions: list[Session] = get_nziff_sessions()
 
+schedule: Schedule
 
-fff_schedule: Schedule = get_schedule(options, fff_sessions, "French Film Festival")
-nziff_schedule: Schedule = get_schedule(options, nziff_sessions, "Whānau Mārama: NZIFF")
+match args.festival:
+    case "fff":
+        schedule = get_schedule(options, get_fff_sessions(), "French Film Festival")
+    case "nziff":
+        schedule = get_schedule(options, get_nziff_sessions(), "Whānau Mārama: NZIFF")
 
-
-print(fff_schedule.get_formatted())
-fff_schedule.save_calendar()
-
-# print("\n")
-
-# print_schedule(nziff_schedule)
-
+match args.mode:
+    case "print":
+        print(schedule.get_formatted())
+    case "calendar":
+        schedule.save_calendar("movies.ics")
