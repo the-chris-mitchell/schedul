@@ -64,10 +64,3 @@ class Session(Base):
 
     def book(self) -> None:
         self.booked = True
-
-    def __hash__(self):
-        return hash((self.film, self.venue, self.start_time))
-
-
-
-

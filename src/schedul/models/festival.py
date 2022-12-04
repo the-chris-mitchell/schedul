@@ -24,12 +24,9 @@ class Festival(ABC, Base):
     def short_name(self) -> str:
         pass
 
-    def __hash__(self):
-        return hash((self.name))
-
     @cached_property
     @abstractmethod
-    def sessions(self) -> set[Session]:
+    def sessions(self) -> list[Session]:
         pass
 
     def get_films(self) -> set[Film]:
@@ -64,34 +61,34 @@ class Festival(ABC, Base):
         lines: list[str] = [session.formatted for session in sorted(self.sessions, key=lambda x: x.start_time)]
         return "\n".join(lines)
 
-    def shuffle(self, sessions: set[Session]) -> set[Session]:
-        return set(random.sample(sessions, k=len(sessions)))
+    def shuffle(self, sessions: list[Session]) -> list[Session]:
+        return random.sample(sessions, k=len(sessions))
     
     def get_schedule(self) -> Schedule:
 
         all_schedules: list[Schedule] = []
-        watchlist_sessions = {session for session in self.sessions if session.film.watchlist}
-        non_watchlist_sessions = {session for session in self.sessions if not session.film.watchlist}
+        watchlist_sessions = [session for session in self.sessions if session.film.watchlist]
+        non_watchlist_sessions = [session for session in self.sessions if not session.film.watchlist]
 
         sessions_per_watchlist_film = Counter(session.film.name for session in watchlist_sessions)
 
         single_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value == 1}
-        one_off_watchlist_sessions = {session for session in watchlist_sessions if session.film.name in single_session_watchlist_films}
+        one_off_watchlist_sessions = [session for session in watchlist_sessions if session.film.name in single_session_watchlist_films]
 
         multi_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value > 1}
-        one_of_many_watchlist_sessions = {session for session in watchlist_sessions if session.film.name in multi_session_watchlist_films}
+        one_of_many_watchlist_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_watchlist_films]
 
-        booked_sessions = {session for session in self.sessions if session.id in CONFIG.booked_sessions}
+        booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
 
         for session in booked_sessions:
             session.book()
 
-        for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"):
+        for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"): # type: ignore
             current_schedule = Schedule()
 
             current_schedule.sessions.extend(booked_sessions)
 
-            shuffled_sessions = self.shuffle(one_off_watchlist_sessions) | self.shuffle(one_of_many_watchlist_sessions) | self.shuffle(non_watchlist_sessions)
+            shuffled_sessions = self.shuffle(one_off_watchlist_sessions) + self.shuffle(one_of_many_watchlist_sessions) + self.shuffle(non_watchlist_sessions)
 
             for preference in CONFIG.preferences:
                 for session in shuffled_sessions:
@@ -115,3 +112,6 @@ class Festival(ABC, Base):
         best_schedule.sort()
 
         return best_schedule
+
+    class Config(Base.Config):
+        frozen=True

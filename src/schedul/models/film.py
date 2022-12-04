@@ -11,5 +11,5 @@ class Film(Base):
     def watchlist(self) -> bool:
         return self.name in CONFIG.watchlist
 
-    def __hash__(self):
-        return hash((self.name))
+    class Config(Base.Config):
+        frozen=True

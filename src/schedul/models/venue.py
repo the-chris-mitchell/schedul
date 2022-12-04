@@ -12,5 +12,5 @@ class Venue(Base):
                     return venue.replace
         return self.name
 
-    def __hash__(self):
-        return hash((self.name))
+    class Config(Base.Config):
+        frozen=True
