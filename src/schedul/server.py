@@ -23,24 +23,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def get_festival(festival_short_name:str) -> Festival:
+    return [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
+
 @app.get("/festivals")
 def get_festivals() -> list[Festival]:
     return FESTIVALS
 
 @app.get("/festivals/{festival_short_name}/films", response_model=set[Film])
 def get_films(festival_short_name: str) -> set[Film]:
-    festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    return festival.get_films()
+    return get_festival(festival_short_name).get_films()
 
 @app.get("/festivals/{festival_short_name}/venues", response_model=list[Venue])
 def get_venues(festival_short_name: str):
-    festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    return festival.get_venues()
+    return get_festival(festival_short_name).get_venues()
 
 @app.get("/festivals/{festival_short_name}/sessions", response_model=list[Session])
 def get_sessions(festival_short_name: str):
-    festival = [festival for festival in FESTIVALS if festival.short_name == festival_short_name][0]
-    return festival.sessions
+    return get_festival(festival_short_name).sessions
+
+@app.get("/festivals/{festival_short_name}/schedule", response_model=list[Session])
+def get_schedule(festival_short_name: str):
+    schedule = get_festival(festival_short_name).get_schedule()
+    return schedule.sessions
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000) # type: ignore
