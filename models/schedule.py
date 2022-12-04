@@ -1,9 +1,7 @@
-import random
 from datetime import timedelta
 
 import arrow  # type: ignore
 from ics import Calendar, Event  # type: ignore
-from tqdm import tqdm  # type: ignore
 
 from models.options import Options
 from models.preference import Preference
@@ -11,9 +9,8 @@ from models.session import Session
 
 
 class Schedule:
-    def __init__(self, festival: str) -> None:
+    def __init__(self) -> None:
         self.sessions: list[Session] = []
-        self.festival = festival
     
     def calculate_score(self, preferences: list[Preference]) -> float:
         score: float = 0
@@ -37,12 +34,9 @@ class Schedule:
 
     def get_formatted(self) -> str:
         lines: list[str] = []
-        lines.append("=" * 50)
-        lines.append(f"🎬 Schedule for {self.festival} with {len(self.sessions)} films:")
-        lines.append("=" * 50)
+
         for position, week in enumerate(sorted(list({session.start_time.isocalendar()[1] for session in self.sessions})), start=1):
-            lines.append(f"\n📆 Week {position}:")
-            lines.append("─" * 10)
+            lines.extend((f"\n📆 Week {position}:", "─" * 10))
             for session in [session for session in self.sessions if session.start_time.isocalendar()[1] == week]:
                 lines.append(session.format())
                 if not session.booked:
@@ -72,42 +66,3 @@ class Schedule:
         if len([x for x in self.sessions if x.start_time.date() == session.start_time.date()]) == options.max_sessions:
             return
         self.sessions.append(session)
-
-
-def get_schedule(options: Options, sessions: list[Session], festival: str) -> Schedule:
-
-    all_schedules: list[Schedule] = []
-
-    for _ in tqdm(range(options.iterations)):
-        current_schedule = Schedule(festival)
-
-        booked_sessions = [session for session in sessions if session.link in options.booked_links]
-
-        for session in booked_sessions:
-            session.book()
-
-        current_schedule.sessions.extend(booked_sessions)
-
-        shuffled_sessions: list[Session] = random.sample(sessions, k=len(sessions))
-
-        for preference in options.preferences:
-            for session in shuffled_sessions:
-                if session.start_time < arrow.utcnow():
-                    continue
-                if preference.date and session.start_time.date() != preference.date:
-                    continue
-                if preference.day_bucket and session.day_bucket != preference.day_bucket:
-                    continue
-                if preference.time_bucket and session.time_bucket != preference.time_bucket:
-                    continue
-                if preference.venue and session.venue.name != preference.venue.name:
-                    continue
-                current_schedule.try_add_session(session, options)
-
-        all_schedules.append(current_schedule)
-
-    best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(options.preferences), reverse=True)[0]
-
-    best_schedule.sort()
-
-    return best_schedule

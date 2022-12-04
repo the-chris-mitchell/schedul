@@ -36,8 +36,7 @@ class FrenchFilmFestival(Festival):
     def short_name(self) -> str:
         return "fff"
 
-    @property
-    def sessions(self) -> list[Session]:
+    def get_sessions(self):
         soup = get_cached_soup(URL, "fff")
         venues_html = soup.find_all("div", attrs={"class": "venue-film-list"})
 
@@ -99,4 +98,4 @@ class FrenchFilmFestival(Festival):
 
                     sessions.append(session)
 
-        return sessions
+        self.sessions = sessions

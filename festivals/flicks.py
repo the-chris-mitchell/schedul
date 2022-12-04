@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from clients.soup import get_cached_soup, get_selenium_soup
-from dateutil import parser
+from dateutil import parser  # type: ignore
 from models.festival import Festival  # type: ignore
 from models.film import Film
 from models.session import Session
@@ -19,8 +19,7 @@ class Flicks(Festival):
     def short_name(self) -> str:
         return "flicks"
 
-    @property
-    def sessions(self) -> list[Session]:
+    def get_sessions(self) -> None:
         soup = get_cached_soup(VENUES_URL, "flicks", timedelta(days=1))
         venues_html = soup.find_all("a", attrs={"class": "cinema-list__title"})
 
@@ -57,7 +56,7 @@ class Flicks(Festival):
 
                         sessions.append(session)
 
-        return sessions
+        self.sessions = sessions
     
     @staticmethod
     def get_flicks_runtime(movie):

@@ -6,16 +6,16 @@ from strictyaml import (Datetime, EmptyList, EmptyNone, Enum,  # type: ignore
 from festivals import get_festivals
 
 from models.enums import DayBucket, TimeBucket
+from models.festival import Festival
 from models.options import Options
 from models.preference import Preference
-from models.schedule import Schedule, get_schedule
 
 
 festivals = get_festivals()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("mode", choices=['print', 'cal'], help="What mode to run")
-parser.add_argument("festival", choices=[festival.short_name for festival in festivals], help="Specify Festival")
+parser.add_argument("festival", choices=[festival.short_name for festival in festivals], help="Select a festival")
+parser.add_argument("mode", choices=['sessions', 'schedule', 'cal'], help="What mode to run")
 args = parser.parse_args()
 
 preferences_schema = Seq(Map({
@@ -57,15 +57,15 @@ BOOKED_SESSIONS: list[str] = config["booked-sessions"]
 
 options = Options(ITERATIONS, MAX_SESSIONS, PREFERENCES, EXCLUDED_DATES, BOOKED_SESSIONS)
 
-schedule: Schedule
-
-
-selected_festival = [festival for festival in festivals if festival.short_name == args.festival][0]
-
-schedule = get_schedule(options, selected_festival.sessions, selected_festival.full_name)
+selected_festival: Festival = [festival for festival in festivals if festival.short_name == args.festival][0]
+selected_festival.get_sessions()
 
 match args.mode:
-    case "print":
-        print(schedule.get_formatted())
+    case "schedule":
+        print("=" * 20, f"🎬 {selected_festival.full_name} schedule", "=" * 20)
+        print(selected_festival.get_schedule(options).get_formatted())
+    case "sessions":
+        print("=" * 20, f"🎬 {selected_festival.full_name} sessions", "=" * 20)
+        print(selected_festival.get_formatted())
     case "cal":
-        schedule.save_calendar(f"{args.festival}.ics")
+        selected_festival.get_schedule(options).save_calendar(f"{args.festival}.ics")
