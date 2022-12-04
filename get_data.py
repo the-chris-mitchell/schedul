@@ -7,10 +7,10 @@ from dateutil import parser
 
 from models import Film, Session, Venue
 
+
 URL = "https://www.frenchfilmfestival.co.nz/locations/Wellington"
 
 WATCHLIST = [
-    #"Another World",
     "Between Two Worlds",
     "Everything Went Fine",
     "Farewell, Mr. Haffmann",

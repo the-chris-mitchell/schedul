@@ -6,6 +6,7 @@ from tqdm import tqdm
 from get_data import get_sessions
 from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
 
+
 MAX_SESSIONS: int = 2
 ITERATIONS: int = 100
 
