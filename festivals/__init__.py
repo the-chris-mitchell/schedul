@@ -10,3 +10,5 @@ def get_festivals() -> list[Festival]:
         NZInternationalFilmFestival(),
         Flicks()
     ]
+
+FESTIVALS = get_festivals()

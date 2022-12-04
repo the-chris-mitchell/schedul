@@ -4,9 +4,10 @@ import csv
 
 import arrow  # type: ignore
 from tqdm import tqdm  # type: ignore
-from models.options import Options
 from models.schedule import Schedule
 from models.session import Session
+from models.venue import Venue
+from utils.config import CONFIG
 
 
 class Festival(ABC):
@@ -28,8 +29,21 @@ class Festival(ABC):
         pass
 
     def get_formatted_films(self) -> str:
-        films = list({session.film for session in self.sessions})
-        return "\n".join([f"{film.name} {'(' + str(film.year) + ')' if film.year != None else ''}" for film in films])
+        films = sorted(list({session.film for session in self.sessions}), key=lambda x: x.name)
+        lines = []
+        watchlist_count = 0
+        for film in films:
+            formatted_film_elements = [film.name]
+            if film.year:
+                formatted_film_elements.append(f"({film.year})")
+            if film.watchlist:
+                formatted_film_elements.append("👀")
+                watchlist_count += 1
+            lines.append(" ".join(formatted_film_elements))
+
+        lines.extend(("---", f"Watchlist count: {watchlist_count}"))
+
+        return "\n".join(lines)
 
     def save_films_csv(self) -> None:
         films = list({session.film for session in self.sessions})
@@ -47,28 +61,28 @@ class Festival(ABC):
         for film_name in sorted(film_names):
             lines.extend((f"\n🎬 {film_name}:", "─" * 10))
             film_sessions = [session for session in self.sessions if session.film.name == film_name]
-            for session in sorted(film_sessions, key=lambda x: x.start_time):
-                lines.append(session.format())
+            lines.extend(session.format() for session in sorted(film_sessions, key=lambda x: x.start_time))
 
         return "\n".join(lines)
     
-    def get_schedule(self, options: Options) -> Schedule:
+    def get_schedule(self) -> Schedule:
 
         all_schedules: list[Schedule] = []
+        watchlist_sessions = [session for session in self.sessions if session.film.watchlist]
 
-        for _ in tqdm(range(options.iterations)):
+        for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"):
             current_schedule = Schedule()
 
-            booked_sessions = [session for session in self.sessions if session.link in options.booked_links]
+            booked_sessions = [session for session in watchlist_sessions if session.link in CONFIG.booked_sessions]
 
             for session in booked_sessions:
                 session.book()
 
             current_schedule.sessions.extend(booked_sessions)
 
-            shuffled_sessions: list[Session] = random.sample(self.sessions, k=len(self.sessions))
+            shuffled_sessions: list[Session] = random.sample(watchlist_sessions, k=len(watchlist_sessions))
 
-            for preference in options.preferences:
+            for preference in CONFIG.preferences:
                 for session in shuffled_sessions:
                     if session.start_time < arrow.utcnow():
                         continue
@@ -78,13 +92,13 @@ class Festival(ABC):
                         continue
                     if preference.time_bucket and session.time_bucket != preference.time_bucket:
                         continue
-                    if preference.venue and session.venue.name != preference.venue.name:
+                    if Venue(preference.venue) and session.venue.name != Venue(preference.venue).name:
                         continue
-                    current_schedule.try_add_session(session, options)
+                    current_schedule.try_add_session(session)
 
             all_schedules.append(current_schedule)
 
-        best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(options.preferences), reverse=True)[0]
+        best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(), reverse=True)[0]
 
         best_schedule.sort()
 
