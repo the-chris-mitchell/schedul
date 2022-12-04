@@ -11,15 +11,15 @@ match ARGS.mode:
         schedule = selected_festival.get_schedule()
         print(header(f"🎬 {selected_festival.full_name}"))
         print(schedule.get_formatted())
-        print(header(f"{len(schedule.sessions)} films"))
+        print(header(f"{len(schedule.sessions)} films over {len(list({session.start_time.date() for session in schedule.sessions}))} days"))
     case "sessions":
         print(header(f"🎬 {selected_festival.full_name} sessions"))
         print(selected_festival.get_formatted_sessions())
-        print(header(f"{len(selected_festival.sessions)} films"))
+        print(header(f"{len(selected_festival.sessions)} sessions over {len(list({session.start_time.date() for session in selected_festival.sessions}))} days"))
     case "films":
         print(header(f"🎬 {selected_festival.full_name} films"))
         print(selected_festival.get_formatted_films())
-        print(header(f"{len(selected_festival.sessions)} films"))
+        print(header(f"{len(list({session.film.name for session in selected_festival.sessions}))} films"))
     case "csv":
         selected_festival.save_films_csv()
     case "cal":
