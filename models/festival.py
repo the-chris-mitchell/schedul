@@ -92,7 +92,7 @@ class Festival(ABC):
                         continue
                     if preference.time_bucket and session.time_bucket != preference.time_bucket:
                         continue
-                    if Venue(preference.venue) and session.venue.name != Venue(preference.venue).name:
+                    if preference.venue and session.venue.name != preference.venue:
                         continue
                     current_schedule.try_add_session(session)
 
