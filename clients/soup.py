@@ -1,13 +1,13 @@
-from datetime import timedelta
 import time
-from bs4 import BeautifulSoup # type: ignore
-import requests_cache
-from requests_html import HTMLSession
+from datetime import timedelta
 
+import requests_cache
+from bs4 import BeautifulSoup # type: ignore
+from requests_html import HTMLSession # type: ignore
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager # type: ignore
-from selenium.webdriver.chrome.options import Options
 
 
 def get_cached_soup(url: str, cache_name: str, expiry: timedelta = None) -> BeautifulSoup:

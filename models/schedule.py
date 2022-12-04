@@ -1,10 +1,11 @@
-from datetime import timedelta
 import random
-from ics import Calendar, Event # type: ignore
-from tqdm import tqdm # type: ignore
-import arrow # type: ignore
-from models.options import Options
+from datetime import timedelta
 
+import arrow  # type: ignore
+from ics import Calendar, Event  # type: ignore
+from tqdm import tqdm  # type: ignore
+
+from models.options import Options
 from models.preference import Preference
 from models.session import Session
 
