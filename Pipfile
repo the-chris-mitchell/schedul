@@ -12,6 +12,8 @@ python-dateutil = "*"
 mypy = "*"
 selenium = "*"
 webdriver-manager = "*"
+ics = "*"
+arrow = "*"
 
 [dev-packages]
 pandas = "*"
