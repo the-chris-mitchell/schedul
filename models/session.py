@@ -1,9 +1,7 @@
 import base64
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from models.enums import DayBucket, TimeBucket
 from models.film import Film
-from models.options import Options
-from models.schedule import Schedule
 from models.venue import Venue
 
 
@@ -55,16 +53,3 @@ class Session:
             return TimeBucket.EVENING
         else:
             return TimeBucket.NONE
-
-def valid_session(session: Session, schedule: Schedule, options: Options):
-    if len(schedule.sessions) == 0:
-        return True
-    if session.start_time.date() in options.excluded_dates:
-        return False
-    if any(entry.film.name == session.film.name for entry in schedule.sessions):
-        return False
-    if any(entry.start_time <= (session.end_time + timedelta(minutes=30)) and session.start_time <= (entry.end_time + timedelta(minutes=30)) for entry in schedule.sessions):
-        return False
-    if len([x for x in schedule.sessions if x.start_time.date() == session.start_time.date()]) == options.max_sessions:
-        return False
-    return True

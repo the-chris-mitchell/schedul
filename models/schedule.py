@@ -1,11 +1,12 @@
+from datetime import timedelta
 import random
 from ics import Calendar, Event # type: ignore
 from tqdm import tqdm # type: ignore
-import arrow
+import arrow # type: ignore
 from models.options import Options
 
 from models.preference import Preference
-from models.session import Session, valid_session
+from models.session import Session
 
 
 class Schedule:
@@ -60,6 +61,17 @@ class Schedule:
             file.writelines(calendar)
         print(f"Saved calendar to {filename}")
 
+    def try_add_session(self, session: Session, options: Options) -> None:
+        if session.start_time.date() in options.excluded_dates:
+            return
+        if any(entry.film.name == session.film.name for entry in self.sessions):
+            return
+        if any(entry.start_time <= (session.end_time + timedelta(minutes=30)) and session.start_time <= (entry.end_time + timedelta(minutes=30)) for entry in self.sessions):
+            return
+        if len([x for x in self.sessions if x.start_time.date() == session.start_time.date()]) == options.max_sessions:
+            return
+        self.sessions.append(session)
+
 
 def get_schedule(options: Options, sessions: list[Session], festival: str) -> Schedule:
 
@@ -87,8 +99,7 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
                     continue
                 if preference.venue and session.venue.name != preference.venue.name:
                     continue
-                if valid_session(session, current_schedule, options):
-                    current_schedule.sessions.append(session)
+                current_schedule.try_add_session(session, options)
 
         all_schedules.append(current_schedule)
 
