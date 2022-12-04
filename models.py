@@ -1,5 +1,7 @@
 import base64
+from ics import Calendar, Event
 from datetime import date, datetime, time, timedelta
+import arrow
 
 from enums import DayBucket, TimeBucket
 
@@ -105,6 +107,19 @@ class Schedule:
                 print(session.format())
                 if not session.booked:
                     print(f"↪️ 🔗 {session.link}")
+    
+    def calendar(self) -> None:
+        calendar = Calendar()
+        for session in self.sessions:
+            event = Event()
+            event.name = session.film.name
+            event.begin = arrow.get(session.start_time).to('utc')
+            event.end = arrow.get(session.end_time).to('utc')
+            event.location = session.venue.name
+            calendar.events.add(event)
+        with open('movies.ics', 'w') as file:
+            file.writelines(calendar)
+
 class Options:
     def __init__(self, iterations: int, max_sessions: int, preferences: list[Preference], excluded_dates: list[date], booked_links: list[str]) -> None:
         self.iterations = iterations
