@@ -1,5 +1,5 @@
 from datetime import date
-from enums import DayBucket, TimeBucket
+from models.enums import DayBucket, TimeBucket
 from models.venue import Venue
 
 
