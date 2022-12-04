@@ -16,17 +16,17 @@ class Base(BaseModel):
     def dict(
         self,
         *,
-        include: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None,
-        exclude: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None,
+        include: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None, # type: ignore
+        exclude: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None, # type: ignore
         by_alias: bool = False,
-        skip_defaults: bool = None,
+        skip_defaults: bool = None, # type: ignore
         exclude_unset: bool = False,
         exclude_defaults: bool = False,
         exclude_none: bool = False,
-    ) -> 'DictStrAny':
+    ) -> 'DictStrAny': # type: ignore
         attribs = super().dict(
-            include=include,
-            exclude=exclude,
+            include=include, # type: ignore
+            exclude=exclude, # type: ignore
             by_alias=by_alias,
             skip_defaults=skip_defaults,
             exclude_unset=exclude_unset,
@@ -47,4 +47,4 @@ class Base(BaseModel):
         return attribs
 
     class Config:
-        keep_untouched = (cached_property,)
+        keep_untouched = (cached_property,) # type: ignore
