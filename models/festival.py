@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import random
 import csv
 
-import arrow  # type: ignore
 from tqdm import tqdm  # type: ignore
 from models.schedule import Schedule
 from models.session import Session
