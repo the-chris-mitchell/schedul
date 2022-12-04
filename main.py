@@ -1,83 +1,98 @@
-from datetime import datetime, time
-
+from datetime import date, timedelta
 from get_data import get_sessions
 
 from tqdm import tqdm
 
 import random
 
-MAX_SESSIONS = 1
-FAVOURITE_VENUE = "Light House Cuba"
+from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
 
-preferences = [
-    {"day": "weekend", "time": "morning"},
-    {"day": "weekend", "time": "afternoon"},
-    {"day": "friday", "time": "evening"},
-    {"day": "weekend", "time": "evening"},
-    {"day": "weekday", "time": "evening"}
+MAX_SESSIONS = 2
+ITERATIONS = 100
+
+PREFERENCES: list[Preference] = [
+    Preference(venue=Venue("Embassy Theatre The Grand")),
+    Preference(TimeBucket.MORNING, DayBucket.WEEKEND, venue=Venue("Light House Cuba")),
+    Preference(TimeBucket.AFTERNOON, DayBucket.WEEKEND, venue=Venue("Light House Cuba")),
+    Preference(TimeBucket.MORNING, DayBucket.WEEKEND),
+    Preference(TimeBucket.AFTERNOON, DayBucket.WEEKEND),
+    Preference(TimeBucket.EVENING, DayBucket.WEEKEND),
+    Preference(TimeBucket.EVENING, DayBucket.FRIDAY),
+    Preference(TimeBucket.EVENING, DayBucket.WEEKDAY),
 ]
 
-all_sessions = []
+EXCLUDED_DATES = [
+    date(2022, 6, 10), # Parents visiting weekend
+    date(2022, 6, 11), # Parents visiting weekend
+    date(2022, 6, 12), # Parents visiting weekend
+    date(2022, 6, 13), # Wellington Film Society
+    date(2022, 6, 20), # Wellington Film Society
+]
 
-for session in get_sessions():
-    session["date"] = datetime.fromisoformat(session["datetime"]).date()
-    session["time"] = datetime.fromisoformat(session["datetime"]).time()
-    session["day"] = session["date"].strftime("%A")
+BOOKED = [
+    "https://www.eventcinemas.co.nz/Orders/Tickets#sessionId=1633596&bookingSource=www|movies",
+    "https://www.eventcinemas.co.nz/Orders/Tickets#sessionId=1633599&bookingSource=www|movies",
+    "https://ticketing.oz.veezi.com/purchase/85571?siteToken=jjyv8y2k8xe3rn5wxqrp2pym64",
+    "https://ticketing.oz.veezi.com/purchase/85561?siteToken=jjyv8y2k8xe3rn5wxqrp2pym64",
+    "https://ticketing.oz.veezi.com/purchase/85575?siteToken=jjyv8y2k8xe3rn5wxqrp2pym64",
+    "https://ticketing.oz.veezi.com/purchase/85173?siteToken=1qejxwctrta7sf1x8th102760g"
+]
 
-    match session["date"].weekday():
-        case 5 | 6:
-            session["day-bucket"] = "weekend"
-        case 4:
-            session["day-bucket"] = "friday"
-        case 1 | 2 | 3:
-            session["day-bucket"] = "weekday"
-        case _:
-            session["day-bucket"] = None
-
-    if session["time"] < time(13):
-        session["time-bucket"] = "morning"
-    elif session["time"] < time(17):
-        session["time-bucket"] = "afternoon"
-    elif session["time"] > time(17):
-        session["time-bucket"] = "evening"
-    else:
-        session["time-bucket"] = "other"
-
-    all_sessions.append(session)
-
-all_schedules = []
-
-def valid_session(session, schedule):
-    if len(schedule) == 0:
+def valid_session(session: Session, schedule: Schedule):
+    if len(schedule.sessions) == 0:
         return True
-    if any(entry["name"] == session["name"] for entry in schedule):
+    if session.start_time.date() in EXCLUDED_DATES:
         return False
-    if len([x for x in schedule if x["date"] == session["date"]]) == MAX_SESSIONS:
+    if any(entry.film.name == session.film.name for entry in schedule.sessions):
+        return False
+    if any(entry.start_time <= (session.end_time + timedelta(minutes=30)) and session.start_time <= (entry.end_time + timedelta(minutes=30)) for entry in schedule.sessions):
+        return False
+    if len([x for x in schedule.sessions if x.start_time.date() == session.start_time.date()]) == MAX_SESSIONS:
         return False
     return True
 
-for x in tqdm(range(1000)):
+sessions: list[Session] = get_sessions()
 
-    current_schedule = []
+all_schedules: list[Schedule] = []
 
-    shuffled_sessions = random.sample(all_sessions, k=len(all_sessions))
+for x in tqdm(range(ITERATIONS)):
 
-    for preference in preferences:
-        [current_schedule.append(session) for session in shuffled_sessions if (valid_session(session, current_schedule) and session["day-bucket"] == preference["day"] and session["time-bucket"] == preference["time"] and session["venue"] == FAVOURITE_VENUE)]
-        [current_schedule.append(session) for session in shuffled_sessions if (valid_session(session, current_schedule) and session["day-bucket"] == preference["day"] and session["time-bucket"] == preference["time"])]
+    current_schedule = Schedule()
 
-    score = 0
-    
-    for position, _ in enumerate(preferences):
-        score += len([session for session in all_sessions if (session["day-bucket"] == preference["day"] and session["time-bucket"] == preference["time"])]) * position
+    booked_sessions = [session for session in sessions if session.link in BOOKED]
 
-    score += len([session for session in current_schedule if session["venue"] == FAVOURITE_VENUE])
+    [session.book() for session in booked_sessions]
 
-    all_schedules.append({"sessions": current_schedule, "score": score})
+    current_schedule.sessions.extend(booked_sessions)
 
-best_schedule = sorted(all_schedules, key=lambda item: item["score"], reverse=True)[0]["sessions"]
+    shuffled_sessions: list[Session] = random.sample(sessions, k=len(sessions))
 
-for event in sorted(best_schedule, key=lambda x: x["datetime"]):
-    when = datetime.fromisoformat(event["datetime"]).strftime("%c")
-    #print(f"{when}: {event['name']} ({event['venue']}) {event['link']}")
-    print(f"{when}: {event['name']} ({event['venue']})")
+    preference: Preference
+    for preference in PREFERENCES:
+        for session in shuffled_sessions:
+            if preference.date and session.start_time.date() != preference.date:
+                continue
+            if preference.day_bucket and session.day_bucket != preference.day_bucket:
+                continue
+            if preference.time_bucket and session.time_bucket != preference.time_bucket:
+                continue
+            if preference.venue and session.venue.name != preference.venue.name:
+                continue
+            if valid_session(session, current_schedule):
+                current_schedule.sessions.append(session)
+
+    all_schedules.append(current_schedule)
+
+best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(PREFERENCES), reverse=True)[0]
+
+print(f"🎬 Generated a schedule with {len(best_schedule.sessions)} films:")
+
+sorted_best_schedule = sorted(best_schedule.sessions, key=lambda x: x.start_time)
+
+for position, week in enumerate(sorted(list(set([session.start_time.isocalendar()[1] for session in sorted_best_schedule]))), start=1):
+    print(f"\n📆 Week {position}:")
+    print("─" * 37)
+    for session in [session for session in sorted_best_schedule if session.start_time.isocalendar()[1] == week]:
+        print(session.format())
+        if not session.booked:
+            print(f"↪️ 🔗 {session.link}")
