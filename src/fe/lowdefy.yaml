@@ -1,0 +1,19 @@
+
+lowdefy: 3.23.3
+name: Schedul
+menus:
+  - id: default
+    links:
+      - id: films
+        type: MenuLink
+        properties:
+          icon: AlertOutlined
+          title: Films
+        pageId: films
+connections:
+  - id: schedul
+    type: AxiosHttp
+    properties:
+      baseURL: http://127.0.0.1:8000
+pages:
+  - _ref: films.yaml

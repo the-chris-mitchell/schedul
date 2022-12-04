@@ -1,16 +1,16 @@
-from models.base import Base
-from utils.config import CONFIG
+from sqlmodel import SQLModel
+from sqlmodel import Field  # type: ignore
+from typing import Optional
 
-class Venue(Base):
+
+class VenueBase(SQLModel):
     name: str
 
-    @property
-    def normalised_name(self) -> str:
-        if CONFIG.normalise_venues:
-            for venue in CONFIG.normalise_venues:
-                if self.name in venue.match:
-                    return venue.replace
-        return self.name
+class Venue(VenueBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
 
-    class Config(Base.Config):
-        frozen=True
+class VenueCreate(VenueBase):
+    pass
+
+class VenueRead(VenueBase):
+    id: int

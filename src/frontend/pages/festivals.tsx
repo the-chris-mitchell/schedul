@@ -4,7 +4,7 @@ function GetFestivals() {
     const [festivals, setFestivals] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/festivals')
+        fetch('http://localhost:8000/festivals/')
             .then(response => response.json())
             .then(data => setFestivals(data));
 

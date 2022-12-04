@@ -43,6 +43,16 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["nziff", "schedule"]
-        }
+        },
+        {
+            "name": "IFF22: Sessions",
+            "type": "python",
+            "request": "launch",
+            "program": "cli.py",
+            "cwd": "${workspaceFolder}/src/schedul",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["iff22", "sessions"]
+        },
     ]
 }

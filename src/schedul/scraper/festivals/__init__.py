@@ -1,12 +1,13 @@
 import os
-from models.festival import Festival
+
+from scraper.festivals.base import Festival
 
 
 try:
     for module in os.listdir(f"{os.path.dirname(__file__)}/custom"):
         if module == '__init__.py' or module[-3:] != '.py':
             continue
-        module_name = f"festivals.custom.{module[:-3]}"
+        module_name = f"scraper.festivals.custom.{module[:-3]}"
         __import__(module_name, locals(), globals())
 except (ModuleNotFoundError, FileNotFoundError) as err:
     raise Exception("Festival missing, please add one under ./festivals/custom").with_traceback(err.__traceback__) from err
