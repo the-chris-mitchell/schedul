@@ -17,7 +17,7 @@ venues_html = soup.find_all("a", attrs={"class": "cinema-list__title"})
 def get_sessions() -> list[Session]:
     sessions: list[Session] = []
 
-    for venue_html in venues_html[2:]:
+    for venue_html in venues_html:
         venue = Venue(venue_html.text)
         movies_soup = get_selenium_soup(BASE_URL + venue_html['href'])
 
@@ -52,10 +52,9 @@ def get_sessions() -> list[Session]:
 
 def get_flicks_runtime(movie):
     icons = movie.find_all("span", attrs={"class": "cinema__movie-icon"})
-    runtime = 0
     for icon in icons:
         if "m" in icon.text:
-            runtime = int(icon.text.replace("m", ""))
-    return runtime
+            return int(icon.text.replace("m", ""))
+    return 0
 
 get_sessions()
