@@ -46,8 +46,10 @@ nziff_sessions: list[Session] = get_nziff_sessions()
 fff_schedule: Schedule = get_schedule(options, fff_sessions, "French Film Festival")
 nziff_schedule: Schedule = get_schedule(options, nziff_sessions, "Whānau Mārama: NZIFF")
 
-print("=" * 50)
+
 print_schedule(fff_schedule)
-print("=" * 50)
+
+print("\n")
+
 print_schedule(nziff_schedule)
-print("=" * 50)
+
