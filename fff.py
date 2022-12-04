@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import requests_cache
 from bs4 import BeautifulSoup # type: ignore
-from dateutil import parser # type: ignore
+import arrow
 
 from models import Film, Session, Venue
 
@@ -87,7 +87,7 @@ def get_sessions() -> list[Session]:
                 session = Session(
                     film,
                     venue,
-                    parser.parse(f"{session_date} {session_time}"),
+                    arrow.get(f"{session_date} {session_time} 2022 +12:00", "Do MMMM H:mmA YYYY ZZ"),
                     link
                 )
 
