@@ -17,6 +17,7 @@ arrow = "*"
 strictyaml = "*"
 fastapi = "*"
 pydantic = "*"
+sqlmodel = "*"
 
 [dev-packages]
 pandas = "*"
