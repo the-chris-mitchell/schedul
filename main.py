@@ -1,10 +1,9 @@
+import random
 from datetime import date, timedelta
-from get_data import get_sessions
 
 from tqdm import tqdm
 
-import random
-
+from get_data import get_sessions
 from models import DayBucket, Preference, Schedule, Session, TimeBucket, Venue
 
 MAX_SESSIONS: int = 2

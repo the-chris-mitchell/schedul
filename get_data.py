@@ -1,9 +1,9 @@
+import re
+from datetime import timedelta
+
 import requests_cache
 from bs4 import BeautifulSoup
-from requests_html import HTMLSession
-import re
 from dateutil import parser
-from datetime import timedelta
 
 from models import Film, Session, Venue
 
