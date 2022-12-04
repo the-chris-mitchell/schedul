@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from clients.soup import get_cached_soup
+from models.festival import Festival
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
@@ -9,27 +10,36 @@ BASE_URL = "https://www.nziff.co.nz"
 URL = f"{BASE_URL}/nziff-2022/2022/films/title/"
 
 
+class NZInternationalFilmFestival(Festival):
+    @property
+    def full_name(self) -> str:
+        return "Whānau Mārama: New Zealand International Film Festival"
 
-def get_sessions() -> list[Session]:
-    sessions: list[Session] = []
+    @property
+    def short_name(self) -> str:
+        return "nziff"
 
-    soup = get_cached_soup(URL, "nziff")
-    film_cards =  soup.find_all("article", class_="film-card")
+    @property
+    def sessions(self) -> list[Session]:
+        sessions: list[Session] = []
 
-    for film_card in film_cards:
-        title = film_card.find("span", itemprop="name").text
-        url = film_card.a.get("href")
+        soup = get_cached_soup(URL, "nziff")
+        film_cards =  soup.find_all("article", class_="film-card")
 
-        film_html = get_cached_soup(BASE_URL + url, "nziff")
+        for film_card in film_cards:
+            title = film_card.find("span", itemprop="name").text
+            url = film_card.a.get("href")
 
-        minutes = film_html.find("span", itemprop="duration").text.split(" ")[0]
+            film_html = get_cached_soup(BASE_URL + url, "nziff")
 
-        duration_delta = timedelta(minutes=int(minutes))
+            minutes = film_html.find("span", itemprop="duration").text.split(" ")[0]
 
-        film = Film(title, duration_delta)
+            duration_delta = timedelta(minutes=int(minutes))
 
-        session = Session(film, Venue("Venue"), datetime.now(), "http://google.com")
+            film = Film(title, duration_delta)
 
-        sessions.append(session)
+            session = Session(film, Venue("Venue"), datetime.now(), "http://google.com")
 
-    return(sessions)
+            sessions.append(session)
+
+        return(sessions)
