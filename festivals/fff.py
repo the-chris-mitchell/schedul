@@ -4,6 +4,7 @@ from datetime import timedelta
 import requests_cache
 from bs4 import BeautifulSoup # type: ignore
 import arrow
+from clients.soup import get_cached_soup
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
@@ -30,11 +31,7 @@ MY_VENUES = [
     "Penthouse Cinema & Cafe"
 ]
 
-requests_session = requests_cache.CachedSession('fff')
-
-response = requests_session.get(URL)
-
-soup = BeautifulSoup(response.text, features="html.parser")
+soup = get_cached_soup(URL, "fff")
 
 venues_html = soup.find_all("div", attrs={"class": "venue-film-list"})
 

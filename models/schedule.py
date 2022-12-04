@@ -1,8 +1,11 @@
+import random
 from ics import Calendar, Event # type: ignore
+from tqdm import tqdm # type: ignore
 import arrow
+from models.options import Options
 
 from models.preference import Preference
-from models.session import Session
+from models.session import Session, valid_session
 
 
 class Schedule:
@@ -56,3 +59,41 @@ class Schedule:
         with open(filename, 'w') as file:
             file.writelines(calendar)
         print(f"Saved calendar to {filename}")
+
+
+def get_schedule(options: Options, sessions: list[Session], festival: str) -> Schedule:
+
+    all_schedules: list[Schedule] = []
+
+    for _ in tqdm(range(options.iterations)):
+        current_schedule = Schedule(festival)
+
+        booked_sessions = [session for session in sessions if session.link in options.booked_links]
+
+        for session in booked_sessions:
+            session.book()
+
+        current_schedule.sessions.extend(booked_sessions)
+
+        shuffled_sessions: list[Session] = random.sample(sessions, k=len(sessions))
+
+        for preference in options.preferences:
+            for session in shuffled_sessions:
+                if preference.date and session.start_time.date() != preference.date:
+                    continue
+                if preference.day_bucket and session.day_bucket != preference.day_bucket:
+                    continue
+                if preference.time_bucket and session.time_bucket != preference.time_bucket:
+                    continue
+                if preference.venue and session.venue.name != preference.venue.name:
+                    continue
+                if valid_session(session, current_schedule, options):
+                    current_schedule.sessions.append(session)
+
+        all_schedules.append(current_schedule)
+
+    best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(options.preferences), reverse=True)[0]
+
+    best_schedule.sort()
+
+    return best_schedule

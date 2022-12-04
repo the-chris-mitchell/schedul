@@ -1,7 +1,7 @@
 from datetime import timedelta
 from dateutil import parser # type: ignore
 
-from clients import get_cached_soup, get_selenium_soup
+from clients.soup import get_cached_soup, get_selenium_soup
 from models.film import Film
 from models.session import Session
 from models.venue import Venue
