@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import Union
 from pydantic import BaseModel
 
@@ -47,3 +48,5 @@ class Base(BaseModel):
 
     # class Config:
     #     frozen=True
+    class Config:
+        keep_untouched = (cached_property,)

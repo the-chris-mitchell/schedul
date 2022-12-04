@@ -1,7 +1,6 @@
 import base64
 from datetime import datetime, time, timedelta
 
-from cattr import override
 from models.base import Base
 
 from models.enums import DayBucket, TimeBucket

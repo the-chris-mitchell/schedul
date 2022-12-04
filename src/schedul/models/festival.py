@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from collections import Counter
+from functools import cached_property
 import random
 import csv
 
 from tqdm import tqdm # type: ignore
+from models.base import Base
 from models.film import Film
 from models.schedule import Schedule
 from models.session import Session
@@ -11,10 +13,7 @@ from models.venue import Venue
 from utils.config import CONFIG
 
 
-class Festival(ABC):
-    def __init__(self) -> None:
-        self.sessions: set[Session] = set()
-        
+class Festival(ABC, Base):      
     @property
     @abstractmethod
     def full_name(self) -> str:
@@ -25,8 +24,12 @@ class Festival(ABC):
     def short_name(self) -> str:
         pass
 
+    def __hash__(self):
+        return hash((self.name))
+
+    @cached_property
     @abstractmethod
-    def get_sessions(self) -> None:
+    def sessions(self) -> set[Session]:
         pass
 
     def get_films(self) -> set[Film]:
