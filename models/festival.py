@@ -96,6 +96,9 @@ class Festival(ABC):
                         continue
                     current_schedule.try_add_session(session)
 
+            for session in shuffled_sessions:
+                current_schedule.try_add_session(session)
+
             all_schedules.append(current_schedule)
 
         best_schedule: Schedule = sorted(all_schedules, key=lambda item: item.calculate_score(), reverse=True)[0]
