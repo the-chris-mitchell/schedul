@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from collections import Counter
 import random
 import csv
 
-from tqdm import tqdm  # type: ignore
+from tqdm import tqdm # type: ignore
+from models.film import Film  # type: ignore
 from models.schedule import Schedule
 from models.session import Session
-from models.venue import Venue
 from utils.config import CONFIG
 
 
@@ -27,26 +28,26 @@ class Festival(ABC):
     def get_sessions(self) -> None:
         pass
 
+    def get_films(self) -> list[Film]:
+        return sorted(list({session.film for session in self.sessions}), key=lambda x: x.name)
+
+    def get_watchlist(self) -> list[Film]:
+        return [film for film in self.get_films() if film.watchlist]
+
     def get_formatted_films(self) -> str:
-        films = sorted(list({session.film for session in self.sessions}), key=lambda x: x.name)
         lines = []
-        watchlist_count = 0
-        for film in films:
+        for film in self.get_films():
             formatted_film_elements = [film.name]
             if film.year:
                 formatted_film_elements.append(f"({film.year})")
             if film.watchlist:
                 formatted_film_elements.append("👀")
-                watchlist_count += 1
             lines.append(" ".join(formatted_film_elements))
-
-        lines.extend(("---", f"Watchlist count: {watchlist_count}"))
 
         return "\n".join(lines)
 
     def save_films_csv(self) -> None:
-        films = list({session.film for session in self.sessions})
-        films_dict_list = [{"title": film.name, "year": film.year} for film in films]
+        films_dict_list = [{"title": film.name, "year": film.year} for film in self.get_films()]
         with open(f"{self.short_name}.csv", "w") as file:
             dict_writer = csv.DictWriter(file, films_dict_list[0].keys())
             dict_writer.writeheader()
@@ -59,6 +60,7 @@ class Festival(ABC):
             lines.append(session.format())
 
         return "\n".join(lines)
+
     def shuffle(self, sessions: list[Session]) -> list[Session]:
         return random.sample(sessions, k=len(sessions))
     
