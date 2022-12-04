@@ -35,8 +35,8 @@ soup = BeautifulSoup(response.text, features="html.parser")
 
 venues_html = soup.find_all("div", attrs={"class": "venue-film-list"})
 
-def get_sessions():
-    sessions = []
+def get_sessions() -> list[Session]:
+    sessions: list[Session] = []
 
     for venue_html in venues_html:
         for movie in venue_html.find_all("div", attrs={"class": "venue-film"}):
