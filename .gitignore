@@ -133,3 +133,4 @@ dmypy.json
 *.ics
 *.csv
 config.yaml
+**/custom/*

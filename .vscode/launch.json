@@ -8,7 +8,8 @@
             "name": "FFF: Sessions",
             "type": "python",
             "request": "launch",
-            "program": "schedul.py",
+            "program": "cli.py",
+            "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["fff", "sessions"]
@@ -17,7 +18,8 @@
             "name": "FFF: Schedule",
             "type": "python",
             "request": "launch",
-            "program": "schedul.py",
+            "program": "cli.py",
+            "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["fff", "schedule"]
@@ -26,7 +28,8 @@
             "name": "NZIFF: Sessions",
             "type": "python",
             "request": "launch",
-            "program": "schedul.py",
+            "program": "cli.py",
+            "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["nziff", "sessions"]
@@ -35,7 +38,8 @@
             "name": "NZIFF: Schedule",
             "type": "python",
             "request": "launch",
-            "program": "schedul.py",
+            "program": "cli.py",
+            "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["nziff", "schedule"]

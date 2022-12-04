@@ -24,3 +24,5 @@ match ARGS.mode:
         selected_festival.save_films_csv()
     case "cal":
         selected_festival.get_schedule().save_calendar(f"{ARGS.festival}.ics")
+    case _:
+        pass
