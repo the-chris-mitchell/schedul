@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import random
+import csv
 
 import arrow  # type: ignore
 from tqdm import tqdm  # type: ignore
@@ -27,8 +28,16 @@ class Festival(ABC):
         pass
 
     def get_formatted_films(self) -> str:
-        film_names = list({session.film.name for session in self.sessions})
-        return "\n".join(film_names)
+        films = list({session.film for session in self.sessions})
+        return "\n".join([f"{film.name} {'(' + str(film.year) + ')' if film.year != None else ''}" for film in films])
+
+    def save_films_csv(self) -> None:
+        films = list({session.film for session in self.sessions})
+        films_dict_list = [{"title": film.name, "year": film.year} for film in films]
+        with open(f"{self.short_name}.csv", "w") as file:
+            dict_writer = csv.DictWriter(file, films_dict_list[0].keys())
+            dict_writer.writeheader()
+            dict_writer.writerows(films_dict_list)
 
     def get_formatted_sessions(self) -> str:
         lines: list[str] = []
