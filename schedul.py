@@ -30,8 +30,11 @@ schema = Map({
     Optional("booked-sessions", drop_if_none=False): Seq(Str()) | EmptyList() | EmptyNone()
 })
 
-with open("config.yaml", "r") as file:
-    config = load(file.read(), schema).data
+try:
+    with open("config.yaml", "r") as file:
+        config = load(file.read(), schema).data
+except FileNotFoundError:
+    raise SystemExit("config.yaml missing. Copy from config.yaml.example and make your changes.")
 
 
 MAX_SESSIONS: int = config["max-sessions"]
