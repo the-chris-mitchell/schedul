@@ -14,7 +14,7 @@ from models.schedule import Schedule, get_schedule
 festivals = get_festivals()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("mode", choices=['print', 'calendar'], help="What mode to run")
+parser.add_argument("mode", choices=['print', 'cal'], help="What mode to run")
 parser.add_argument("festival", choices=[festival.short_name for festival in festivals], help="Specify Festival")
 args = parser.parse_args()
 
@@ -67,5 +67,5 @@ schedule = get_schedule(options, selected_festival.sessions, selected_festival.f
 match args.mode:
     case "print":
         print(schedule.get_formatted())
-    case "calendar":
+    case "cal":
         schedule.save_calendar(f"{args.festival}.ics")
