@@ -1,6 +1,8 @@
 from datetime import date, datetime, time, timedelta
 from enum import Enum
 
+from enums import DayBucket, TimeBucket
+
 
 class Film:
     def __init__(self, name: str, runtime: timedelta):
@@ -56,13 +58,19 @@ class Session:
         else:
             return TimeBucket.NONE
 
+class Preference:
+    def __init__(self, time_bucket: TimeBucket=None, day_bucket: DayBucket=None, date: date=None, venue: Venue = None):
+        self.day_bucket = day_bucket
+        self.time_bucket = time_bucket
+        self.date = date
+        self.venue = venue
+
 class Schedule:
     def __init__(self):
         self.sessions: list[Session] = []
     
-    def calculate_score(self, preferences):
+    def calculate_score(self, preferences: list[Preference]):
         score = 0
-        preference: Preference
         for position, preference in enumerate(preferences, start=1):
             position_score = 0
             if preference.date:
@@ -77,23 +85,3 @@ class Schedule:
             score += position_score / position
 
         return score
-        
-
-class TimeBucket(Enum):
-    NONE = 0
-    MORNING = 1
-    AFTERNOON = 2
-    EVENING = 3
-
-class DayBucket(Enum):
-    NONE = 0
-    WEEKEND = 1
-    WEEKDAY = 2
-    FRIDAY = 3
-
-class Preference:
-    def __init__(self, time_bucket: TimeBucket=None, day_bucket: DayBucket=None, date: date=None, venue: Venue = None):
-        self.day_bucket = day_bucket
-        self.time_bucket = time_bucket
-        self.date = date
-        self.venue = venue
