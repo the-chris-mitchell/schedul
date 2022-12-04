@@ -4,8 +4,11 @@ from datetime import timedelta
 import requests_cache
 from bs4 import BeautifulSoup # type: ignore
 import arrow
+from models.film import Film
+from models.session import Session
+from models.venue import Venue
 
-from models import Film, Session, Venue
+
 
 
 URL = "https://www.frenchfilmfestival.co.nz/locations/Wellington"
@@ -44,7 +47,7 @@ def get_sessions() -> list[Session]:
                 movie.find("h3").find("a").text,
                 timedelta(minutes=int(movie.find("span", attrs={"class": "film-runtime"}).text.split(" ")[0]))
             )
-            
+
             venue_name = venue_html.find("h2").text
 
             if film.name not in WATCHLIST:
@@ -82,8 +85,9 @@ def get_sessions() -> list[Session]:
                 else:
                     venue = Venue(venue_name)
 
-                session_date = re.search("(.+)\|(.+m)", session_html.text).group(1).strip()
-                session_time = re.search("(.+)\|(.+m)", session_html.text).group(2).strip().replace(".", ":")
+                session_date = re.search("(.+)\|(.+m)", session_html.text)[1].strip()
+                session_time = re.search("(.+)\|(.+m)", session_html.text)[2].strip().replace(".", ":")
+
                 session = Session(
                     film,
                     venue,

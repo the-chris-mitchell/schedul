@@ -1,7 +1,9 @@
 from datetime import timedelta
 import random
 from tqdm import tqdm # type: ignore
-from models import Options, Schedule, Session
+from models.options import Options
+from models.schedule import Schedule
+from models.session import Session
 
 
 def valid_session(session: Session, schedule: Schedule, options: Options):
@@ -21,8 +23,7 @@ def get_schedule(options: Options, sessions: list[Session], festival: str) -> Sc
 
     all_schedules: list[Schedule] = []
 
-    for x in tqdm(range(options.iterations)):
-
+    for _ in tqdm(range(options.iterations)):
         current_schedule = Schedule(festival)
 
         booked_sessions = [session for session in sessions if session.link in options.booked_links]

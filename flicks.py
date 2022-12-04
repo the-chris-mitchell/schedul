@@ -2,12 +2,15 @@ from datetime import timedelta
 from dateutil import parser # type: ignore
 
 from clients import get_cached_soup, get_selenium_soup
+from models.film import Film
+from models.session import Session
+from models.venue import Venue
 
-from models import Film, Session, Venue
+
 
 
 BASE_URL = "https://www.flicks.co.nz"
-VENUES_URL = BASE_URL + "/cinemas/wellington/"
+VENUES_URL = f"{BASE_URL}/cinemas/wellington/"
 
 
 soup = get_cached_soup(VENUES_URL, "flicks", timedelta(days=1))
