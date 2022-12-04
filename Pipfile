@@ -18,6 +18,7 @@ strictyaml = "*"
 fastapi = "*"
 pydantic = "*"
 sqlmodel = "*"
+packaging = "*"
 
 [dev-packages]
 pandas = "*"

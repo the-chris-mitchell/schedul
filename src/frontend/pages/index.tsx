@@ -15,7 +15,7 @@ export default function Home({}) {
       </Head>
 
       <main>
-        <GetSchedule/>
+        <GetFestivals/>
       </main>
     </div>
   );
