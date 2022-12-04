@@ -2,8 +2,8 @@ import re
 from datetime import timedelta
 
 import requests_cache
-from bs4 import BeautifulSoup
-from dateutil import parser
+from bs4 import BeautifulSoup # type: ignore
+from dateutil import parser # type: ignore
 
 from models import Film, Session, Venue
 
