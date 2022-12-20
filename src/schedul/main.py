@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn # type: ignore
+import uvicorn
 from clients.sql import create_db_and_tables
 
 from routers import films, screenings, venues, festivals

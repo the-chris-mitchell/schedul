@@ -1,5 +1,4 @@
 from models.film import Film
-from utils.config import CONFIG
 from sqlmodel import Session, select
 from clients.sql import engine
 
@@ -19,4 +18,5 @@ def create_film_if_required(name: str, runtime:int, year: int) -> Film:
         return query or create_film(name=name, runtime=runtime, year=year)
 
 def in_watchlist(film: Film) -> bool:
-    return film.name in CONFIG.watchlist
+    #todo: add logic
+    return True

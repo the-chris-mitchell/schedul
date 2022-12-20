@@ -41,7 +41,7 @@ class Festival(ABC):
                 full_name=self.full_name,
                 short_name=self.short_name
             )
-            screening = create_screening_if_required(
+            create_screening_if_required(
                 start_time=screening.screening_start_time,
                 end_time=screening.screening_start_time + timedelta(minutes=film.runtime),
                 link=screening.screening_link,

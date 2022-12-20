@@ -3,8 +3,8 @@ from datetime import timedelta
 from requests import Response
 
 import requests_cache
-from bs4 import BeautifulSoup # type: ignore
-from requests_html import HTMLSession # type: ignore
+from bs4 import BeautifulSoup
+from requests_html import HTMLSession
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By

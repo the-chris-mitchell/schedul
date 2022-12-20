@@ -131,9 +131,12 @@ dmypy.json
 # System
 .DS_Store
 
-*.sqlite
+# IDE
+.vscode
 
+# Project Specific
+*.sqlite
 *.ics
 *.csv
-config.yaml
 **/custom/*
+!**/custom/example*
