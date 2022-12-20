@@ -49,3 +49,4 @@ class Festival(ABC):
                 venue_id=venue.id,
                 festival_id=festival.id
             )
+        print(f"Loaded {len(self.film_screenings)} screening(s) into DB")
