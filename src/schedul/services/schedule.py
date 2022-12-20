@@ -10,7 +10,7 @@ from services.film import in_watchlist
 from services.screening import get_day_bucket, get_time_bucket
 
 
-def generate_schedule(screenings: list[Screening]) -> list[str]:
+def generate_schedule(screenings: list[Screening]) -> list[Screening]:
     all_schedules: list[list[Screening]] = []
     watchlist_sessions = [screening for screening in screenings if in_watchlist(screening.film)]
     non_watchlist_sessions = [screening for screening in screenings if not in_watchlist(screening.film)]
@@ -24,7 +24,7 @@ def generate_schedule(screenings: list[Screening]) -> list[str]:
     one_of_many_watchlist_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_watchlist_films]
 
     # booked_sessions = [screening for screening in screenings if screening.id in CONFIG.booked_sessions]
-    booked_sessions= []
+    booked_sessions: list[Screening] = []
 
     # for session in booked_sessions:
     #     session.book()
@@ -59,8 +59,7 @@ def generate_schedule(screenings: list[Screening]) -> list[str]:
 
     best_schedule: list[Screening] = sorted(all_schedules, key=lambda item: calculate_score(item), reverse=True)[0]
     
-    best_schedule_sorted = sorted(best_schedule, key=lambda x: x.start_time)
-    return [formatted(screening) for screening in best_schedule_sorted]
+    return sorted(best_schedule, key=lambda x: x.start_time)
 
 def shuffle(screenings: list[Screening]) -> list[Screening]:
     return random.sample(screenings, k=len(screenings))

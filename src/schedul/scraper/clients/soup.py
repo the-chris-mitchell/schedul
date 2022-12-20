@@ -8,7 +8,7 @@ from requests_html import HTMLSession
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager # type: ignore
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def get_cached_soup(url: str, cache_name: str, expiry: timedelta | int = -1) -> BeautifulSoup:
@@ -18,7 +18,7 @@ def get_cached_soup(url: str, cache_name: str, expiry: timedelta | int = -1) -> 
 
 def get_rendered_soup(url: str) -> BeautifulSoup:
     session = HTMLSession()
-    response: Response = session.get(url)
+    response = session.get(url)
     response.html.render(timeout=60)
     return BeautifulSoup(response.html.raw_html, features="html.parser")
 
