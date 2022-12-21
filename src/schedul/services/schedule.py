@@ -12,16 +12,34 @@ from services.screening import get_day_bucket, get_time_bucket
 
 def generate_schedule(screenings: list[Screening]) -> list[Screening]:
     all_schedules: list[list[Screening]] = []
-    watchlist_sessions = [screening for screening in screenings if in_watchlist(screening.film)]
-    non_watchlist_sessions = [screening for screening in screenings if not in_watchlist(screening.film)]
+    watchlist_sessions = [
+        screening for screening in screenings if in_watchlist(screening.film)
+    ]
+    non_watchlist_sessions = [
+        screening for screening in screenings if not in_watchlist(screening.film)
+    ]
 
-    sessions_per_watchlist_film = Counter(session.film.name for session in watchlist_sessions)
+    sessions_per_watchlist_film = Counter(
+        session.film.name for session in watchlist_sessions
+    )
 
-    single_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value == 1}
-    one_off_watchlist_sessions = [session for session in watchlist_sessions if session.film.name in single_session_watchlist_films]
+    single_session_watchlist_films = {
+        key for key, value in sessions_per_watchlist_film.items() if value == 1
+    }
+    one_off_watchlist_sessions = [
+        session
+        for session in watchlist_sessions
+        if session.film.name in single_session_watchlist_films
+    ]
 
-    multi_session_watchlist_films = {key for key, value in sessions_per_watchlist_film.items() if value > 1}
-    one_of_many_watchlist_sessions = [session for session in watchlist_sessions if session.film.name in multi_session_watchlist_films]
+    multi_session_watchlist_films = {
+        key for key, value in sessions_per_watchlist_film.items() if value > 1
+    }
+    one_of_many_watchlist_sessions = [
+        session
+        for session in watchlist_sessions
+        if session.film.name in multi_session_watchlist_films
+    ]
 
     # booked_sessions = [screening for screening in screenings if screening.id in CONFIG.booked_sessions]
     booked_sessions: list[Screening] = []
@@ -36,7 +54,9 @@ def generate_schedule(screenings: list[Screening]) -> list[Screening]:
 
         current_schedule.extend(booked_sessions)
 
-        shuffled_sessions = shuffle(one_off_watchlist_sessions) + shuffle(one_of_many_watchlist_sessions)# + shuffle(non_watchlist_sessions)
+        shuffled_sessions = shuffle(one_off_watchlist_sessions) + shuffle(
+            one_of_many_watchlist_sessions
+        )  # + shuffle(non_watchlist_sessions)
 
         # for preference in CONFIG.preferences:
         #     for session in shuffled_sessions:
@@ -59,12 +79,16 @@ def generate_schedule(screenings: list[Screening]) -> list[Screening]:
 
         all_schedules.append(current_schedule)
 
-    best_schedule: list[Screening] = sorted(all_schedules, key=lambda item: calculate_score(item), reverse=True)[0]
-    
+    best_schedule: list[Screening] = sorted(
+        all_schedules, key=lambda item: calculate_score(item), reverse=True
+    )[0]
+
     return sorted(best_schedule, key=lambda x: x.start_time)
+
 
 def shuffle(screenings: list[Screening]) -> list[Screening]:
     return random.sample(screenings, k=len(screenings))
+
 
 def calculate_score(screenings: list[Screening]) -> float:
     score: float = 0
@@ -83,6 +107,7 @@ def calculate_score(screenings: list[Screening]) -> float:
 
     return score
 
+
 def should_add(screening: Screening, schedule: list[Screening]) -> bool:
     # if arrow.get(screening.start_time) < arrow.utcnow():
     #     return False
@@ -98,11 +123,14 @@ def should_add(screening: Screening, schedule: list[Screening]) -> bool:
 
 
 def start_time_formatted(screening: Screening) -> str:
-    return datetime.fromisoformat(str(screening.start_time)).strftime(f"%a {get_time_bucket(screening.start_time).name.capitalize()} (%d/%m) %I:%M%p")
+    return datetime.fromisoformat(str(screening.start_time)).strftime(
+        f"%a {get_time_bucket(screening.start_time).name.capitalize()} (%d/%m) %I:%M%p"
+    )
 
 
 def end_time_formatted(screening: Screening) -> str:
     return datetime.fromisoformat(str(screening.end_time)).strftime("%I:%M%p")
+
 
 # def get_booked_schedule(self) -> Schedule:
 #     booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]

@@ -16,9 +16,11 @@ def get_venue(*, session: Session = Depends(get_session), venue_id: int):
     else:
         raise HTTPException(status_code=404, detail="Venue not found")
 
+
 @router.get("/venues", response_model=list[VenueRead])
 def get_films(*, session: Session = Depends(get_session)):
     return session.exec(select(Venue)).all()
+
 
 @router.post("/venues", response_model=VenueRead, status_code=201)
 def create_venue(*, session: Session = Depends(get_session), venue: VenueCreate):
@@ -27,6 +29,7 @@ def create_venue(*, session: Session = Depends(get_session), venue: VenueCreate)
     session.commit()
     session.refresh(db_venue)
     return db_venue
+
 
 @router.delete("/venues/{venue_id}")
 def delete_venue(*, session: Session = Depends(get_session), venue_id: int):

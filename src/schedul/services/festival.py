@@ -5,19 +5,22 @@ from models.festival import Festival
 
 def create_festival(full_name: str, short_name: str) -> Festival:
     with Session(engine) as session:
-        db_festival = Festival(full_name=full_name,short_name=short_name)
+        db_festival = Festival(full_name=full_name, short_name=short_name)
         session.add(db_festival)
         session.commit()
         session.refresh(db_festival)
         return db_festival
 
+
 def create_festival_if_required(full_name: str, short_name: str) -> Festival:
     with Session(engine) as session:
-        query = session.exec(select(Festival).where(Festival.short_name == short_name)).first()
-        return query or create_festival(full_name=full_name,short_name=short_name)
+        query = session.exec(
+            select(Festival).where(Festival.short_name == short_name)
+        ).first()
+        return query or create_festival(full_name=full_name, short_name=short_name)
 
 
-# class Festival(ABC, Base):      
+# class Festival(ABC, Base):
 #     @property
 #     @abstractmethod
 #     def full_name(self) -> str:
@@ -75,7 +78,7 @@ def create_festival_if_required(full_name: str, short_name: str) -> Festival:
 #         schedule = Schedule()
 #         schedule.sessions.extend(booked_sessions)
 #         return schedule
-    
+
 #     def get_schedule(self) -> Schedule:
 
 #         all_schedules: list[Schedule] = []

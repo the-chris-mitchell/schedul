@@ -8,7 +8,6 @@ from models.film import Film
 from models.venue import Venue
 
 
-
 class ScreeningBase(SQLModel):
     start_time: datetime
     end_time: datetime
@@ -17,14 +16,17 @@ class ScreeningBase(SQLModel):
     venue_id: int = Field(foreign_key="venue.id")
     festival_id: int = Field(foreign_key="festival.id")
 
+
 class Screening(ScreeningBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     film: Film = Relationship()
     venue: Venue = Relationship()
     festival: Festival = Relationship()
 
+
 class ScreeningCreate(ScreeningBase):
     pass
+
 
 class ScreeningRead(ScreeningBase):
     id: int

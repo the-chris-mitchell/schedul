@@ -16,9 +16,11 @@ def get_film(*, session: Session = Depends(get_session), film_id: int):
     else:
         raise HTTPException(status_code=404, detail="Film not found")
 
+
 @router.get("/films", response_model=list[FilmRead])
 def get_films(*, session: Session = Depends(get_session)):
     return session.exec(select(Film)).all()
+
 
 @router.post("/films", response_model=FilmRead, status_code=201)
 def create_film(*, session: Session = Depends(get_session), film: FilmCreate):
@@ -27,6 +29,7 @@ def create_film(*, session: Session = Depends(get_session), film: FilmCreate):
     session.commit()
     session.refresh(db_film)
     return db_film
+
 
 @router.delete("/films/{film_id}")
 def delete_film(*, session: Session = Depends(get_session), film_id: int):

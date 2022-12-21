@@ -12,6 +12,7 @@ def create_venue(name: str) -> Venue:
         session.refresh(db_venue)
         return db_venue
 
+
 def create_venue_if_required(name: str) -> Venue:
     with Session(engine) as session:
         query = session.exec(select(Venue).where(Venue.name == name)).first()

@@ -7,6 +7,7 @@ class TimeBucket(Enum):
     AFTERNOON = "afternoon"
     EVENING = "evening"
 
+
 class DayBucket(Enum):
     NONE = "none"
     WEEKEND = "weekend"

@@ -6,15 +6,9 @@ from clients.sql import create_db_and_tables
 from routers import films, screenings, venues, festivals
 
 
-app: FastAPI = FastAPI(
-    title="Schedul",
-    docs_url=None,
-    redoc_url="/docs"
-)
+app: FastAPI = FastAPI(title="Schedul", docs_url=None, redoc_url="/docs")
 
-origins: list[str] = [
-    "http://localhost:3000"
-]
+origins: list[str] = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +17,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.on_event("startup")
 def on_startup() -> None:

@@ -11,16 +11,22 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def get_cached_soup(url: str, cache_name: str, expiry: timedelta | int = -1) -> BeautifulSoup:
-    requests_session = requests_cache.CachedSession(f"../../.cache/{cache_name}", expire_after=expiry)
+def get_cached_soup(
+    url: str, cache_name: str, expiry: timedelta | int = -1
+) -> BeautifulSoup:
+    requests_session = requests_cache.CachedSession(
+        f"../../.cache/{cache_name}", expire_after=expiry
+    )
     html = requests_session.get(url).text
     return BeautifulSoup(html, features="html.parser")
+
 
 def get_rendered_soup(url: str) -> BeautifulSoup:
     session = HTMLSession()
     response = session.get(url)
     response.html.render(timeout=60)
     return BeautifulSoup(response.html.raw_html, features="html.parser")
+
 
 def get_selenium_soup(url: str) -> BeautifulSoup:
     options = Options()
