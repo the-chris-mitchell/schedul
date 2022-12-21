@@ -29,7 +29,9 @@ def generate_schedule(screenings: list[Screening]) -> list[Screening]:
     # for session in booked_sessions:
     #     session.book()
 
-    for _ in tqdm(range(CONFIG.iterations), leave=False, unit="schedule"): # type: ignore
+    iterations: int = 1
+
+    for _ in tqdm(range(iterations), leave=False, unit="schedule"):
         current_schedule: list[Screening] = []
 
         current_schedule.extend(booked_sessions)

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from sqlmodel import select # type: ignore
+from sqlmodel import select
 from clients.sql import get_session
 
 from models.festival import FestivalCreate, FestivalRead, Festival, FestivalUpdate

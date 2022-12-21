@@ -3,7 +3,7 @@ from datetime import datetime, time
 from sqlmodel import Session
 from models.enums import DayBucket, TimeBucket
 from models.screening import Screening
-from sqlmodel import select # type: ignore
+from sqlmodel import select
 from clients.sql import engine
 
 

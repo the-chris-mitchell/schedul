@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel
-from sqlmodel import Field  # type: ignore
+from sqlmodel import Field
 from typing import Optional
 
 class FilmBase(SQLModel):

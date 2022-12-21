@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Session, create_engine
-from sqlmodel import select # type: ignore
+
 
 engine = create_engine("sqlite:///db.sqlite")
 

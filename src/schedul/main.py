@@ -6,13 +6,13 @@ from clients.sql import create_db_and_tables
 from routers import films, screenings, venues, festivals
 
 
-app = FastAPI(
+app: FastAPI = FastAPI(
     title="Schedul",
     docs_url=None,
     redoc_url="/docs"
 )
 
-origins = [
+origins: list[str] = [
     "http://localhost:3000"
 ]
 
@@ -24,8 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup") # type: ignore
-def on_startup():
+@app.on_event("startup")
+def on_startup() -> None:
     create_db_and_tables()
 
 
@@ -35,4 +35,4 @@ app.include_router(venues.router)
 app.include_router(festivals.router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000) # type: ignore
+    uvicorn.run(app, host="0.0.0.0", port=8000)

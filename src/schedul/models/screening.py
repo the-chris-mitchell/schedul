@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlmodel import SQLModel
-from sqlmodel import Field, Relationship  # type: ignore
+from sqlmodel import Field, Relationship
 from typing import Optional
 from models.festival import Festival
 

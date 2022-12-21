@@ -1,6 +1,6 @@
 import datetime
 from sqlmodel import SQLModel
-from sqlmodel import Field  # type: ignore
+from sqlmodel import Field
 from typing import Optional
 
 class FestivalBase(SQLModel):
@@ -20,8 +20,8 @@ class FestivalRead(FestivalBase):
     id: int
 
 class FestivalUpdate(FestivalBase):
-    full_name: Optional[str] = None
-    short_name: Optional[str] = None
+    full_name: Optional[str] = None # type: ignore
+    short_name: Optional[str] = None # type: ignore
     max_sessions: Optional[int] = None
     buffer_time: Optional[int] = None
     excluded_dates: Optional[list[datetime.date]] = None

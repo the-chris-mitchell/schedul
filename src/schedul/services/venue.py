@@ -1,5 +1,5 @@
 from sqlmodel import Session
-from sqlmodel import select # type: ignore
+from sqlmodel import select
 from clients.sql import engine
 from models.venue import Venue
 
