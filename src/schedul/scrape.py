@@ -1,6 +1,16 @@
+import argparse
+
 from scraper.festivals import FESTIVALS
 from scraper.festivals.base import Festival
-from utils.args import ARGS
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "festival",
+    choices=[festival.short_name for festival in FESTIVALS],
+    help="Select a festival",
+)
+ARGS = parser.parse_args()
+
 
 selected_festival: Festival = [
     festival for festival in FESTIVALS if festival.short_name == ARGS.festival
