@@ -1,6 +1,6 @@
 import random
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import arrow
 from models.screening import Screening
