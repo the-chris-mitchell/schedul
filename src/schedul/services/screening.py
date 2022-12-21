@@ -1,10 +1,9 @@
 from datetime import datetime, time
 
-from sqlmodel import Session
+from clients.sql import engine
 from models.enums import DayBucket, TimeBucket
 from models.screening import Screening
-from sqlmodel import select
-from clients.sql import engine
+from sqlmodel import Session, select
 
 
 def create_screening(

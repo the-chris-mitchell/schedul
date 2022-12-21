@@ -1,11 +1,10 @@
 from datetime import datetime
-from sqlmodel import SQLModel
-from sqlmodel import Field, Relationship
 from typing import Optional
-from models.festival import Festival
 
+from models.festival import Festival
 from models.film import Film
 from models.venue import Venue
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class ScreeningBase(SQLModel):

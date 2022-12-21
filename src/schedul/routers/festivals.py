@@ -1,12 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
-from sqlmodel import select
 from clients.sql import get_session
-
-from models.festival import FestivalCreate, FestivalRead, Festival, FestivalUpdate
+from fastapi import APIRouter, Depends, HTTPException
+from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.screening import Screening
 from services.schedule import generate_schedule
-
+from sqlmodel import Session, select
 
 router = APIRouter(tags=["Festivals"])
 

@@ -1,13 +1,12 @@
-from collections import Counter
-from datetime import timedelta, datetime
 import random
+from collections import Counter
+from datetime import datetime, timedelta
 
 import arrow
-from tqdm import tqdm
-
 from models.screening import Screening
 from services.film import in_watchlist
 from services.screening import get_day_bucket, get_time_bucket
+from tqdm import tqdm
 
 
 def generate_schedule(screenings: list[Screening]) -> list[Screening]:

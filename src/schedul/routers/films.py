@@ -1,10 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
-from sqlmodel import select
 from clients.sql import get_session
-
-from models.film import FilmCreate, FilmRead, Film
-
+from fastapi import APIRouter, Depends, HTTPException
+from models.film import Film, FilmCreate, FilmRead
+from sqlmodel import Session, select
 
 router = APIRouter(tags=["Films"])
 

@@ -1,10 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
-from sqlmodel import select
 from clients.sql import get_session
-
-from models.venue import VenueCreate, VenueRead, Venue
-
+from fastapi import APIRouter, Depends, HTTPException
+from models.venue import Venue, VenueCreate, VenueRead
+from sqlmodel import Session, select
 
 router = APIRouter(tags=["Venues"])
 

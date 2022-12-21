@@ -1,7 +1,7 @@
 import datetime
-from sqlmodel import SQLModel
-from sqlmodel import Field
 from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
 class FestivalBase(SQLModel):

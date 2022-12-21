@@ -2,7 +2,6 @@ import os
 
 from scraper.festivals.base import Festival
 
-
 try:
     for module in os.listdir(f"{os.path.dirname(__file__)}/custom"):
         if module == "__init__.py" or module[-3:] != ".py":
