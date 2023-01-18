@@ -576,7 +576,7 @@
         },
         "urllib3": {
             "extras": [
-                "socks"
+
             ],
             "hashes": [
                 "sha256:076907bf8fd355cde77728471316625a4d2f7e713c125f51953bb5b3eecf4f72",
@@ -890,11 +890,18 @@
         },
         "types-beautifulsoup4": {
             "hashes": [
-                "sha256:c1f803367a2b07ad4fdac40ddbea557010dc4ddd1ee92d801f317eb02e2e3c72",
-                "sha256:d46be8f409ddccb6daaa9d118484185e70bcf552085c39c6d05b157cd1462e04"
+                "sha256:4994a3b5ce66467977d9ce65031f5e212f23af66941669a59f50a1801260d9db",
+                "sha256:dbeb2f82f2d79878107238ab50291361563ae5db99e198a68e91dbb4c0f37b3f"
             ],
             "index": "pypi",
-            "version": "==4.11.6.1"
+            "version": "==4.11.6.2"
+        },
+        "types-html5lib": {
+            "hashes": [
+                "sha256:18c34ce51eac062321b224365b3aee5b5cdc1613872ed8469c9c0c4ccd3e02e9",
+                "sha256:90eeffad04010bf67bcccf77b9cc6cf4783eec13cbd22ebbaaf20f24d5f2ca11"
+            ],
+            "version": "==1.1.11.10"
         },
         "types-requests": {
             "hashes": [
