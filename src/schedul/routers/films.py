@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from clients.sql import get_session
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from models.film import Film, FilmCreate, FilmRead
 from sqlmodel import Session, select
 
@@ -15,7 +17,14 @@ def get_film(*, session: Session = Depends(get_session), film_id: int):
 
 
 @router.get("/films", response_model=list[FilmRead])
-def get_films(*, session: Session = Depends(get_session)):
+def get_films(
+    *,
+    session: Session = Depends(get_session),
+    film_name: Annotated[str | None, Query(max_length=50)] = None,
+):
+    if film_name:
+        statement = select(Film).where(Film.name == film_name)
+        return session.exec(statement).all()
     return session.exec(select(Film)).all()
 
 
