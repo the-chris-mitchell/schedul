@@ -21,7 +21,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup() -> None:
     create_db_and_tables()
-    TestFest().create_resources()
+    TestFest().create_resources_dev()
 
 
 app.include_router(films.router)

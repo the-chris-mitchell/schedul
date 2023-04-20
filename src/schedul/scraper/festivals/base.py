@@ -26,7 +26,7 @@ class Festival(ABC):
     def scrape(self) -> None:
         pass
 
-    def create_resources(self) -> None:
+    def create_resources_dev(self) -> None:
         self.scrape()
         for screening in self.film_screenings:
             film = create_film_if_required(
