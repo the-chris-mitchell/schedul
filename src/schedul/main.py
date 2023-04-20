@@ -3,6 +3,7 @@ from clients.sql import create_db_and_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import festivals, films, screenings, venues
+from scraper.festivals.custom.example import TestFest
 
 app: FastAPI = FastAPI(title="Schedul", docs_url=None, redoc_url="/docs")
 
@@ -20,6 +21,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup() -> None:
     create_db_and_tables()
+    TestFest.create_resources()
 
 
 app.include_router(films.router)
