@@ -15,9 +15,9 @@ fastapi = "*"
 pydantic = "*"
 sqlmodel = "*"
 requests-html = "*"
+uvicorn = "*"
 
 [dev-packages]
-uvicorn = "*"
 mypy = "*"
 types-requests = "*"
 types-beautifulsoup4 = "*"
@@ -27,3 +27,7 @@ pre-commit = "*"
 
 [requires]
 python_version = "3.11"
+
+[scripts]
+serve = "uvicorn main:app --reload"
+scrape = "python scrape.py"

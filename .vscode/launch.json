@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Serve",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/schedul",
+            "console": "integratedTerminal",
+            "module": "uvicorn",
+            "args": ["main:app","--reload"]
+        },
+        {
             "name": "FFF: Sessions",
             "type": "python",
             "request": "launch",
