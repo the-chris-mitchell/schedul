@@ -5,6 +5,11 @@ from scraper.festivals.base import Festival
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    "env",
+    choices=["dev", "prod"],
+    help="Select an environment",
+)
+parser.add_argument(
     "festival",
     choices=[festival.short_name for festival in FESTIVALS],
     help="Select a festival",
@@ -17,4 +22,7 @@ selected_festival: Festival = [
 ][0]
 
 if __name__ == "__main__":
-    selected_festival.create_resources()
+    if ARGS.env == "dev":
+        selected_festival.create_resources_dev()
+    if ARGS.env == "prod":
+        selected_festival.create_resources_prod()
