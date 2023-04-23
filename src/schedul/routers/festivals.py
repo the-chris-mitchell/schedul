@@ -3,7 +3,6 @@ from typing import Annotated
 from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
-from models.film import Film
 from models.screening import Screening, ScreeningRead
 from services.schedule import generate_schedule
 from sqlmodel import Session, select
