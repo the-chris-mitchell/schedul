@@ -14,54 +14,22 @@
             "args": ["main:app","--reload"]
         },
         {
-            "name": "FFF: Sessions",
+            "name": "FFF23: Scrape Dev",
             "type": "python",
             "request": "launch",
-            "program": "cli.py",
+            "program": "scrape.py",
             "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": ["fff", "sessions"]
+            "args": ["dev", "fff23"]
         },
         {
-            "name": "FFF: Schedule",
+            "name": "FFF23: Scrape Prod",
             "type": "python",
             "request": "launch",
-            "program": "cli.py",
+            "program": "scrape.py",
             "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": ["fff", "schedule"]
-        },
-        {
-            "name": "NZIFF: Sessions",
-            "type": "python",
-            "request": "launch",
-            "program": "cli.py",
-            "cwd": "${workspaceFolder}/src/schedul",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": ["nziff", "sessions"]
-        },
-        {
-            "name": "NZIFF: Schedule",
-            "type": "python",
-            "request": "launch",
-            "program": "cli.py",
-            "cwd": "${workspaceFolder}/src/schedul",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": ["nziff", "schedule"]
-        },
-        {
-            "name": "IFF22: Sessions",
-            "type": "python",
-            "request": "launch",
-            "program": "cli.py",
-            "cwd": "${workspaceFolder}/src/schedul",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "args": ["iff22", "sessions"]
+            "args": ["prod", "fff23"]
         },
     ]
 }
