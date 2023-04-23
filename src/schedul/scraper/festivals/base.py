@@ -60,7 +60,7 @@ class Festival(ABC):
 
         film_ids = {}
         for film in {screening.film for screening in self.film_screenings}:
-            print(f"{film.name}", end=" ")
+            print(f"🎬 {film.name}", end=" ")
             check_film = httpx.get(
                 f"https://schedul-production.up.railway.app/films?film_name={urllib.parse.quote(film.name)}"
             )
@@ -75,7 +75,7 @@ class Festival(ABC):
 
         venue_ids = {}
         for venue in {screening.venue for screening in self.film_screenings}:
-            print(f"{venue.name}", end=" ")
+            print(f"🏠 {venue.name}", end=" ")
             check_venue = httpx.get(
                 f"https://schedul-production.up.railway.app/venues?venue_name={urllib.parse.quote(venue.name)}"
             )
@@ -89,6 +89,7 @@ class Festival(ABC):
             venue_ids[venue.name] = venue_response["id"]
             print("✅")
 
+        print(f"🎊 {self.full_name}", end=" ")
         check_festival = httpx.get(
             f"https://schedul-production.up.railway.app/festivals?festival_name={urllib.parse.quote(self.short_name)}"
         )
@@ -104,7 +105,7 @@ class Festival(ABC):
 
         for screening in self.film_screenings:
             print(
-                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time.strftime('%A %d %B %I:%M%p')})",
+                f"🎥 {screening.film.name} @ {screening.venue.name} ({screening.screening_start_time.strftime('%A %d %B %I:%M%p')})",
                 end=" ",
             )
             screening_payload = {
