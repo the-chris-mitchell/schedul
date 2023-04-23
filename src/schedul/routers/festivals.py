@@ -3,7 +3,8 @@ from typing import Annotated
 from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
-from models.screening import Screening
+from models.film import Film
+from models.screening import Screening, ScreeningRead
 from services.schedule import generate_schedule
 from sqlmodel import Session, select
 
@@ -81,7 +82,7 @@ def get_schedule(*, session: Session = Depends(get_session), festival_id: int):
         raise HTTPException(status_code=404, detail="Festival not found")
 
 
-@router.get("/festivals/{festival_id}/sessions", response_model=list[str])
+@router.get("/festivals/{festival_id}/sessions", response_model=list[ScreeningRead])
 def get_sessions(*, session: Session = Depends(get_session), festival_id: int):
     if session.get(Festival, festival_id):
         return session.exec(
