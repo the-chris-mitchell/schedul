@@ -79,3 +79,13 @@ def get_schedule(*, session: Session = Depends(get_session), festival_id: int):
         return generate_schedule(screenings)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
+
+
+@router.get("/festivals/{festival_id}/sessions", response_model=list[str])
+def get_sessions(*, session: Session = Depends(get_session), festival_id: int):
+    if session.get(Festival, festival_id):
+        return session.exec(
+            select(Screening).where(Screening.festival_id == festival_id)
+        ).all()
+    else:
+        raise HTTPException(status_code=404, detail="Festival not found")
