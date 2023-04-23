@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from clients.sql import get_session
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.screening import Screening
 from services.schedule import generate_schedule
@@ -17,8 +19,15 @@ def get_festival(*, session: Session = Depends(get_session), festival_id: int):
 
 
 @router.get("/festivals", response_model=list[FestivalRead])
-def get_festivals(*, session: Session = Depends(get_session)):
-    return session.exec(select(Festival)).all()
+def get_festivals(
+    *,
+    session: Session = Depends(get_session),
+    short_name: Annotated[str | None, Query(max_length=50)] = None,
+):
+    if short_name:
+        statement = select(Festival).where(Festival.short_name == short_name)
+        return session.exec(statement).all() or Response(status_code=204)
+    return session.exec(select(Festival)).all() or Response(status_code=204)
 
 
 @router.post("/festivals", response_model=FestivalRead, status_code=201)
