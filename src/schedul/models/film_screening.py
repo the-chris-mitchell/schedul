@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from models.film import FilmBase
+from models.venue import VenueBase
+
 
 @dataclass
 class FilmScreening:
-    film_name: str
-    film_runtime: int
-    film_year: int
-    venue_name: str
+    film: FilmBase
+    venue: VenueBase
     screening_start_time: datetime
     screening_link: str

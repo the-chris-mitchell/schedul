@@ -8,6 +8,9 @@ class FilmBase(SQLModel):
     runtime: int
     year: int
 
+    def __hash__(self):
+        return hash(str(self))
+
 
 class Film(FilmBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
