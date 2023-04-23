@@ -23,6 +23,7 @@ selected_festival: Festival = [
 
 if __name__ == "__main__":
     if ARGS.env == "dev":
+        print(f"Scraping: {selected_festival.full_name}")
         selected_festival.create_resources_dev()
     if ARGS.env == "prod":
         selected_festival.create_resources_prod()

@@ -17,8 +17,13 @@ def get_cached_soup(
     requests_session = requests_cache.CachedSession(
         f"../../.cache/{cache_name}", expire_after=expiry
     )
-    html = requests_session.get(url).text
-    return BeautifulSoup(html, features="html.parser")
+    print(f"Getting {url}: ", end="")
+    response = requests_session.get(url)
+    if response.from_cache:
+        print("Cache Hit")
+    else:
+        print("Response Received")
+    return BeautifulSoup(response.text, features="html.parser")
 
 
 def get_rendered_soup(url: str) -> BeautifulSoup:
