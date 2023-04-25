@@ -20,9 +20,9 @@ def get_cached_soup(
     print(f"Getting {url}: ", end="")
     response = requests_session.get(url)
     if response.from_cache:
-        print("Cache Hit")
+        print("Cache Hit 💾")
     else:
-        print("Response Received")
+        print("Response Received 🌐")
     return BeautifulSoup(response.text, features="html.parser")
 
 
