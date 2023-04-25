@@ -3,6 +3,7 @@ from typing import Annotated
 from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
+from models.preference import Preference
 from models.screening import Screening, ScreeningRead
 from services.schedule import generate_schedule
 from sqlmodel import Session, select
@@ -70,13 +71,18 @@ def delete_festival(*, session: Session = Depends(get_session), festival_id: int
         raise HTTPException(status_code=404, detail="Festival not found")
 
 
-@router.get("/festivals/{festival_id}/schedule", response_model=list[str])
-def get_schedule(*, session: Session = Depends(get_session), festival_id: int):
-    if session.get(Festival, festival_id):
+@router.post("/festivals/{festival_id}/schedule", response_model=list[Screening])
+def get_schedule(
+    *,
+    session: Session = Depends(get_session),
+    festival_id: int,
+    preferences: list[Preference],
+):
+    if festival := session.get(Festival, festival_id):
         screenings = session.exec(
             select(Screening).where(Screening.festival_id == festival_id)
         ).all()
-        return generate_schedule(screenings)
+        return generate_schedule(screenings, preferences, festival)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
 

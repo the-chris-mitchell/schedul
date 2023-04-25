@@ -7,9 +7,9 @@ from sqlmodel import Field, SQLModel
 class FestivalBase(SQLModel):
     full_name: str
     short_name: str
-    max_sessions: Optional[int] = 1
-    buffer_time: Optional[int] = 20
-    excluded_dates: Optional[list[datetime.date]]
+    max_sessions: int = 1
+    buffer_time: int = 20
+    excluded_dates: Optional[list[datetime.date]] = None
 
 
 class Festival(FestivalBase, table=True):
