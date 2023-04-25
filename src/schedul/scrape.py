@@ -1,5 +1,6 @@
 import argparse
 
+from clients.sql import create_db_and_tables
 from scraper.festivals import FESTIVALS
 from scraper.festivals.base import Festival
 
@@ -23,6 +24,7 @@ selected_festival: Festival = [
 
 if __name__ == "__main__":
     if ARGS.env == "dev":
+        create_db_and_tables()
         print(f"Scraping: {selected_festival.full_name}")
         selected_festival.create_resources_dev()
     if ARGS.env == "prod":
