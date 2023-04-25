@@ -59,9 +59,21 @@ def generate_schedule(
             one_of_many_watchlist_sessions
         )  # + shuffle(non_watchlist_sessions)
 
+        excluded_dates = [
+            preference.excluded_date
+            for preference in preferences
+            if preference.excluded_date
+        ]
+
+        source_sessions = [
+            session
+            for session in shuffled_sessions
+            if session.start_time.date() not in excluded_dates
+        ]
+
         # Step 1: Add sessions that match preferences
         for preference in preferences:
-            for session in shuffled_sessions:
+            for session in source_sessions:
                 if (
                     preference.day_bucket
                     and get_day_bucket(session.start_time) != preference.day_bucket
@@ -81,7 +93,7 @@ def generate_schedule(
                     current_schedule.append(session)
 
         # Step 2: Add leftover sessions
-        for session in shuffled_sessions:
+        for session in source_sessions:
             if should_add(session, current_schedule, festival):
                 current_schedule.append(session)
 
@@ -121,8 +133,6 @@ def should_add(
 ) -> bool:
     if arrow.get(screening.start_time) < arrow.utcnow():
         return False
-    # if screening.start_time.date() in festival.excluded_dates:
-    #     return False
     if any(entry.film.name == screening.film.name for entry in schedule):
         return False
     if any(
