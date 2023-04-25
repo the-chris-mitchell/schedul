@@ -71,7 +71,7 @@ def delete_festival(*, session: Session = Depends(get_session), festival_id: int
         raise HTTPException(status_code=404, detail="Festival not found")
 
 
-@router.post("/festivals/{festival_id}/schedule", response_model=list[Screening])
+@router.post("/festivals/{festival_id}/schedule", response_model=list[ScreeningRead])
 def get_schedule(
     *,
     session: Session = Depends(get_session),
