@@ -78,11 +78,11 @@ def get_schedule(
     festival_id: int,
     schedule_request: ScheduleRequest,
 ):
-    if festival := session.get(Festival, festival_id):
+    if session.get(Festival, festival_id):
         screenings = session.exec(
             select(Screening).where(Screening.festival_id == festival_id)
         ).all()
-        return generate_schedule(screenings, schedule_request, festival)
+        return generate_schedule(screenings, schedule_request, session)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
 

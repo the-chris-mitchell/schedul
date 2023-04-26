@@ -16,8 +16,3 @@ def create_film_if_required(name: str, runtime: int, year: int) -> Film:
     with Session(engine) as session:
         query = session.exec(select(Film).where(Film.name == name)).first()
         return query or create_film(name=name, runtime=runtime, year=year)
-
-
-def in_watchlist(film: Film) -> bool:
-    # todo: add logic
-    return True

@@ -16,3 +16,5 @@ class ScheduleRequest(BaseModel):
     max_daily_sessions: int = 1
     buffer_minutes: int = 30
     watchlist_only: bool = True
+    watchlist: list[str] = []
+    booked_session_ids: list[int] = []

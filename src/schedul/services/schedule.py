@@ -1,31 +1,40 @@
 import random
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import arrow
 from models.festival import Festival
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening
-from services.film import in_watchlist
 from services.screening import get_day_bucket, get_time_bucket
+from sqlmodel import Session, col, select
 from tqdm import tqdm
 
 
 def generate_schedule(
-    screenings: list[Screening], schedule_request: ScheduleRequest, festival: Festival
+    all_screenings: list[Screening], schedule_request: ScheduleRequest, session: Session
 ) -> list[Screening]:
-    all_schedules: list[list[Screening]] = []
+    available_screenings = [
+        session
+        for session in all_screenings
+        if session.start_time.date() not in schedule_request.excluded_dates
+    ]
     watchlist_screenings = [
-        screening for screening in screenings if in_watchlist(screening.film)
+        screening for screening in available_screenings if schedule_request.watchlist
     ]
     non_watchlist_screenings = [
-        screening for screening in screenings if not in_watchlist(screening.film)
+        screening
+        for screening in available_screenings
+        if not schedule_request.watchlist
     ]
+
+    selected_screenings = watchlist_screenings
+    if not schedule_request.watchlist_only:
+        selected_screenings.extend(non_watchlist_screenings)
 
     screenings_per_watchlist_film = Counter(
         session.film.name for session in watchlist_screenings
     )
-
     single_session_watchlist_films = {
         key for key, value in screenings_per_watchlist_film.items() if value == 1
     }
@@ -35,39 +44,21 @@ def generate_schedule(
         if session.film.name in single_session_watchlist_films
     ]
 
-    multi_session_watchlist_films = {
-        key for key, value in screenings_per_watchlist_film.items() if value > 1
-    }
-    one_of_many_watchlist_screenings = [
-        session
-        for session in watchlist_screenings
-        if session.film.name in multi_session_watchlist_films
-    ]
-
-    # todo
-    booked_screenings: list[Screening] = []
-    # for session in booked_screenings:
-    #     session.book()
+    booked_screenings = session.exec(
+        select(Screening).where(
+            col(Screening.id).in_(schedule_request.booked_session_ids)
+        )
+    ).all()
 
     schedule: list[Screening] = booked_screenings
 
-    shuffled_screenings = shuffle(one_off_watchlist_screenings) + shuffle(
-        one_of_many_watchlist_screenings
-    )
-
-    if not schedule_request.watchlist_only:
-        shuffled_screenings.extend(shuffle(non_watchlist_screenings))
-
-    source_screenings = [
-        session
-        for session in shuffled_screenings
-        if session.start_time.date() not in schedule_request.excluded_dates
-    ]
-
     # 1. Score the screenings
     scored_screenings = []
-    for screening in source_screenings:
+    for screening in selected_screenings:
         scored_screening = ScoredScreening(screening=screening)
+
+        if screening in one_off_watchlist_screenings:
+            scored_screening.score = scored_screening.score + 3
 
         for position, venue_name in enumerate(schedule_request.venues, start=0):
             if screening.venue.name == venue_name:
@@ -135,22 +126,3 @@ def should_add(
         )
         < schedule_request.max_daily_sessions
     )
-
-
-def start_time_formatted(screening: Screening) -> str:
-    return datetime.fromisoformat(str(screening.start_time)).strftime(
-        f"%a {get_time_bucket(screening.start_time).name.capitalize()} (%d/%m) %I:%M%p"
-    )
-
-
-def end_time_formatted(screening: Screening) -> str:
-    return datetime.fromisoformat(str(screening.end_time)).strftime("%I:%M%p")
-
-
-# def get_booked_schedule(self) -> Schedule:
-#     booked_sessions = [session for session in self.sessions if session.id in CONFIG.booked_sessions]
-#     for session in booked_sessions:
-#         session.book()
-#     schedule = Schedule()
-#     schedule.sessions.extend(booked_sessions)
-#     return schedule
