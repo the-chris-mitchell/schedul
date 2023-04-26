@@ -17,6 +17,7 @@ sqlmodel = "*"
 requests-html = "*"
 uvicorn = "*"
 httpx = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 mypy = "*"
