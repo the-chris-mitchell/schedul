@@ -19,13 +19,16 @@ def generate_schedule(
         for session in all_screenings
         if session.start_time.date() not in schedule_request.excluded_dates
     ]
+
     watchlist_screenings = [
-        screening for screening in available_screenings if schedule_request.watchlist
+        screening
+        for screening in available_screenings
+        if screening.film.name in schedule_request.watchlist
     ]
     non_watchlist_screenings = [
         screening
         for screening in available_screenings
-        if not schedule_request.watchlist
+        if screening.film.name not in schedule_request.watchlist
     ]
 
     selected_screenings = watchlist_screenings
