@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
 from models.festival import Festival
 from models.film import Film
 from models.venue import Venue
+from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -31,3 +33,9 @@ class ScreeningRead(ScreeningBase):
     id: int
     film: Film
     venue: Venue
+
+
+@dataclass
+class ScoredScreening:
+    screening: Screening
+    score: int = 0
