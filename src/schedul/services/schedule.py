@@ -63,6 +63,12 @@ def generate_schedule(
         if screening in one_off_watchlist_screenings:
             scored_screening.score = scored_screening.score + 3
 
+        if (
+            not schedule_request.watchlist_only
+            and screening.film.name in schedule_request.watchlist
+        ):
+            scored_screening.score = scored_screening.score + 3
+
         for position, venue_name in enumerate(schedule_request.venues, start=0):
             if screening.venue.name == venue_name:
                 scored_screening.score = scored_screening.score + (
