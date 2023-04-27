@@ -9,5 +9,5 @@ from models.venue import VenueBase
 class FilmScreening:
     film: FilmBase
     venue: VenueBase
-    screening_start_time: datetime
+    screening_start_time_utc: datetime
     screening_link: str

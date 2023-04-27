@@ -32,7 +32,7 @@ class Festival(ABC):
         self.scrape()
         for screening in self.film_screenings:
             print(
-                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time.strftime('%A %d %B %I:%M%p')})",
+                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')})",
                 end=" ",
             )
             film = create_film_if_required(
@@ -45,8 +45,8 @@ class Festival(ABC):
                 full_name=self.full_name, short_name=self.short_name
             )
             create_screening_if_required(
-                start_time=screening.screening_start_time,
-                end_time=screening.screening_start_time
+                start_time_utc=screening.screening_start_time_utc,
+                end_time_utc=screening.screening_start_time_utc
                 + timedelta(minutes=film.runtime),
                 link=screening.screening_link,
                 film_id=film.id,  # type: ignore
@@ -105,13 +105,13 @@ class Festival(ABC):
 
         for screening in self.film_screenings:
             print(
-                f"🎥 {screening.film.name} @ {screening.venue.name} ({screening.screening_start_time.strftime('%A %d %B %I:%M%p')})",
+                f"🎥 {screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')})",
                 end=" ",
             )
             screening_payload = {
-                "start_time": screening.screening_start_time.isoformat(),
+                "start_time": screening.screening_start_time_utc.isoformat(),
                 "end_time": (
-                    screening.screening_start_time
+                    screening.screening_start_time_utc
                     + timedelta(minutes=screening.film.runtime)
                 ).isoformat(),
                 "link": screening.screening_link,

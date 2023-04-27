@@ -18,3 +18,4 @@ class ScheduleRequest(BaseModel):
     watchlist_only: bool = True
     watchlist: list[str] = []
     booked_session_ids: list[int] = []
+    time_zone: str

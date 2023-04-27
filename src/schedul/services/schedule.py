@@ -15,7 +15,7 @@ def generate_schedule(
     available_screenings = [
         session
         for session in all_screenings
-        if session.start_time.date() not in schedule_request.excluded_dates
+        if session.start_time_utc.date() not in schedule_request.excluded_dates
     ]
 
     watchlist_screenings = [
@@ -53,8 +53,8 @@ def generate_schedule(
 
     schedule: list[ScoredScreening] = [
         ScoredScreening(
-            get_day_bucket(screening.start_time),
-            get_time_bucket(screening.start_time),
+            get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
+            get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
             screening=screening,
         )
         for screening in booked_screenings
@@ -64,8 +64,8 @@ def generate_schedule(
     scored_screenings = []
     for screening in selected_screenings:
         scored_screening = ScoredScreening(
-            get_day_bucket(screening.start_time),
-            get_time_bucket(screening.start_time),
+            get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
+            get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
             screening=screening,
         )
 
@@ -124,16 +124,16 @@ def should_add(
     schedule: list[ScoredScreening],
     schedule_request: ScheduleRequest,
 ) -> bool:
-    if arrow.get(screening.start_time) < arrow.utcnow():
+    if arrow.get(screening.start_time_utc) < arrow.utcnow():
         return False
     if any(entry.screening.film.name == screening.film.name for entry in schedule):
         return False
     if any(
-        entry.screening.start_time
-        <= (screening.end_time + timedelta(minutes=schedule_request.buffer_minutes))
-        and screening.start_time
+        entry.screening.start_time_utc
+        <= (screening.end_time_utc + timedelta(minutes=schedule_request.buffer_minutes))
+        and screening.start_time_utc
         <= (
-            entry.screening.end_time
+            entry.screening.end_time_utc
             + timedelta(minutes=schedule_request.buffer_minutes)
         )
         for entry in schedule
@@ -144,7 +144,8 @@ def should_add(
             [
                 entry
                 for entry in schedule
-                if entry.screening.start_time.date() == screening.start_time.date()
+                if entry.screening.start_time_utc.date()
+                == screening.start_time_utc.date()
             ]
         )
         < schedule_request.max_daily_sessions

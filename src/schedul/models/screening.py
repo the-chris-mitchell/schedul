@@ -10,8 +10,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 class ScreeningBase(SQLModel):
-    start_time: datetime
-    end_time: datetime
+    start_time_utc: datetime
+    end_time_utc: datetime
     link: str
     film_id: int = Field(foreign_key="film.id")
     venue_id: int = Field(foreign_key="venue.id")
