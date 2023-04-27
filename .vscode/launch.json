@@ -31,5 +31,23 @@
             "console": "integratedTerminal",
             "args": ["prod", "fff23"]
         },
+        {
+            "name": "IFF23: Scrape Dev",
+            "type": "python",
+            "request": "launch",
+            "program": "scrape.py",
+            "cwd": "${workspaceFolder}/src/schedul",
+            "console": "integratedTerminal",
+            "args": ["dev", "iff23"]
+        },
+        {
+            "name": "IFF23: Scrape Prod",
+            "type": "python",
+            "request": "launch",
+            "program": "scrape.py",
+            "cwd": "${workspaceFolder}/src/schedul",
+            "console": "integratedTerminal",
+            "args": ["prod", "iff23"]
+        },
     ]
 }
