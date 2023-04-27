@@ -4,7 +4,7 @@ from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.preference import ScheduleRequest
-from models.screening import Screening, ScreeningRead
+from models.screening import ScoredScreeningRead, Screening, ScreeningRead
 from services.schedule import generate_schedule
 from sqlmodel import Session, select
 
@@ -71,7 +71,9 @@ def delete_festival(*, session: Session = Depends(get_session), festival_id: int
         raise HTTPException(status_code=404, detail="Festival not found")
 
 
-@router.post("/festivals/{festival_id}/schedule", response_model=list[ScreeningRead])
+@router.post(
+    "/festivals/{festival_id}/schedule", response_model=list[ScoredScreeningRead]
+)
 def get_schedule(
     *,
     session: Session = Depends(get_session),

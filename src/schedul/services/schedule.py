@@ -3,17 +3,15 @@ from collections import Counter
 from datetime import timedelta
 
 import arrow
-from models.festival import Festival
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening
 from services.screening import get_day_bucket, get_time_bucket
 from sqlmodel import Session, col, select
-from tqdm import tqdm
 
 
 def generate_schedule(
     all_screenings: list[Screening], schedule_request: ScheduleRequest, session: Session
-) -> list[Screening]:
+) -> list[ScoredScreening]:
     available_screenings = [
         session
         for session in all_screenings
@@ -53,12 +51,23 @@ def generate_schedule(
         )
     ).all()
 
-    schedule: list[Screening] = booked_screenings
+    schedule: list[ScoredScreening] = [
+        ScoredScreening(
+            get_day_bucket(screening.start_time),
+            get_time_bucket(screening.start_time),
+            screening=screening,
+        )
+        for screening in booked_screenings
+    ]
 
     # 1. Score the screenings
     scored_screenings = []
     for screening in selected_screenings:
-        scored_screening = ScoredScreening(screening=screening)
+        scored_screening = ScoredScreening(
+            get_day_bucket(screening.start_time),
+            get_time_bucket(screening.start_time),
+            screening=screening,
+        )
 
         if screening in one_off_watchlist_screenings:
             scored_screening.score = scored_screening.score + 3
@@ -80,12 +89,12 @@ def generate_schedule(
         ):
             if (
                 time_preference.day_bucket
-                and get_day_bucket(screening.start_time) != time_preference.day_bucket
+                and scored_screening.day_bucket != time_preference.day_bucket
             ):
                 continue
             if (
                 time_preference.time_bucket
-                and get_time_bucket(screening.start_time) != time_preference.time_bucket
+                and scored_screening.time_bucket != time_preference.time_bucket
             ):
                 continue
             scored_screening.score = scored_screening.score + (
@@ -101,7 +110,7 @@ def generate_schedule(
     # 2. Attempt to add them in scored order
     for scored_screening in sorted_scored_screenings:
         if should_add(scored_screening.screening, schedule, schedule_request):
-            schedule.append(scored_screening.screening)
+            schedule.append(scored_screening)
 
     return schedule
 
@@ -111,17 +120,22 @@ def shuffle(screenings: list[Screening]) -> list[Screening]:
 
 
 def should_add(
-    screening: Screening, schedule: list[Screening], schedule_request: ScheduleRequest
+    screening: Screening,
+    schedule: list[ScoredScreening],
+    schedule_request: ScheduleRequest,
 ) -> bool:
     if arrow.get(screening.start_time) < arrow.utcnow():
         return False
-    if any(entry.film.name == screening.film.name for entry in schedule):
+    if any(entry.screening.film.name == screening.film.name for entry in schedule):
         return False
     if any(
-        entry.start_time
+        entry.screening.start_time
         <= (screening.end_time + timedelta(minutes=schedule_request.buffer_minutes))
         and screening.start_time
-        <= (entry.end_time + timedelta(minutes=schedule_request.buffer_minutes))
+        <= (
+            entry.screening.end_time
+            + timedelta(minutes=schedule_request.buffer_minutes)
+        )
         for entry in schedule
     ):
         return False
@@ -130,7 +144,7 @@ def should_add(
             [
                 entry
                 for entry in schedule
-                if entry.start_time.date() == screening.start_time.date()
+                if entry.screening.start_time.date() == screening.start_time.date()
             ]
         )
         < schedule_request.max_daily_sessions

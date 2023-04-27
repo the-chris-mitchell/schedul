@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+from models.enums import DayBucket, TimeBucket
 from models.festival import Festival
 from models.film import Film
 from models.venue import Venue
-from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -37,5 +37,15 @@ class ScreeningRead(ScreeningBase):
 
 @dataclass
 class ScoredScreening:
+    day_bucket: DayBucket
+    time_bucket: TimeBucket
     screening: Screening
+    score: int = 0
+
+
+@dataclass
+class ScoredScreeningRead:
+    day_bucket: DayBucket
+    time_bucket: TimeBucket
+    screening: ScreeningRead
     score: int = 0
