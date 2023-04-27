@@ -71,6 +71,7 @@ class Festival(ABC):
             else:
                 film_response = check_film.json()[0]
             film_ids[film.name] = film_response["id"]
+            # TODO: proper error handling
             print("✅")
 
         venue_ids = {}
@@ -87,11 +88,12 @@ class Festival(ABC):
             else:
                 venue_response = check_venue.json()[0]
             venue_ids[venue.name] = venue_response["id"]
+            # TODO: proper error handling
             print("✅")
 
         print(f"🎊 {self.full_name}", end=" ")
         check_festival = httpx.get(
-            f"https://schedul-production.up.railway.app/festivals?festival_name={urllib.parse.quote(self.short_name)}"
+            f"https://schedul-production.up.railway.app/festivals?short_name={urllib.parse.quote(self.short_name)}"
         )
         if check_festival.status_code == 204:
             festival_response = httpx.post(
@@ -101,6 +103,7 @@ class Festival(ABC):
         else:
             festival_response = check_festival.json()[0]
         festival_id = festival_response["id"]
+        # TODO: proper error handling
         print("✅")
 
         for screening in self.film_screenings:
