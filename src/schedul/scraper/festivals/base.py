@@ -119,8 +119,11 @@ class Festival(ABC):
                 "venue_id": venue_ids[screening.venue.name],
                 "festival_id": festival_id,
             }
-            httpx.post(
+            screening_response = httpx.post(
                 "https://schedul-production.up.railway.app/screenings",
                 json=screening_payload,
             )
-            print("✅")
+            if screening_response.is_success:
+                print("✅")
+            else:
+                print("❌")
