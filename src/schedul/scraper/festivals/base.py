@@ -109,8 +109,8 @@ class Festival(ABC):
                 end=" ",
             )
             screening_payload = {
-                "start_time": screening.screening_start_time_utc.isoformat(),
-                "end_time": (
+                "start_time_utc": screening.screening_start_time_utc.isoformat(),
+                "end_time_utc": (
                     screening.screening_start_time_utc
                     + timedelta(minutes=screening.film.runtime)
                 ).isoformat(),
