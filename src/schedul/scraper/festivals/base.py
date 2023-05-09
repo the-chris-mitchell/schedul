@@ -32,7 +32,7 @@ class Festival(ABC):
         self.scrape()
         for screening in self.film_screenings:
             print(
-                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')})",
+                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')} UTC)",
                 end=" ",
             )
             film = create_film_if_required(
@@ -108,7 +108,7 @@ class Festival(ABC):
 
         for screening in self.film_screenings:
             print(
-                f"🎥 {screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')})",
+                f"🎥 {screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')} UTC)",
                 end=" ",
             )
             screening_payload = {
