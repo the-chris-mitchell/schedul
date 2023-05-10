@@ -15,13 +15,16 @@ def generate_schedule(
         session
         for session in all_screenings
         if session.start_time_utc.date() not in schedule_request.excluded_dates
+        or session.id in schedule_request.booked_session_ids
     ]
 
     watchlist_screenings = [
         screening
         for screening in available_screenings
         if screening.film.name in schedule_request.watchlist
+        or screening.id in schedule_request.booked_session_ids
     ]
+
     non_watchlist_screenings = [
         screening
         for screening in available_screenings
@@ -43,14 +46,6 @@ def generate_schedule(
         for session in watchlist_screenings
         if session.film.name in single_session_watchlist_films
     ]
-
-    booked_screenings = [
-        screening
-        for screening in all_screenings
-        if screening.id in schedule_request.booked_session_ids
-    ]
-
-    selected_screenings.extend(booked_screenings)
 
     schedule: list[ScoredScreening] = []
     scored_screenings: list[ScoredScreening] = []
