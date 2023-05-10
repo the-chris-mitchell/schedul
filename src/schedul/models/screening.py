@@ -41,6 +41,7 @@ class ScoredScreening:
     time_bucket: TimeBucket
     screening: Screening
     score: int = 0
+    booked: bool = False
 
 
 @dataclass
@@ -49,3 +50,4 @@ class ScoredScreeningRead:
     time_bucket: TimeBucket
     screening: ScreeningRead
     score: int = 0
+    booked: bool = False

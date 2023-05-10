@@ -6,11 +6,10 @@ import arrow
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening
 from services.screening import get_day_bucket, get_time_bucket
-from sqlmodel import Session, col, select
 
 
 def generate_schedule(
-    all_screenings: list[Screening], schedule_request: ScheduleRequest, session: Session
+    all_screenings: list[Screening], schedule_request: ScheduleRequest
 ) -> list[ScoredScreening]:
     available_screenings = [
         session
@@ -45,29 +44,27 @@ def generate_schedule(
         if session.film.name in single_session_watchlist_films
     ]
 
-    booked_screenings = session.exec(
-        select(Screening).where(
-            col(Screening.id).in_(schedule_request.booked_session_ids)
-        )
-    ).all()
-
-    schedule: list[ScoredScreening] = [
-        ScoredScreening(
-            get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
-            get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
-            screening=screening,
-        )
-        for screening in booked_screenings
+    booked_screenings = [
+        screening
+        for screening in all_screenings
+        if screening.id in schedule_request.booked_session_ids
     ]
 
+    selected_screenings.extend(booked_screenings)
+
+    schedule: list[ScoredScreening] = []
+    scored_screenings: list[ScoredScreening] = []
+
     # 1. Score the screenings
-    scored_screenings = []
     for screening in selected_screenings:
         scored_screening = ScoredScreening(
             get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
             get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
             screening=screening,
         )
+
+        if screening.id in schedule_request.booked_session_ids:
+            scored_screening.booked = True
 
         if screening in one_off_watchlist_screenings:
             scored_screening.score = scored_screening.score + 3
@@ -109,6 +106,8 @@ def generate_schedule(
 
     # 2. Attempt to add them in scored order
     for scored_screening in sorted_scored_screenings:
+        if scored_screening.booked:
+            schedule.append(scored_screening)
         if should_add(scored_screening.screening, schedule, schedule_request):
             schedule.append(scored_screening)
 
