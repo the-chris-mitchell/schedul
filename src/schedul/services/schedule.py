@@ -99,12 +99,19 @@ def generate_schedule(
         scored_screenings, key=lambda item: item.score, reverse=True
     )
 
-    # 2. Attempt to add them in scored order
-    for scored_screening in sorted_scored_screenings:
-        if scored_screening.booked:
-            schedule.append(scored_screening)
-        if should_add(scored_screening.screening, schedule, schedule_request):
-            schedule.append(scored_screening)
+    # 2. Add booked sessions first
+    schedule.extend(
+        scored_screening
+        for scored_screening in sorted_scored_screenings
+        if scored_screening.booked
+    )
+
+    # 3. Attempt to add them in scored order
+    schedule.extend(
+        scored_screening
+        for scored_screening in sorted_scored_screenings
+        if should_add(scored_screening.screening, schedule, schedule_request)
+    )
 
     return schedule
 
