@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreeningRead, Screening, ScreeningRead
+from models.user import User
+from models.watchlist import WatchlistEntry
 from services.schedule import generate_schedule
 from sqlmodel import Session, select
 
@@ -80,13 +82,20 @@ def get_schedule(
     festival_id: int,
     schedule_request: ScheduleRequest,
 ):
-    if session.get(Festival, festival_id):
-        screenings = session.exec(
-            select(Screening).where(Screening.festival_id == festival_id)
-        ).all()
-        return generate_schedule(screenings, schedule_request)
-    else:
+    if not session.get(Festival, festival_id):
         raise HTTPException(status_code=404, detail="Festival not found")
+    if not session.get(User, schedule_request.user_uuid):
+        raise HTTPException(status_code=400, detail="User not found")
+    screenings = session.exec(
+        select(Screening).where(Screening.festival_id == festival_id)
+    ).all()
+    watchlist_entries = session.exec(
+        select(WatchlistEntry)
+        .where(WatchlistEntry.festival_id == festival_id)
+        .where(WatchlistEntry.user_uuid == schedule_request.user_uuid)
+    ).all()
+    watchlist_ids = [watchlist_entry.film_id for watchlist_entry in watchlist_entries]
+    return generate_schedule(screenings, schedule_request, watchlist_ids)
 
 
 @router.get("/festivals/{festival_id}/sessions", response_model=list[ScreeningRead])

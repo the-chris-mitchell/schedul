@@ -9,7 +9,9 @@ from services.screening import get_day_bucket, get_time_bucket
 
 
 def generate_schedule(
-    all_screenings: list[Screening], schedule_request: ScheduleRequest
+    all_screenings: list[Screening],
+    schedule_request: ScheduleRequest,
+    watchlist_ids: list[int],
 ) -> list[ScoredScreening]:
     available_screenings = [
         session
@@ -21,14 +23,14 @@ def generate_schedule(
     watchlist_screenings = [
         screening
         for screening in available_screenings
-        if screening.film.name in schedule_request.watchlist
+        if screening.film.id in watchlist_ids
         or screening.id in schedule_request.booked_session_ids
     ]
 
     non_watchlist_screenings = [
         screening
         for screening in available_screenings
-        if screening.film.name not in schedule_request.watchlist
+        if screening.film.id not in watchlist_ids
     ]
 
     selected_screenings = watchlist_screenings
@@ -64,10 +66,7 @@ def generate_schedule(
         if screening in one_off_watchlist_screenings:
             scored_screening.score = scored_screening.score + 3
 
-        if (
-            not schedule_request.watchlist_only
-            and screening.film.name in schedule_request.watchlist
-        ):
+        if not schedule_request.watchlist_only and screening.film.id in watchlist_ids:
             scored_screening.score = scored_screening.score + 3
 
         for position, venue_name in enumerate(schedule_request.venues, start=0):
