@@ -51,7 +51,7 @@ def delete_user(*, session: Session = Depends(get_session), user_uuid: uuid_pkg.
 
 
 @router.post(
-    "/users/{user_uuid}/festival/{festival_id}",
+    "/users/{user_uuid}/festivals/{festival_id}",
     response_model=WatchlistEntry,
     status_code=201,
 )
@@ -78,7 +78,8 @@ def create_watchlist_entry(
 
 
 @router.get(
-    "/users/{user_uuid}/festival/{festival_id}", response_model=list[WatchlistEntryRead]
+    "/users/{user_uuid}/festivals/{festival_id}",
+    response_model=list[WatchlistEntryRead],
 )
 def get_watchlist(
     *,
