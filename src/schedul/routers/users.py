@@ -8,6 +8,7 @@ from models.watchlist import (
     WatchlistEntry,
     WatchlistEntryCreate,
     WatchlistEntryCreateRequest,
+    WatchlistEntryRead,
 )
 from sqlmodel import Session, select
 
@@ -77,7 +78,7 @@ def create_watchlist_entry(
 
 
 @router.get(
-    "/users/{user_uuid}/festival/{festival_id}", response_model=list[WatchlistEntry]
+    "/users/{user_uuid}/festival/{festival_id}", response_model=list[WatchlistEntryRead]
 )
 def get_watchlist(
     *,

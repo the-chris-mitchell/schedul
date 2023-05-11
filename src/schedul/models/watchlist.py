@@ -30,7 +30,7 @@ class WatchlistEntryRead(WatchlistEntryBase):
     id: int
     user: User
     film: Film
-    venue: Venue
+    festival: Festival
 
 
 @dataclass
