@@ -2,8 +2,7 @@ import uvicorn
 from clients.sql import create_db_and_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import festivals, films, screenings, venues
-from scraper.festivals.custom.example import TestFest
+from routers import festivals, films, screenings, users, venues
 
 app: FastAPI = FastAPI(title="Schedul", docs_url=None, redoc_url="/docs")
 
@@ -27,6 +26,7 @@ app.include_router(films.router)
 app.include_router(screenings.router)
 app.include_router(venues.router)
 app.include_router(festivals.router)
+app.include_router(users.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
