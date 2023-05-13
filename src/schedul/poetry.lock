@@ -277,6 +277,18 @@ files = [
 ]
 
 [[package]]
+name = "chardet"
+version = "5.1.0"
+description = "Universal encoding detector for Python 3"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "chardet-5.1.0-py3-none-any.whl", hash = "sha256:362777fb014af596ad31334fde1e8c327dfdb076e1960d1694662d46a6917ab9"},
+    {file = "chardet-5.1.0.tar.gz", hash = "sha256:0d62712b956bc154f85fb0a266e2a3c5913c2967e00348701b32411d6def31e5"},
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.1.0"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -399,6 +411,24 @@ files = [
     {file = "cssselect-1.2.0-py2.py3-none-any.whl", hash = "sha256:da1885f0c10b60c03ed5eccbb6b68d6eff248d91976fcde348f395d54c9fd35e"},
     {file = "cssselect-1.2.0.tar.gz", hash = "sha256:666b19839cfaddb9ce9d36bfe4c969132c647b92fc9088c4e23f786b30f1b3dc"},
 ]
+
+[[package]]
+name = "deptry"
+version = "0.11.0"
+description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
+category = "dev"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "deptry-0.11.0-py3-none-any.whl", hash = "sha256:e6d713806c0aff3ed3ac4f425b5b05b4473759a25a5ecfe5f93ddf224bfef57e"},
+    {file = "deptry-0.11.0.tar.gz", hash = "sha256:fcd778cd5539458dbc665489404932135651dc1a2c9c7bc45b92455e57268802"},
+]
+
+[package.dependencies]
+chardet = ">=4.0.0"
+click = ">=8.0.0,<9.0.0"
+colorama = {version = ">=0.4.6", markers = "sys_platform == \"win32\""}
+pathspec = ">=0.9.0"
 
 [[package]]
 name = "distlib"
@@ -1826,4 +1856,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a431a38f1367be17d55cb539cd405954d1e2594784bd5c6c7cb805ff2d07d30f"
+content-hash = "485a3b88c4101d1a0af263b32b8d618b1a0e84c35a13deb8edec8781ebf9e2ea"
