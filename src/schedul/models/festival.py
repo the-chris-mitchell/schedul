@@ -27,6 +27,6 @@ class FestivalRead(FestivalBase):
 class FestivalUpdate(FestivalBase):
     full_name: Optional[str] = None  # type: ignore
     short_name: Optional[str] = None  # type: ignore
-    max_sessions: Optional[int] = None
-    buffer_time: Optional[int] = None
-    excluded_dates: Optional[list[datetime.date]] = None
+    max_sessions: Optional[int] = None  # type: ignore
+    buffer_time: Optional[int] = None  # type: ignore
+    excluded_dates: Optional[list[datetime.date]] = None  # type: ignore
