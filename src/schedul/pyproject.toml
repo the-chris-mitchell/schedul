@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "schedul"
+version = "0.1.0"
+description = ""
+authors = ["Chris Mitchell <chris.t.mitchell@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+tqdm = "*"
+bs4 = "*"
+requests = "*"
+requests-cache = "*"
+selenium = "*"
+webdriver-manager = "*"
+arrow = "*"
+fastapi = "*"
+pydantic = "*"
+sqlmodel = "*"
+requests-html = "*"
+uvicorn = "*"
+httpx = "*"
+psycopg2-binary = "*"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "*"
+types-requests = "*"
+types-beautifulsoup4 = "*"
+types-tqdm = "*"
+black = "*"
+pre-commit = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
