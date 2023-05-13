@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from models.film import Film, FilmCreate, FilmRead
 from sqlmodel import Session, select
+
+from clients.sql import get_session
+from models.film import Film, FilmCreate, FilmRead
 
 router = APIRouter(tags=["Films"])
 

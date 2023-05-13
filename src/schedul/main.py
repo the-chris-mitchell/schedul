@@ -1,7 +1,8 @@
 import uvicorn
-from clients.sql import create_db_and_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from clients.sql import create_db_and_tables
 from routers import festivals, films, screenings, users, venues
 
 app: FastAPI = FastAPI(title="Schedul", docs_url=None, redoc_url="/docs")

@@ -1,7 +1,8 @@
-from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException
-from models.screening import Screening, ScreeningCreate, ScreeningRead
 from sqlmodel import Session, select
+
+from clients.sql import get_session
+from models.screening import Screening, ScreeningCreate, ScreeningRead
 
 router = APIRouter(tags=["Screening"])
 

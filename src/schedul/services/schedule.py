@@ -3,6 +3,7 @@ from collections import Counter
 from datetime import timedelta
 
 import arrow
+
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening
 from services.screening import get_day_bucket, get_time_bucket

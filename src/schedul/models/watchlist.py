@@ -2,11 +2,12 @@ import uuid as uuid_pkg
 from dataclasses import dataclass
 from typing import Optional
 
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.festival import Festival
 from models.film import Film
 from models.user import User
 from models.venue import Venue
-from sqlmodel import Field, Relationship, SQLModel
 
 
 class WatchlistEntryBase(SQLModel):

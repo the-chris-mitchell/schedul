@@ -1,7 +1,9 @@
 import uuid as uuid_pkg
 
-from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Response
+from sqlmodel import Session, select
+
+from clients.sql import get_session
 from models.festival import Festival
 from models.user import User
 from models.watchlist import (
@@ -10,7 +12,6 @@ from models.watchlist import (
     WatchlistEntryCreateRequest,
     WatchlistEntryRead,
 )
-from sqlmodel import Session, select
 
 router = APIRouter(tags=["Users"])
 

@@ -1,6 +1,7 @@
+from sqlmodel import Session, select
+
 from clients.sql import engine
 from models.festival import Festival
-from sqlmodel import Session, select
 
 
 def create_festival(full_name: str, short_name: str) -> Festival:

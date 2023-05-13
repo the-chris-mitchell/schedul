@@ -1,14 +1,15 @@
 from typing import Annotated
 
-from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from sqlmodel import Session, select
+
+from clients.sql import get_session
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreeningRead, Screening, ScreeningRead
 from models.user import User
 from models.watchlist import WatchlistEntry
 from services.schedule import generate_schedule
-from sqlmodel import Session, select
 
 router = APIRouter(tags=["Festivals"])
 

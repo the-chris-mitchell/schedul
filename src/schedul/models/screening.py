@@ -2,11 +2,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+from sqlmodel import Field, Relationship, SQLModel
+
 from models.enums import DayBucket, TimeBucket
 from models.festival import Festival
 from models.film import Film
 from models.venue import Venue
-from sqlmodel import Field, Relationship, SQLModel
 
 
 class ScreeningBase(SQLModel):

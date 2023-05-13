@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from clients.sql import get_session
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from models.venue import Venue, VenueCreate, VenueRead
 from sqlmodel import Session, select
+
+from clients.sql import get_session
+from models.venue import Venue, VenueCreate, VenueRead
 
 router = APIRouter(tags=["Venues"])
 

@@ -1,8 +1,9 @@
 import datetime
 import uuid as uuid_pkg
 
-from models.enums import DayBucket, TimeBucket
 from pydantic import BaseModel
+
+from models.enums import DayBucket, TimeBucket
 
 
 class TimePreference(BaseModel):

@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import timedelta
 
 import httpx
+
 from models.film_screening import FilmScreening
 from services.festival import create_festival_if_required
 from services.film import create_film_if_required

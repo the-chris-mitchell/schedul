@@ -1,6 +1,7 @@
+from sqlmodel import Session, select
+
 from clients.sql import engine
 from models.venue import Venue
-from sqlmodel import Session, select
 
 
 def create_venue(name: str) -> Venue:
