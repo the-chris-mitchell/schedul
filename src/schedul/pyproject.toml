@@ -28,6 +28,7 @@ types-tqdm = "*"
 black = "*"
 pre-commit = "*"
 deptry = "^0.11.0"
+poethepoet = "^0.20.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,3 +39,7 @@ profile = "black"
 
 [tool.autoflake]
 remove-all-unused-imports = true
+
+[tool.poe.tasks]
+serve = "uvicorn main:app --reload"
+scrape = "python scrape.py"
