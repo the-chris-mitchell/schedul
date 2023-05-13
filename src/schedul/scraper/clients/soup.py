@@ -3,7 +3,6 @@ from datetime import timedelta
 
 import requests_cache
 from bs4 import BeautifulSoup
-from requests import Response
 from requests_html import HTMLSession
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options

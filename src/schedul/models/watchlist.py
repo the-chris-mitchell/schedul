@@ -7,7 +7,6 @@ from sqlmodel import Field, Relationship, SQLModel
 from models.festival import Festival
 from models.film import Film
 from models.user import User
-from models.venue import Venue
 
 
 class WatchlistEntryBase(SQLModel):
