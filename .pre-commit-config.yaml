@@ -14,7 +14,6 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
-        args: ["--profile", "black", "--filter-files"]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.1.1
     hooks:
