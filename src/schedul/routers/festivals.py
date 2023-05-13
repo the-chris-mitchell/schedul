@@ -8,7 +8,7 @@ from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpda
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreeningRead, Screening, ScreeningRead
 from models.user import User
-from models.watchlist import WatchlistEntry
+from models.watchlist_entry import WatchlistEntry
 from services.schedule import generate_schedule
 
 router = APIRouter(tags=["Festivals"])

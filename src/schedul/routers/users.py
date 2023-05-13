@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 from clients.sql import get_session
 from models.festival import Festival
 from models.user import User
-from models.watchlist import (
+from models.watchlist_entry import (
     WatchlistEntry,
     WatchlistEntryCreate,
     WatchlistEntryCreateRequest,
