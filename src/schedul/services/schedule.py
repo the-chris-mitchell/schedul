@@ -17,7 +17,8 @@ def generate_schedule(
     available_screenings = [
         session
         for session in all_screenings
-        if session.start_time_utc.date() not in schedule_request.excluded_dates
+        if arrow.get(session.start_time_utc).to(schedule_request.time_zone).date()
+        not in schedule_request.excluded_dates
         or session.id in schedule_request.booked_session_ids
     ]
 

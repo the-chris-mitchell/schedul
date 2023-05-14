@@ -57,7 +57,7 @@ def create_screening_if_required(
 
 
 def get_day_bucket(start_time: datetime, time_zone: str) -> DayBucket:
-    match start_time.date().weekday():
+    match arrow.get(start_time).to(time_zone).date().weekday():
         case 5 | 6:
             return DayBucket.WEEKEND
         case 4:
