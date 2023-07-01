@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from clients.sql import create_db_and_tables
-from routers import festivals, films, screenings, users, venues, watchlist
+from routers import bookings, festivals, films, screenings, users, venues, watchlist
 
 app: FastAPI = FastAPI(title="Schedul", docs_url=None, redoc_url="/docs")
 
@@ -29,6 +29,7 @@ app.include_router(venues.router)
 app.include_router(festivals.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
+app.include_router(bookings.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
