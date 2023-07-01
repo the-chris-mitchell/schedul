@@ -1,5 +1,4 @@
 import uuid as uuid_pkg
-from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session, select
@@ -7,11 +6,8 @@ from sqlmodel import Session, select
 from clients.sql import get_session
 from models.film import Film
 from models.user import User
-from models.watchlist_entry import (
-    WatchlistEntry,
-    WatchlistEntryCreate,
-    WatchlistEntryRead,
-)
+from models.watchlist import Watchlist, WatchlistFilm
+from models.watchlist_entry import WatchlistEntry, WatchlistEntryCreate
 
 router = APIRouter(tags=["Users"])
 
@@ -79,16 +75,29 @@ def create_watchlist_entry(
 
 @router.get(
     "/users/{user_uuid}/watchlist",
-    response_model=list[WatchlistEntryRead],
+    response_model=Watchlist,
 )
 def get_watchlist(
     *,
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
-) -> List[WatchlistEntry]:
+) -> Watchlist:
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    return session.exec(
+    watchlist_entries = session.exec(
         select(WatchlistEntry).where(WatchlistEntry.user_uuid == user_uuid)
     ).all()
+
+    films = session.exec(select(Film)).all()
+
+    watchlist_films = []
+
+    for film in films:
+        watchlist_entry_ids = [entry.film_id for entry in watchlist_entries]
+        if film.id in watchlist_entry_ids:
+            watchlist_films.append(WatchlistFilm(film, True))
+        else:
+            watchlist_films.append(WatchlistFilm(film, False))
+
+    return Watchlist(watchlist_films)
