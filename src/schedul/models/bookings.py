@@ -7,12 +7,14 @@ from sqlmodel import Field, Relationship, SQLModel
 from models.film import Film
 from models.screening import Screening
 from models.user import User
+from models.venue import Venue
 
 
 @dataclass
 class BookingScreening:
     screening: Screening
     film: Film
+    venue: Venue
     is_booked: bool
 
 

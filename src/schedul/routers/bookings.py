@@ -79,10 +79,12 @@ def get_bookings(
     for screening in screenings:
         booking_ids = [booking.screening_id for booking in bookings]
         if screening.id in booking_ids:
-            booking_screenings.append(BookingScreening(screening, screening.film, True))
+            booking_screenings.append(
+                BookingScreening(screening, screening.film, screening.venue, True)
+            )
         else:
             booking_screenings.append(
-                BookingScreening(screening, screening.film, False)
+                BookingScreening(screening, screening.film, screening.venue, False)
             )
 
     return Bookings(booking_screenings)
