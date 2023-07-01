@@ -1,6 +1,6 @@
 import uuid as uuid_pkg
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -16,7 +16,7 @@ class WatchlistFilm:
 
 @dataclass
 class Watchlist:
-    films: List[WatchlistFilm]
+    films: list[WatchlistFilm]
 
 
 class WatchlistEntryBase(SQLModel):
