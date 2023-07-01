@@ -91,9 +91,9 @@ def get_schedule(
         select(Screening).where(Screening.festival_id == festival_id)
     ).all()
     watchlist_entries = session.exec(
-        select(WatchlistEntry)
-        .where(WatchlistEntry.festival_id == festival_id)
-        .where(WatchlistEntry.user_uuid == schedule_request.user_uuid)
+        select(WatchlistEntry).where(
+            WatchlistEntry.user_uuid == schedule_request.user_uuid
+        )
     ).all()
     watchlist_ids = [watchlist_entry.film_id for watchlist_entry in watchlist_entries]
     return generate_schedule(screenings, schedule_request, watchlist_ids)

@@ -6,7 +6,6 @@ from sqlmodel import Field, SQLModel
 class FilmBase(SQLModel):
     name: str
     runtime: int
-    year: int
 
     def __hash__(self):
         return hash(str(self))

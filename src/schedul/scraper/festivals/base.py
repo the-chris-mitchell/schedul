@@ -37,9 +37,7 @@ class Festival(ABC):
                 end=" ",
             )
             film = create_film_if_required(
-                name=screening.film.name,
-                runtime=screening.film.runtime,
-                year=screening.film.year,
+                name=screening.film.name, runtime=screening.film.runtime
             )
             venue = create_venue_if_required(name=screening.venue.name)
             festival = create_festival_if_required(
