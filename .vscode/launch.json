@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Serve",
             "type": "python",
@@ -48,6 +49,15 @@
             "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
             "args": ["prod", "iff23"]
+        },
+        {
+            "name": "NZIFF23: Scrape Dev",
+            "type": "python",
+            "request": "launch",
+            "program": "scrape.py",
+            "cwd": "${workspaceFolder}/src/schedul",
+            "console": "integratedTerminal",
+            "args": ["dev", "nziff23"]
         },
     ]
 }
