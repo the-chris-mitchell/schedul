@@ -51,6 +51,25 @@ def delete_user(
         raise HTTPException(status_code=404, detail="User not found")
 
 
+@router.delete("/users/{user_uuid}/watchlist/{film_id}")
+def delete_watchlist_entry(
+    *, session: Session = Depends(get_session), user_uuid: uuid_pkg.UUID, film_id: int
+) -> dict[str, bool]:
+    if not session.get(User, user_uuid):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if watchlist_entry := session.exec(
+        select(WatchlistEntry)
+        .where(WatchlistEntry.user_uuid == user_uuid)
+        .where(WatchlistEntry.film_id == film_id)
+    ).first():
+        session.delete(watchlist_entry)
+        session.commit()
+        return {"deleted": True}
+    else:
+        return {"deleted": False}
+
+
 @router.post(
     "/users/{user_uuid}/watchlist/{film_id}",
     response_model=WatchlistEntry,
