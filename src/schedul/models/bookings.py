@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
+from models.film import Film
 from models.screening import Screening
 from models.user import User
 
@@ -11,6 +12,7 @@ from models.user import User
 @dataclass
 class BookingScreening:
     screening: Screening
+    film: Film
     is_booked: bool
 
 
