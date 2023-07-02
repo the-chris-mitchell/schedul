@@ -1,6 +1,8 @@
 import uuid as uuid_pkg
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from clients.sql import get_session
@@ -30,32 +32,43 @@ def delete_booking(
         session.commit()
         return {"deleted": True}
     else:
-        return {"deleted": False}
+        raise HTTPException(status_code=404, detail="Booking not found")
 
 
-@router.post(
+@router.put(
     "/users/{user_uuid}/bookings/{screening_id}",
-    response_model=Booking,
-    status_code=201,
+    responses={201: {"model": Booking}, 202: {"model": Booking}},
 )
 def create_booking(
     *,
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
     screening_id: int,
-) -> Booking:
+) -> JSONResponse:
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
     if not session.get(Screening, screening_id):
         raise HTTPException(status_code=404, detail="Screening not found")
 
+    if existing_booking := session.exec(
+        select(Booking)
+        .where(Booking.user_uuid == user_uuid)
+        .where(Booking.screening_id == screening_id)
+    ).first():
+        return JSONResponse(
+            status_code=status.HTTP_202_ACCEPTED,
+            content=jsonable_encoder(existing_booking),
+        )
+
     booking = BookingCreate(user_uuid=user_uuid, screening_id=screening_id)
     db_booking = Booking.from_orm(booking)
     session.add(db_booking)
     session.commit()
     session.refresh(db_booking)
-    return db_booking
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED, content=jsonable_encoder(db_booking)
+    )
 
 
 @router.get(

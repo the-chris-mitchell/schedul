@@ -1,6 +1,8 @@
 import uuid as uuid_pkg
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from clients.sql import get_session
@@ -32,29 +34,41 @@ def delete_watchlist_entry(
         session.commit()
         return {"deleted": True}
     else:
-        return {"deleted": False}
+        raise HTTPException(status_code=404, detail="Watchlist entry not found")
 
 
-@router.post(
+@router.put(
     "/users/{user_uuid}/watchlist/{film_id}",
-    response_model=WatchlistEntry,
-    status_code=201,
+    responses={201: {"model": WatchlistEntry}, 202: {"model": WatchlistEntry}},
 )
 def create_watchlist_entry(
     *, session: Session = Depends(get_session), user_uuid: uuid_pkg.UUID, film_id: int
-) -> WatchlistEntry:
+) -> JSONResponse:
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
     if not session.get(Film, film_id):
         raise HTTPException(status_code=404, detail="Film not found")
 
+    if existing_watchlist_entry := session.exec(
+        select(WatchlistEntry)
+        .where(WatchlistEntry.user_uuid == user_uuid)
+        .where(WatchlistEntry.film_id == film_id)
+    ).first():
+        return JSONResponse(
+            status_code=status.HTTP_202_ACCEPTED,
+            content=jsonable_encoder(existing_watchlist_entry),
+        )
+
     watchlist_entry = WatchlistEntryCreate(user_uuid=user_uuid, film_id=film_id)
     db_watchlist_entry = WatchlistEntry.from_orm(watchlist_entry)
     session.add(db_watchlist_entry)
     session.commit()
     session.refresh(db_watchlist_entry)
-    return db_watchlist_entry
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content=jsonable_encoder(db_watchlist_entry),
+    )
 
 
 @router.get(
