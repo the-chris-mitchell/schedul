@@ -73,9 +73,9 @@ def get_time_bucket(start_time: datetime, time_zone: str) -> TimeBucket:
     start_time_time = arrow.get(start_time).to(time_zone).time()
     if start_time_time < time(13):
         return TimeBucket.MORNING
-    elif start_time_time < time(18):
+    elif start_time_time < time(17):
         return TimeBucket.AFTERNOON
-    elif start_time_time >= time(18):
+    elif start_time_time >= time(17):
         return TimeBucket.EVENING
     else:
         return TimeBucket.NONE
