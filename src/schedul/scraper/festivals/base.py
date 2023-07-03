@@ -70,7 +70,7 @@ class Festival(ABC):
             else:
                 film_response = check_film.json()[0]
             film_ids[film.name] = film_response["id"]
-            # TODO: proper error handling
+            # TODO: error handling
             print("✅")
 
         venue_ids = {}
