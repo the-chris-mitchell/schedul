@@ -146,8 +146,12 @@ def should_add(
             [
                 entry
                 for entry in schedule
-                if entry.screening.start_time_utc.date()
-                == screening.start_time_utc.date()
+                if arrow.get(entry.screening.start_time_utc)
+                .to(schedule_request.time_zone)
+                .date()
+                == arrow.get(screening.start_time_utc)
+                .to(schedule_request.time_zone)
+                .date()
             ]
         )
         < schedule_request.max_daily_sessions
