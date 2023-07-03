@@ -44,6 +44,7 @@ def create_screening_if_required(
             select(Screening)
             .where(Screening.film_id == film_id)
             .where(Screening.festival_id == festival_id)
+            .where(Screening.venue_id == venue_id)
             .where(Screening.start_time_utc == start_time_utc)
         ).first()
         return query or create_screening(
