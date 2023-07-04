@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from clients.sql import get_session
 from models.bookings import Booking
@@ -9,6 +9,7 @@ from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpda
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreeningRead, Screening, ScreeningRead
 from models.user import User
+from models.venue import Venue
 from models.watchlist import WatchlistEntry
 from services.schedule import generate_schedule
 
@@ -89,6 +90,9 @@ def get_schedule(
     if not session.get(User, schedule_request.user_uuid):
         raise HTTPException(status_code=400, detail="User not found")
 
+    if len(schedule_request.venues) == 0:
+        raise HTTPException(status_code=400, detail="Must include at least one venue")
+
     screenings = session.exec(
         select(Screening).where(Screening.festival_id == festival_id)
     ).all()
@@ -105,8 +109,13 @@ def get_schedule(
     ).all()
     booked_session_ids = [booking.screening_id for booking in bookings]
 
+    venues = session.exec(
+        select(Venue).where(col(Venue.name).in_(schedule_request.venues))
+    ).all()
+    venue_ids = [venue.id for venue in venues if venue.id is not None]
+
     return generate_schedule(
-        screenings, schedule_request, watchlist_ids, booked_session_ids
+        screenings, schedule_request, watchlist_ids, booked_session_ids, venue_ids
     )
 
 

@@ -14,13 +14,17 @@ def generate_schedule(
     schedule_request: ScheduleRequest,
     watchlist_ids: list[int],
     booked_session_ids: list[int],
+    venue_ids: list[int],
 ) -> list[ScoredScreening]:
     available_screenings = [
         session
         for session in all_screenings
-        if arrow.get(session.start_time_utc).to(schedule_request.time_zone).date()
-        not in schedule_request.excluded_dates
-        or session.id in booked_session_ids
+        if (
+            arrow.get(session.start_time_utc).to(schedule_request.time_zone).date()
+            not in schedule_request.excluded_dates
+            or session.id in booked_session_ids
+        )
+        and session.venue_id in venue_ids
     ]
 
     watchlist_screenings = [
