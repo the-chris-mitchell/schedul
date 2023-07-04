@@ -19,27 +19,32 @@ def generate_schedule(
     available_screenings = [
         session
         for session in all_screenings
-        if (
-            arrow.get(session.start_time_utc).to(schedule_request.time_zone).date()
-            not in schedule_request.excluded_dates
-            or session.id in booked_session_ids
-        )
-        and session.venue_id in venue_ids
+        if arrow.get(session.start_time_utc).to(schedule_request.time_zone).date()
+        not in schedule_request.excluded_dates
+        or session.id in booked_session_ids
+    ]
+
+    booked_screenings = [
+        screening
+        for screening in available_screenings
+        if screening.id in booked_session_ids
     ]
 
     watchlist_screenings = [
         screening
         for screening in available_screenings
-        if screening.film.id in watchlist_ids or screening.id in booked_session_ids
+        if screening.film.id in watchlist_ids and screening.id not in booked_session_ids
     ]
 
     non_watchlist_screenings = [
         screening
         for screening in available_screenings
         if screening.film.id not in watchlist_ids
+        and screening.id not in booked_session_ids
     ]
 
-    selected_screenings = watchlist_screenings
+    selected_screenings = booked_screenings
+    selected_screenings.extend(watchlist_screenings)
     if not schedule_request.watchlist_only:
         selected_screenings.extend(non_watchlist_screenings)
 
@@ -116,6 +121,8 @@ def generate_schedule(
         scored_screening
         for scored_screening in sorted_scored_screenings
         if should_add(scored_screening.screening, schedule, schedule_request)
+        and scored_screening.screening.venue_id in venue_ids
+        and not scored_screening.booked
     )
 
     return schedule
