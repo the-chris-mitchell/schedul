@@ -1,14 +1,17 @@
+import io
 import uuid as uuid_pkg
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
+from ics import Calendar, Event
 from sqlmodel import Session, select
 
 from clients.sql import get_session
-from models.bookings import Booking, BookingCreate, Bookings, BookingScreening
+from models.bookings import Booking, BookingCreate, Bookings
 from models.screening import Screening
 from models.user import User
+from services.bookings import get_booking_screenings
 
 router = APIRouter(tags=["Users"])
 
@@ -83,21 +86,31 @@ def get_bookings(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    bookings = session.exec(select(Booking).where(Booking.user_uuid == user_uuid)).all()
+    return Bookings(get_booking_screenings(user_uuid, session))
 
-    screenings = session.exec(select(Screening)).all()
 
-    booking_screenings = []
+@router.get(
+    "/users/{user_uuid}/bookings.ics",
+)
+async def get_bookings_ics(
+    *,
+    session: Session = Depends(get_session),
+    user_uuid: uuid_pkg.UUID,
+):
+    if not session.get(User, user_uuid):
+        raise HTTPException(status_code=404, detail="User not found")
 
+    screenings = get_booking_screenings(user_uuid, session)
+
+    calendar = Calendar()
     for screening in screenings:
-        booking_ids = [booking.screening_id for booking in bookings]
-        if screening.id in booking_ids:
-            booking_screenings.append(
-                BookingScreening(screening, screening.film, screening.venue, True)
-            )
-        else:
-            booking_screenings.append(
-                BookingScreening(screening, screening.film, screening.venue, False)
-            )
+        event = Event()
+        event.name = screening.film.name
+        event.begin = screening.screening.start_time_utc
+        event.end = screening.screening.end_time_utc
+        event.location = screening.screening.venue.name
+        calendar.events.add(event)
 
-    return Bookings(booking_screenings)
+    content = io.BytesIO(calendar.serialize().encode())
+
+    return StreamingResponse(content, media_type="text/calendar")

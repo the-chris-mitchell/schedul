@@ -19,6 +19,7 @@ requests-html = "*"
 uvicorn = "*"
 httpx = "*"
 psycopg2-binary = "*"
+ics = "^0.7.2"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"

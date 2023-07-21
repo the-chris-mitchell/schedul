@@ -609,6 +609,24 @@ http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
 
 [[package]]
+name = "ics"
+version = "0.7.2"
+description = "Python icalendar (rfc5545) parser"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ics-0.7.2-py2.py3-none-any.whl", hash = "sha256:5fcf4d29ec6e7dfcb84120abd617bbba632eb77b097722b7df70e48dbcf26103"},
+    {file = "ics-0.7.2.tar.gz", hash = "sha256:6743539bca10391635249b87d74fcd1094af20b82098bebf7c7521df91209f05"},
+]
+
+[package.dependencies]
+arrow = ">=0.11"
+attrs = ">=19.1.0"
+python-dateutil = "*"
+six = ">1.5"
+tatsu = ">4.2"
+
+[[package]]
 name = "identify"
 version = "2.5.24"
 description = "File identification library for Python"
@@ -1465,6 +1483,20 @@ anyio = ">=3.4.0,<5"
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
 
 [[package]]
+name = "tatsu"
+version = "5.8.3"
+description = "TatSu takes a grammar in a variation of EBNF as input, and outputs a memoizing PEG/Packrat parser in Python."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "TatSu-5.8.3-py2.py3-none-any.whl", hash = "sha256:0a836692e67247cad9f251e083b045b13345cc715e69a7fbc16522beaa0f2163"},
+    {file = "TatSu-5.8.3.zip", hash = "sha256:571ecbcdf33b7828c05e5cd95a8e8ad06af111c2c83a6a245be4d8f7c43de7bb"},
+]
+
+[package.extras]
+future-regex = ["regex"]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -1811,4 +1843,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "2fc3feb6333b792b0e352f2c7b50f38315e58dbc21474fa3799c4c72f3917e99"
+content-hash = "6cbbb95127219a52a03cbbcfeee60426fbfe2b8edad955774537ab0e8bf0ad98"
