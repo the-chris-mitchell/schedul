@@ -104,12 +104,13 @@ async def get_bookings_ics(
 
     calendar = Calendar()
     for screening in screenings:
-        event = Event()
-        event.name = screening.film.name
-        event.begin = screening.screening.start_time_utc
-        event.end = screening.screening.end_time_utc
-        event.location = screening.screening.venue.name
-        calendar.events.add(event)
+        if screening.is_booked:
+            event = Event()
+            event.name = screening.film.name
+            event.begin = screening.screening.start_time_utc
+            event.end = screening.screening.end_time_utc
+            event.location = screening.screening.venue.name
+            calendar.events.add(event)
 
     content = io.BytesIO(calendar.serialize().encode())
 
