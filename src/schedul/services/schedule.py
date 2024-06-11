@@ -142,7 +142,7 @@ def should_add(
         and arrow.get(screening.start_time_utc) < arrow.utcnow()
     ):
         return False
-    if any(entry.screening.film.name == screening.film.name for entry in schedule):
+    if any(entry.screening.film.id == screening.film.id for entry in schedule):
         return False
     if any(
         entry.screening.start_time_utc
