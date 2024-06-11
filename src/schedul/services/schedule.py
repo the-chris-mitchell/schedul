@@ -137,7 +137,10 @@ def should_add(
     schedule: list[ScoredScreening],
     schedule_request: ScheduleRequest,
 ) -> bool:
-    if arrow.get(screening.start_time_utc) < arrow.utcnow():
+    if (
+        schedule_request.future_only
+        and arrow.get(screening.start_time_utc) < arrow.utcnow()
+    ):
         return False
     if any(entry.screening.film.name == screening.film.name for entry in schedule):
         return False
