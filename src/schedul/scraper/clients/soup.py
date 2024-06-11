@@ -3,7 +3,8 @@ from datetime import timedelta
 
 import requests_cache
 from bs4 import BeautifulSoup
-from requests_html import HTMLSession
+
+# from requests_html import HTMLSession
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -25,11 +26,11 @@ def get_cached_soup(
     return BeautifulSoup(response.text, features="html.parser")
 
 
-def get_rendered_soup(url: str) -> BeautifulSoup:
-    session = HTMLSession()
-    response = session.get(url)
-    response.html.render(timeout=60)  # type: ignore
-    return BeautifulSoup(response.html.raw_html, features="html.parser")  # type: ignore
+# def get_rendered_soup(url: str) -> BeautifulSoup:
+#     session = HTMLSession()
+#     response = session.get(url)
+#     response.html.render(timeout=60)  # type: ignore
+#     return BeautifulSoup(response.html.raw_html, features="html.parser")  # type: ignore
 
 
 def get_selenium_soup(url: str) -> BeautifulSoup:
