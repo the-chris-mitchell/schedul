@@ -28,14 +28,14 @@ def get_cached_soup(
 def get_rendered_soup(url: str) -> BeautifulSoup:
     session = HTMLSession()
     response = session.get(url)
-    response.html.render(timeout=60)
-    return BeautifulSoup(response.html.raw_html, features="html.parser")
+    response.html.render(timeout=60)  # type: ignore
+    return BeautifulSoup(response.html.raw_html, features="html.parser")  # type: ignore
 
 
 def get_selenium_soup(url: str) -> BeautifulSoup:
     options = Options()
-    options.headless = True
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    options.headless = True  # type: ignore
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)  # type: ignore
     driver.maximize_window()
     driver.get(url)
     els = driver.find_elements(By.CLASS_NAME, "times-calendar__el")
