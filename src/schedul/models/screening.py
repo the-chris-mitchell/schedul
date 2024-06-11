@@ -40,15 +40,6 @@ class ScreeningRead(ScreeningBase):
 class ScoredScreening:
     day_bucket: DayBucket
     time_bucket: TimeBucket
-    screening: Screening
-    score: int = 0
-    booked: bool = False
-
-
-@dataclass
-class ScoredScreeningRead:
-    day_bucket: DayBucket
-    time_bucket: TimeBucket
     screening: ScreeningRead
     score: int = 0
     booked: bool = False

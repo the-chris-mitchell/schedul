@@ -7,7 +7,7 @@ from clients.sql import get_session
 from models.bookings import Booking
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.preference import ScheduleRequest
-from models.screening import ScoredScreeningRead, Screening, ScreeningRead
+from models.screening import ScoredScreening, Screening, ScreeningRead
 from models.user import User
 from models.venue import Venue
 from models.watchlist import WatchlistEntry
@@ -76,9 +76,7 @@ def delete_festival(*, session: Session = Depends(get_session), festival_id: int
         raise HTTPException(status_code=404, detail="Festival not found")
 
 
-@router.post(
-    "/festivals/{festival_id}/schedule", response_model=list[ScoredScreeningRead]
-)
+@router.post("/festivals/{festival_id}/schedule", response_model=list[ScoredScreening])
 def get_schedule(
     *,
     session: Session = Depends(get_session),

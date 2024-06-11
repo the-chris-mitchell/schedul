@@ -5,7 +5,7 @@ from datetime import timedelta
 import arrow
 
 from models.preference import ScheduleRequest
-from models.screening import ScoredScreening, Screening
+from models.screening import ScoredScreening, Screening, ScreeningRead
 from services.screening import get_day_bucket, get_time_bucket
 
 
@@ -68,7 +68,7 @@ def generate_schedule(
         scored_screening = ScoredScreening(
             get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
             get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
-            screening=screening,
+            screening=ScreeningRead.model_validate(screening),
         )
 
         if screening.id in booked_session_ids:
@@ -133,7 +133,7 @@ def shuffle(screenings: list[Screening]) -> list[Screening]:
 
 
 def should_add(
-    screening: Screening,
+    screening: ScreeningRead,
     schedule: list[ScoredScreening],
     schedule_request: ScheduleRequest,
 ) -> bool:
