@@ -10,6 +10,8 @@ from services.film import create_film_if_required
 from services.screening import create_screening_if_required
 from services.venue import create_venue_if_required
 
+SCHEDUL_URL_PROD = "https://schedul-production.up.railway.app"
+
 
 class Festival(ABC):
     def __init__(self) -> None:
@@ -64,11 +66,11 @@ class Festival(ABC):
         for film in {screening.film for screening in self.film_screenings}:
             print(f"🎬 {film.name}", end=" ")
             check_film = httpx.get(
-                f"https://schedul-production.up.railway.app/films?film_name={urllib.parse.quote(film.name)}"
+                f"{SCHEDUL_URL_PROD}/films?film_name={urllib.parse.quote(film.name)}"
             )
             if check_film.status_code == 204:
                 film_response = httpx.post(
-                    "https://schedul-production.up.railway.app/films", json=film.dict()
+                    "{SCHEDUL_URL_PROD}/films", json=film.dict()
                 ).json()
             else:
                 film_response = check_film.json()[0]
@@ -80,11 +82,11 @@ class Festival(ABC):
         for venue in {screening.venue for screening in self.film_screenings}:
             print(f"🏠 {venue.name}", end=" ")
             check_venue = httpx.get(
-                f"https://schedul-production.up.railway.app/venues?venue_name={urllib.parse.quote(venue.name)}"
+                f"{SCHEDUL_URL_PROD}/venues?venue_name={urllib.parse.quote(venue.name)}"
             )
             if check_venue.status_code == 204:
                 venue_response = httpx.post(
-                    "https://schedul-production.up.railway.app/venues",
+                    "{SCHEDUL_URL_PROD}/venues",
                     json=venue.dict(),
                 ).json()
             else:
@@ -95,11 +97,11 @@ class Festival(ABC):
 
         print(f"🎊 {self.full_name}", end=" ")
         check_festival = httpx.get(
-            f"https://schedul-production.up.railway.app/festivals?short_name={urllib.parse.quote(self.short_name)}"
+            f"{SCHEDUL_URL_PROD}/festivals?short_name={urllib.parse.quote(self.short_name)}"
         )
         if check_festival.status_code == 204:
             festival_response = httpx.post(
-                "https://schedul-production.up.railway.app/festivals",
+                "{SCHEDUL_URL_PROD}/festivals",
                 json={"full_name": self.full_name, "short_name": self.short_name},
             ).json()
         else:
@@ -125,7 +127,7 @@ class Festival(ABC):
                 "festival_id": festival_id,
             }
             screening_response = httpx.post(
-                "https://schedul-production.up.railway.app/screenings",
+                "{SCHEDUL_URL_PROD}/screenings",
                 json=screening_payload,
             )
             if screening_response.is_success:
