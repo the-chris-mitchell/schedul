@@ -31,6 +31,11 @@ class Festival(ABC):
 
     def create_resources_dev(self) -> None:
         self.scrape()
+
+        festival = create_festival_if_required(
+            full_name=self.full_name, short_name=self.short_name
+        )
+
         for screening in self.film_screenings:
             print(
                 f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')} UTC)",
@@ -40,9 +45,7 @@ class Festival(ABC):
                 name=screening.film.name, runtime=screening.film.runtime
             )
             venue = create_venue_if_required(name=screening.venue.name)
-            festival = create_festival_if_required(
-                full_name=self.full_name, short_name=self.short_name
-            )
+
             create_screening_if_required(
                 start_time_utc=screening.screening_start_time_utc,
                 end_time_utc=screening.screening_start_time_utc
