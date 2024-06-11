@@ -42,5 +42,5 @@ profile = "black"
 remove-all-unused-imports = true
 
 [tool.poe.tasks]
-serve = "uvicorn main:app --reload"
+serve = "uvicorn main:app --reload --port 8001"
 scrape = "python scrape.py"
