@@ -19,7 +19,7 @@ requests-html = "*"
 uvicorn = "*"
 httpx = "*"
 psycopg2-binary = "*"
-ics = "^0.7.2"
+ics = "*"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
@@ -28,8 +28,8 @@ types-beautifulsoup4 = "*"
 types-tqdm = "*"
 black = "*"
 pre-commit = "*"
-deptry = "^0.12.0"
-poethepoet = "^0.20.0"
+deptry = "*"
+poethepoet = "*"
 
 [build-system]
 requires = ["poetry-core"]
