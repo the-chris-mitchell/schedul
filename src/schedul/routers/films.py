@@ -25,8 +25,8 @@ def get_films(
 ) -> list[Film] | Response:
     if film_name:
         statement = select(Film).where(Film.name == film_name)
-        return session.exec(statement).all() or Response(status_code=204)
-    return session.exec(select(Film)).all() or Response(status_code=204)
+        return list(session.exec(statement).all()) or Response(status_code=204)
+    return list(session.exec(select(Film)).all()) or Response(status_code=204)
 
 
 @router.post("/films", response_model=FilmRead, status_code=201)

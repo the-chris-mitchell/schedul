@@ -93,9 +93,11 @@ def get_schedule(
     if len(schedule_request.venues) == 0:
         raise HTTPException(status_code=400, detail="Must include at least one venue")
 
-    screenings = session.exec(
-        select(Screening).where(Screening.festival_id == festival_id)
-    ).all()
+    screenings = list(
+        session.exec(
+            select(Screening).where(Screening.festival_id == festival_id)
+        ).all()
+    )
 
     watchlist_entries = session.exec(
         select(WatchlistEntry).where(

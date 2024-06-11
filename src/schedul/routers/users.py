@@ -24,7 +24,7 @@ def get_films(
     *,
     session: Session = Depends(get_session),
 ) -> list[User] | Response:
-    return session.exec(select(User)).all() or Response(status_code=204)
+    return list(session.exec(select(User)).all()) or Response(status_code=204)
 
 
 @router.post("/users", response_model=User, status_code=201)
