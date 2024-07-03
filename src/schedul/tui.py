@@ -1,7 +1,8 @@
 from sqlmodel import Session
 from textual.app import App, ComposeResult
 from textual.containers import VerticalScroll
-from textual.widgets import RadioButton
+from textual.screen import Screen
+from textual.widgets import Footer, RadioButton, Select
 
 from clients.sql import engine
 from models.watchlist import WatchlistFilm
@@ -17,7 +18,7 @@ with Session(engine) as session:
     ).films
 
 
-class CheckboxApp(App[None]):
+class WatchlistScreen(Screen):
     def compose(self) -> ComposeResult:
         with VerticalScroll():
             for entry in WATCHLIST:
@@ -26,6 +27,24 @@ class CheckboxApp(App[None]):
                     id=f"id_{str(entry.film.id)}",
                     value=entry.in_watchlist,
                 )
+        yield Footer()
+
+
+class UserScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Select([("User 1", 1), ("User 2", 2)])
+        yield Footer()
+
+
+class CheckboxApp(App):
+    SCREENS = {"watchlist": WatchlistScreen(), "user": UserScreen()}
+    BINDINGS = [
+        ("u", "push_screen('user')", "Users"),
+        ("w", "push_screen('watchlist')", "Watchlist"),
+    ]
+
+    def on_mount(self):
+        self.push_screen(UserScreen())
 
     def on_radio_button_changed(self, event: RadioButton.Changed):
         with Session(engine) as session:
