@@ -20,6 +20,8 @@ uvicorn = "*"
 httpx = "*"
 psycopg2-binary = "*"
 ics = "*"
+textual = "^0.71.0"
+textual-dev = "^1.5.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "*"
@@ -44,3 +46,4 @@ remove-all-unused-imports = true
 [tool.poe.tasks]
 serve = "uvicorn main:app --reload --port 8001"
 scrape = "python scrape.py"
+tui = "textual run --dev tui.py"
