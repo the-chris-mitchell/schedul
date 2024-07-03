@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "Serve",
             "type": "python",
@@ -51,13 +52,13 @@
             "args": ["prod", "iff23"]
         },
         {
-            "name": "NZIFF23: Scrape Dev",
+            "name": "NZIFF24: Scrape Dev",
             "type": "python",
             "request": "launch",
             "program": "scrape.py",
             "cwd": "${workspaceFolder}/src/schedul",
             "console": "integratedTerminal",
-            "args": ["dev", "nziff23"]
+            "args": ["dev", "nziff24"]
         },
     ]
 }
