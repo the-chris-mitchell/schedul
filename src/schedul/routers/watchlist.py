@@ -8,11 +8,11 @@ from sqlmodel import Session, select
 from clients.sql import get_session
 from models.film import Film
 from models.user import User
-from models.watchlist import (
-    Watchlist,
-    WatchlistEntry,
-    WatchlistEntryCreate,
-    WatchlistFilm,
+from models.watchlist import Watchlist, WatchlistEntry
+from services.watchlist import (
+    create_watchlist_entry_db,
+    delete_watchlist_entry_db,
+    get_watchlist_db,
 )
 
 router = APIRouter(tags=["Users"])
@@ -25,13 +25,7 @@ def delete_watchlist_entry(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    if watchlist_entry := session.exec(
-        select(WatchlistEntry)
-        .where(WatchlistEntry.user_uuid == user_uuid)
-        .where(WatchlistEntry.film_id == film_id)
-    ).first():
-        session.delete(watchlist_entry)
-        session.commit()
+    if delete_watchlist_entry_db(session=session, user_uuid=user_uuid, film_id=film_id):
         return {"deleted": True}
     else:
         raise HTTPException(status_code=404, detail="Watchlist entry not found")
@@ -60,11 +54,9 @@ def create_watchlist_entry(
             content=jsonable_encoder(existing_watchlist_entry),
         )
 
-    watchlist_entry = WatchlistEntryCreate(user_uuid=user_uuid, film_id=film_id)
-    db_watchlist_entry = WatchlistEntry.from_orm(watchlist_entry)
-    session.add(db_watchlist_entry)
-    session.commit()
-    session.refresh(db_watchlist_entry)
+    db_watchlist_entry = create_watchlist_entry_db(
+        session=session, user_uuid=user_uuid, film_id=film_id
+    )
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content=jsonable_encoder(db_watchlist_entry),
@@ -83,19 +75,4 @@ def get_watchlist(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    watchlist_entries = session.exec(
-        select(WatchlistEntry).where(WatchlistEntry.user_uuid == user_uuid)
-    ).all()
-
-    films = session.exec(select(Film)).all()
-
-    watchlist_films = []
-
-    for film in films:
-        watchlist_entry_ids = [entry.film_id for entry in watchlist_entries]
-        if film.id in watchlist_entry_ids:
-            watchlist_films.append(WatchlistFilm(film, True))
-        else:
-            watchlist_films.append(WatchlistFilm(film, False))
-
-    return Watchlist(watchlist_films)
+    return get_watchlist_db(session=session, user_uuid=user_uuid)

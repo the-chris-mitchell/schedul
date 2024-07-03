@@ -1,10 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
 from models.film import Film, FilmCreate, FilmRead
+from services.film import get_films_db
 
 router = APIRouter(tags=["Films"])
 
@@ -23,10 +24,9 @@ def get_films(
     session: Session = Depends(get_session),
     film_name: Annotated[str | None, Query(max_length=50)] = None,
 ) -> list[Film] | Response:
-    if film_name:
-        statement = select(Film).where(Film.name == film_name)
-        return list(session.exec(statement).all()) or Response(status_code=204)
-    return list(session.exec(select(Film)).all()) or Response(status_code=204)
+    return get_films_db(session=session, film_name=film_name) or Response(
+        status_code=204
+    )
 
 
 @router.post("/films", response_model=FilmRead, status_code=201)
