@@ -74,6 +74,9 @@ def generate_schedule(
         if screening.id in booked_session_ids:
             scored_screening.booked = True
 
+        if screening.film.id in watchlist_ids:
+            scored_screening.in_watchlist = True
+
         if screening in one_off_watchlist_screenings:
             scored_screening.score = scored_screening.score + 3
 
@@ -125,7 +128,7 @@ def generate_schedule(
         and not scored_screening.booked
     )
 
-    return schedule
+    return sorted(schedule, key=lambda item: item.screening.start_time_utc)
 
 
 def shuffle(screenings: list[Screening]) -> list[Screening]:

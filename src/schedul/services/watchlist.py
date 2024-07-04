@@ -11,10 +11,18 @@ from models.watchlist import (
 )
 
 
+def get_watchlist_entries_db(
+    session: Session, user_uuid: uuid_pkg.UUID
+) -> list[WatchlistEntry]:
+    return list(
+        session.exec(
+            select(WatchlistEntry).where(WatchlistEntry.user_uuid == user_uuid)
+        ).all()
+    )
+
+
 def get_watchlist_db(session: Session, user_uuid: uuid_pkg.UUID) -> Watchlist:
-    watchlist_entries = session.exec(
-        select(WatchlistEntry).where(WatchlistEntry.user_uuid == user_uuid)
-    ).all()
+    watchlist_entries = get_watchlist_entries_db(session=session, user_uuid=user_uuid)
 
     films = session.exec(select(Film)).all()
 
@@ -41,7 +49,9 @@ def create_watchlist_entry_db(
     return db_watchlist_entry
 
 
-def delete_watchlist_entry_db(session: Session, user_uuid: uuid_pkg.UUID, film_id: int):
+def delete_watchlist_entry_db(
+    session: Session, user_uuid: uuid_pkg.UUID, film_id: int
+) -> bool:
     if watchlist_entries := session.exec(
         select(WatchlistEntry)
         .where(WatchlistEntry.user_uuid == user_uuid)
@@ -50,4 +60,5 @@ def delete_watchlist_entry_db(session: Session, user_uuid: uuid_pkg.UUID, film_i
         for watchlist_entry in watchlist_entries:
             session.delete(watchlist_entry)
             session.commit()
-            return True
+        return True
+    return False

@@ -43,3 +43,4 @@ class ScoredScreening:
     screening: ScreeningRead
     score: int = 0
     booked: bool = False
+    in_watchlist: bool = False

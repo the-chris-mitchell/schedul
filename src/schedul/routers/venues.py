@@ -1,10 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
 from models.venue import Venue, VenueCreate, VenueRead
+from services.venue import get_venues_db
 
 router = APIRouter(tags=["Venues"])
 
@@ -18,15 +19,14 @@ def get_venue(*, session: Session = Depends(get_session), venue_id: int):
 
 
 @router.get("/venues", response_model=list[VenueRead])
-def get_films(
+def get_venues(
     *,
     session: Session = Depends(get_session),
     venue_name: Annotated[str | None, Query(max_length=50)] = None,
 ):
-    if venue_name:
-        statement = select(Venue).where(Venue.name == venue_name)
-        return session.exec(statement).all() or Response(status_code=204)
-    return session.exec(select(Venue)).all() or Response(status_code=204)
+    return get_venues_db(session=session, venue_name=venue_name) or Response(
+        status_code=204
+    )
 
 
 @router.post("/venues", response_model=VenueRead, status_code=201)

@@ -1,17 +1,14 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlmodel import Session, col, select
+from sqlmodel import Session, select
 
 from clients.sql import get_session
-from models.bookings import Booking
 from models.festival import Festival, FestivalCreate, FestivalRead, FestivalUpdate
 from models.preference import ScheduleRequest
-from models.screening import ScoredScreening, Screening, ScreeningRead
+from models.screening import ScoredScreening, ScreeningRead
 from models.user import User
-from models.venue import Venue
-from models.watchlist import WatchlistEntry
-from services.schedule import generate_schedule
+from services.festival import get_festival_schedule_db, get_sessions_db
 
 router = APIRouter(tags=["Festivals"])
 
@@ -91,39 +88,14 @@ def get_schedule(
     if len(schedule_request.venues) == 0:
         raise HTTPException(status_code=400, detail="Must include at least one venue")
 
-    screenings = list(
-        session.exec(
-            select(Screening).where(Screening.festival_id == festival_id)
-        ).all()
-    )
-
-    watchlist_entries = session.exec(
-        select(WatchlistEntry).where(
-            WatchlistEntry.user_uuid == schedule_request.user_uuid
-        )
-    ).all()
-    watchlist_ids = [watchlist_entry.film_id for watchlist_entry in watchlist_entries]
-
-    bookings = session.exec(
-        select(Booking).where(Booking.user_uuid == schedule_request.user_uuid)
-    ).all()
-    booked_session_ids = [booking.screening_id for booking in bookings]
-
-    venues = session.exec(
-        select(Venue).where(col(Venue.name).in_(schedule_request.venues))
-    ).all()
-    venue_ids = [venue.id for venue in venues if venue.id is not None]
-
-    return generate_schedule(
-        screenings, schedule_request, watchlist_ids, booked_session_ids, venue_ids
+    return get_festival_schedule_db(
+        session=session, festival_id=festival_id, schedule_request=schedule_request
     )
 
 
 @router.get("/festivals/{festival_id}/sessions", response_model=list[ScreeningRead])
 def get_sessions(*, session: Session = Depends(get_session), festival_id: int):
     if session.get(Festival, festival_id):
-        return session.exec(
-            select(Screening).where(Screening.festival_id == festival_id)
-        ).all()
+        return get_sessions_db(session=session, festival_id=festival_id)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")

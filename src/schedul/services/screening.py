@@ -61,9 +61,7 @@ def get_day_bucket(start_time: datetime, time_zone: str) -> DayBucket:
     match arrow.get(start_time).to(time_zone).date().weekday():
         case 5 | 6:
             return DayBucket.WEEKEND
-        case 4:
-            return DayBucket.FRIDAY
-        case 0 | 1 | 2 | 3:
+        case 0 | 1 | 2 | 3 | 4:
             return DayBucket.WEEKDAY
         case _:
             return DayBucket.NONE
@@ -71,11 +69,15 @@ def get_day_bucket(start_time: datetime, time_zone: str) -> DayBucket:
 
 def get_time_bucket(start_time: datetime, time_zone: str) -> TimeBucket:
     start_time_time = arrow.get(start_time).to(time_zone).time()
-    if start_time_time < time(13):
+    if start_time_time < time(12):
         return TimeBucket.MORNING
-    elif start_time_time < time(17):
-        return TimeBucket.AFTERNOON
-    elif start_time_time >= time(17):
+    elif start_time_time < time(15):
+        return TimeBucket.EARLY_AFTERNOON
+    elif start_time_time < time(18):
+        return TimeBucket.LATE_AFTERNOON
+    elif start_time_time < time(21):
         return TimeBucket.EVENING
+    elif start_time_time >= time(21):
+        return TimeBucket.LATE
     else:
         return TimeBucket.NONE

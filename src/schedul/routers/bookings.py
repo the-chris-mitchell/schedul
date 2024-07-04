@@ -8,10 +8,14 @@ from ics import Calendar, Event
 from sqlmodel import Session, select
 
 from clients.sql import get_session
-from models.bookings import Booking, BookingCreate, Bookings
+from models.bookings import Booking, Bookings
 from models.screening import Screening
 from models.user import User
-from services.bookings import get_booking_screenings
+from services.bookings import (
+    create_booking_db,
+    delete_booking_db,
+    get_booking_screenings,
+)
 
 router = APIRouter(tags=["Users"])
 
@@ -26,13 +30,9 @@ def delete_booking(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    if booking := session.exec(
-        select(Booking)
-        .where(Booking.user_uuid == user_uuid)
-        .where(Booking.screening_id == screening_id)
-    ).first():
-        session.delete(booking)
-        session.commit()
+    if delete_booking_db(
+        session=session, user_uuid=user_uuid, screening_id=screening_id
+    ):
         return {"deleted": True}
     else:
         raise HTTPException(status_code=404, detail="Booking not found")
@@ -64,13 +64,11 @@ def create_booking(
             content=jsonable_encoder(existing_booking),
         )
 
-    booking = BookingCreate(user_uuid=user_uuid, screening_id=screening_id)
-    db_booking = Booking.from_orm(booking)
-    session.add(db_booking)
-    session.commit()
-    session.refresh(db_booking)
+    booking = create_booking_db(
+        session=session, user_uuid=user_uuid, screening_id=screening_id
+    )
     return JSONResponse(
-        status_code=status.HTTP_201_CREATED, content=jsonable_encoder(db_booking)
+        status_code=status.HTTP_201_CREATED, content=jsonable_encoder(booking)
     )
 
 
@@ -86,7 +84,7 @@ def get_bookings(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    return Bookings(get_booking_screenings(user_uuid, session))
+    return Bookings(get_booking_screenings(session=session, user_uuid=user_uuid))
 
 
 @router.get(
@@ -100,7 +98,7 @@ async def get_bookings_ics(
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    screenings = get_booking_screenings(user_uuid, session)
+    screenings = get_booking_screenings(session=session, user_uuid=user_uuid)
 
     calendar = Calendar()
     for screening in screenings:
