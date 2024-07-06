@@ -83,28 +83,16 @@ def generate_schedule(
         if not schedule_request.watchlist_only and screening.film.id in watchlist_ids:
             scored_screening.score = scored_screening.score + 3
 
-        for position, venue_name in enumerate(schedule_request.venues, start=0):
-            if screening.venue.name == venue_name:
-                scored_screening.score = scored_screening.score + (
-                    len(schedule_request.venues) - position
-                )
+        for venue_preference in schedule_request.venue_preferences:
+            if screening.venue.name == venue_preference.venue_name:
+                scored_screening.score = scored_screening.score + venue_preference.score
 
-        for position, time_preference in enumerate(
-            schedule_request.time_preferences, start=0
-        ):
+        for time_preference in schedule_request.time_preferences:
             if (
-                time_preference.day_bucket
-                and scored_screening.day_bucket != time_preference.day_bucket
+                scored_screening.day_bucket == time_preference.day_bucket
+                and scored_screening.time_bucket == time_preference.time_bucket
             ):
-                continue
-            if (
-                time_preference.time_bucket
-                and scored_screening.time_bucket != time_preference.time_bucket
-            ):
-                continue
-            scored_screening.score = scored_screening.score + (
-                len(schedule_request.time_preferences) - position
-            )
+                scored_screening.score = scored_screening.score + time_preference.score
 
         scored_screenings.append(scored_screening)
 

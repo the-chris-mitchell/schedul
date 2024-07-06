@@ -51,8 +51,8 @@ def get_festival_schedule_db(
 
     venues = []
     [
-        venues.extend(get_venues_db(session=session, venue_name=venue_name))
-        for venue_name in schedule_request.venues
+        venues.extend(get_venues_db(session=session, venue_name=venue.venue_name))
+        for venue in schedule_request.venue_preferences
     ]
     venue_ids = [venue.id for venue in venues if venue.id is not None]
 

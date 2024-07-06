@@ -85,8 +85,10 @@ def get_schedule(
     if not session.get(User, schedule_request.user_uuid):
         raise HTTPException(status_code=400, detail="User not found")
 
-    if len(schedule_request.venues) == 0:
-        raise HTTPException(status_code=400, detail="Must include at least one venue")
+    if len(schedule_request.venue_preferences) == 0:
+        raise HTTPException(
+            status_code=400, detail="Must include at least one venue preference"
+        )
 
     return get_festival_schedule_db(
         session=session, festival_id=festival_id, schedule_request=schedule_request

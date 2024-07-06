@@ -8,7 +8,7 @@ from textual.widgets import Checkbox, Collapsible, Footer, Select
 from clients.sql import engine
 from models.bookings import BookingScreening
 from models.enums import DayBucket, TimeBucket
-from models.preference import ScheduleRequest, TimePreference
+from models.preference import ScheduleRequest, TimePreference, VenuePreference
 from models.screening import ScoredScreening
 from models.watchlist import WatchlistFilm
 from services.bookings import (
@@ -26,24 +26,40 @@ from services.watchlist import (
 schedule_request: ScheduleRequest = ScheduleRequest(
     time_zone="Pacific/Auckland",
     user_uuid="bf9247fc-df6c-4054-9f46-32a720c8c667",
-    venues=["Embassy Theatre", "Light House Cinema Cuba", "Roxy Cinema"],
     watchlist_only=False,
+    venue_preferences=[
+        VenuePreference(venue_name="Embassy Theatre", score=5),
+        VenuePreference(venue_name="Light House Cinema Cuba", score=4),
+        VenuePreference(venue_name="Roxy Cinema", score=1),
+    ],
     time_preferences=[
-        TimePreference(day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE),
-        TimePreference(day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.MORNING),
         TimePreference(
-            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.EARLY_AFTERNOON
+            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE, score=10
         ),
         TimePreference(
-            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE_AFTERNOON
-        ),
-        TimePreference(day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE),
-        TimePreference(day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.MORNING),
-        TimePreference(
-            day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.EARLY_AFTERNOON
+            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.MORNING, score=10
         ),
         TimePreference(
-            day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE_AFTERNOON
+            day_bucket=DayBucket.WEEKDAY,
+            time_bucket=TimeBucket.EARLY_AFTERNOON,
+            score=5,
+        ),
+        TimePreference(
+            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE_AFTERNOON, score=3
+        ),
+        TimePreference(
+            day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE, score=10
+        ),
+        TimePreference(
+            day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.MORNING, score=4
+        ),
+        TimePreference(
+            day_bucket=DayBucket.WEEKEND,
+            time_bucket=TimeBucket.EARLY_AFTERNOON,
+            score=3,
+        ),
+        TimePreference(
+            day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE_AFTERNOON, score=1
         ),
     ],
     max_daily_sessions=2,

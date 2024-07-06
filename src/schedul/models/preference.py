@@ -6,14 +6,22 @@ from pydantic import BaseModel
 from models.enums import DayBucket, TimeBucket
 
 
-class TimePreference(BaseModel):
-    day_bucket: DayBucket | None
-    time_bucket: TimeBucket | None
+class Preference(BaseModel):
+    score: int
+
+
+class TimePreference(Preference):
+    day_bucket: DayBucket
+    time_bucket: TimeBucket
+
+
+class VenuePreference(Preference):
+    venue_name: str
 
 
 class ScheduleRequest(BaseModel):
     excluded_dates: list[datetime.date] = []
-    venues: list[str] = []
+    venue_preferences: list[VenuePreference] = []
     time_preferences: list[TimePreference] = []
     max_daily_sessions: int = 1
     buffer_minutes: int = 30
