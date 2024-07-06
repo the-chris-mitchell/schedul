@@ -19,5 +19,5 @@ class FilmCreate(FilmBase):
     pass
 
 
-class FilmRead(FilmBase):
+class FilmPublic(FilmBase):
     id: int

@@ -4,13 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlmodel import Session
 
 from clients.sql import get_session
-from models.venue import Venue, VenueCreate, VenueRead
+from models.venue import Venue, VenueCreate, VenuePublic
 from services.venue import get_venues_db
 
 router = APIRouter(tags=["Venues"])
 
 
-@router.get("/venues/{venue_id}", response_model=VenueRead)
+@router.get("/venues/{venue_id}", response_model=VenuePublic)
 def get_venue(*, session: Session = Depends(get_session), venue_id: int):
     if venue := session.get(Venue, venue_id):
         return venue
@@ -18,7 +18,7 @@ def get_venue(*, session: Session = Depends(get_session), venue_id: int):
         raise HTTPException(status_code=404, detail="Venue not found")
 
 
-@router.get("/venues", response_model=list[VenueRead])
+@router.get("/venues", response_model=list[VenuePublic])
 def get_venues(
     *,
     session: Session = Depends(get_session),
@@ -29,7 +29,7 @@ def get_venues(
     )
 
 
-@router.post("/venues", response_model=VenueRead, status_code=201)
+@router.post("/venues", response_model=VenuePublic, status_code=201)
 def create_venue(*, session: Session = Depends(get_session), venue: VenueCreate):
     db_venue = Venue.from_orm(venue)
     session.add(db_venue)

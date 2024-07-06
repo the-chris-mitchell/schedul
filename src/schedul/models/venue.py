@@ -18,5 +18,5 @@ class VenueCreate(VenueBase):
     pass
 
 
-class VenueRead(VenueBase):
+class VenuePublic(VenueBase):
     id: int

@@ -34,7 +34,7 @@ class WatchlistEntryCreate(WatchlistEntryBase):
     pass
 
 
-class WatchlistEntryRead(WatchlistEntryBase):
+class WatchlistEntryPublic(WatchlistEntryBase):
     id: int
     user: User
     film: Film

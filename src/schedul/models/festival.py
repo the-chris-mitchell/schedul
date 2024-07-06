@@ -16,7 +16,7 @@ class FestivalCreate(FestivalBase):
     pass
 
 
-class FestivalRead(FestivalBase):
+class FestivalPublic(FestivalBase):
     id: int
 
 

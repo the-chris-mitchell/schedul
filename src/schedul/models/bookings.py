@@ -38,7 +38,7 @@ class BookingCreate(BookingBase):
     pass
 
 
-class BookingRead(BookingBase):
+class BookingPublic(BookingBase):
     id: int
     user: User
     screening: Screening
