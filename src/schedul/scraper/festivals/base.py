@@ -3,11 +3,17 @@ from abc import ABC, abstractmethod
 from datetime import timedelta
 
 import httpx
+from sqlmodel import Session
 
+from clients.sql import engine
+from models.festival import FestivalCreate, FestivalPublic
+from models.film import FilmCreate, FilmPublic
 from models.film_screening import FilmScreening
-from services.festival import create_festival_if_required
-from services.film import create_film_if_required
-from services.screening import create_screening_if_required
+from models.screening import ScreeningCreate
+from models.venue import VenueCreate, VenuePublic
+from services.festival import create_festival_if_required_db
+from services.film import create_film_if_required_db
+from services.screening import create_screening_if_required_db
 from services.venue import create_venue_if_required
 
 SCHEDUL_URL_PROD = "https://schedul-production.up.railway.app"
@@ -34,30 +40,48 @@ class Festival(ABC):
     def create_resources_dev(self) -> None:
         self.scrape()
 
-        festival = create_festival_if_required(
-            full_name=self.full_name, short_name=self.short_name
-        )
+        with Session(engine) as session:
+            festival = FestivalPublic.model_validate(
+                create_festival_if_required_db(
+                    session=session,
+                    festival=FestivalCreate(
+                        full_name=self.full_name, short_name=self.short_name
+                    ),
+                )
+            )
 
-        for screening in self.film_screenings:
-            print(
-                f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')} UTC)",
-                end=" ",
-            )
-            film = create_film_if_required(
-                name=screening.film.name, runtime=screening.film.runtime
-            )
-            venue = create_venue_if_required(name=screening.venue.name)
+            for screening in self.film_screenings:
+                print(
+                    f"{screening.film.name} @ {screening.venue.name} ({screening.screening_start_time_utc.strftime('%A %d %B %I:%M%p')} UTC)",
+                    end=" ",
+                )
 
-            create_screening_if_required(
-                start_time_utc=screening.screening_start_time_utc,
-                end_time_utc=screening.screening_start_time_utc
-                + timedelta(minutes=film.runtime),
-                link=screening.screening_link,
-                film_id=film.id,  # type: ignore
-                venue_id=venue.id,  # type: ignore
-                festival_id=festival.id,  # type: ignore
-            )
-            print("✅")
+                film = FilmPublic.model_validate(
+                    create_film_if_required_db(
+                        session=session,
+                        film=FilmCreate(
+                            name=screening.film.name, runtime=screening.film.runtime
+                        ),
+                    )
+                )
+                venue = VenuePublic.model_validate(
+                    create_venue_if_required(
+                        session=session, venue=VenueCreate(name=screening.venue.name)
+                    )
+                )
+
+                screening = ScreeningCreate(
+                    start_time_utc=screening.screening_start_time_utc,
+                    end_time_utc=screening.screening_start_time_utc
+                    + timedelta(minutes=film.runtime),
+                    link=screening.screening_link,
+                    film_id=film.id,
+                    venue_id=venue.id,
+                    festival_id=festival.id,
+                )
+                create_screening_if_required_db(session=session, screening=screening)
+
+                print("✅")
 
     def create_resources_prod(self) -> None:
         self.scrape()

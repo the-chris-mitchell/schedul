@@ -4,23 +4,14 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from models.film import Film
-from models.screening import Screening
+from models.screening import Screening, ScreeningPublic
 from models.user import User
-from models.venue import Venue
 
 
 @dataclass
 class BookingScreening:
-    screening: Screening
-    film: Film
-    venue: Venue
+    screening: ScreeningPublic
     is_booked: bool
-
-
-@dataclass
-class Bookings:
-    screenings: list[BookingScreening]
 
 
 class BookingBase(SQLModel):

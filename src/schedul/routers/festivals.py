@@ -1,21 +1,28 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
-from models.festival import Festival, FestivalCreate, FestivalPublic, FestivalUpdate
+from models.festival import Festival, FestivalCreate, FestivalPublic
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, ScreeningPublic
 from models.user import User
-from services.festival import get_festival_schedule_db, get_sessions_db
+from services.festival import (
+    create_festival_db,
+    delete_festival_db,
+    get_festival_db,
+    get_festivals_db,
+    get_sessions_db,
+)
+from services.schedule import get_festival_schedule
 
 router = APIRouter(tags=["Festivals"])
 
 
 @router.get("/festivals/{festival_id}", response_model=FestivalPublic)
 def get_festival(*, session: Session = Depends(get_session), festival_id: int):
-    if festival := session.get(Festival, festival_id):
+    if festival := get_festival_db(session=session, festival_id=festival_id):
         return festival
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
@@ -27,47 +34,21 @@ def get_festivals(
     session: Session = Depends(get_session),
     short_name: Annotated[str | None, Query(max_length=50)] = None,
 ):
-    if short_name:
-        statement = select(Festival).where(Festival.short_name == short_name)
-        return session.exec(statement).all() or Response(status_code=204)
-    return session.exec(select(Festival)).all() or Response(status_code=204)
+    return get_festivals_db(session=session, short_name=short_name) or Response(
+        status_code=204
+    )
 
 
 @router.post("/festivals", response_model=FestivalPublic, status_code=201)
 def create_festival(
     *, session: Session = Depends(get_session), festival: FestivalCreate
 ):
-    db_festival = Festival.from_orm(festival)
-    session.add(db_festival)
-    session.commit()
-    session.refresh(db_festival)
-    return db_festival
-
-
-@router.patch("/festivals/{festival_id}", response_model=FestivalPublic)
-def update_festival(
-    *,
-    session: Session = Depends(get_session),
-    festival_id: int,
-    festival: FestivalUpdate,
-):
-    if festival_to_update := session.get(Festival, festival_id):
-        festival_data = festival.dict(exclude_unset=True)
-        for key, value in festival_data.items():
-            setattr(festival_to_update, key, value)
-        session.add(festival_to_update)
-        session.commit()
-        session.refresh(festival_to_update)
-        return festival_to_update
-    else:
-        raise HTTPException(status_code=404, detail="Festival not found")
+    return create_festival_db(session=session, festival=festival)
 
 
 @router.delete("/festivals/{festival_id}")
 def delete_festival(*, session: Session = Depends(get_session), festival_id: int):
-    if festival := session.get(Festival, festival_id):
-        session.delete(festival)
-        session.commit()
+    if delete_festival_db(session=session, festival_id=festival_id):
         return {"deleted": True}
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
@@ -90,7 +71,7 @@ def get_schedule(
             status_code=400, detail="Must include at least one venue preference"
         )
 
-    return get_festival_schedule_db(
+    return get_festival_schedule(
         session=session, festival_id=festival_id, schedule_request=schedule_request
     )
 

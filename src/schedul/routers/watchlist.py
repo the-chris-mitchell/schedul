@@ -3,14 +3,15 @@ import uuid as uuid_pkg
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
-from models.film import Film
 from models.user import User
-from models.watchlist import Watchlist, WatchlistEntry
+from models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
+from services.film import get_film_db
+from services.users import get_user_db
 from services.watchlist import (
-    create_watchlist_entry_db,
+    create_watchlist_entry_if_required_db,
     delete_watchlist_entry_db,
     get_watchlist_db,
 )
@@ -38,40 +39,37 @@ def delete_watchlist_entry(
 def create_watchlist_entry(
     *, session: Session = Depends(get_session), user_uuid: uuid_pkg.UUID, film_id: int
 ) -> JSONResponse:
-    if not session.get(User, user_uuid):
+    if not get_user_db(session=session, user_uuid=user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    if not session.get(Film, film_id):
+    if not get_film_db(session=session, film_id=film_id):
         raise HTTPException(status_code=404, detail="Film not found")
 
-    if existing_watchlist_entry := session.exec(
-        select(WatchlistEntry)
-        .where(WatchlistEntry.user_uuid == user_uuid)
-        .where(WatchlistEntry.film_id == film_id)
-    ).first():
+    watchlist_entry, created = create_watchlist_entry_if_required_db(
+        session=session,
+        watchlist_entry=WatchlistEntryCreate(user_uuid=user_uuid, film_id=film_id),
+    )
+    if created:
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content=jsonable_encoder(watchlist_entry),
+        )
+    else:
         return JSONResponse(
             status_code=status.HTTP_202_ACCEPTED,
-            content=jsonable_encoder(existing_watchlist_entry),
+            content=jsonable_encoder(watchlist_entry),
         )
-
-    db_watchlist_entry = create_watchlist_entry_db(
-        session=session, user_uuid=user_uuid, film_id=film_id
-    )
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content=jsonable_encoder(db_watchlist_entry),
-    )
 
 
 @router.get(
     "/users/{user_uuid}/watchlist",
-    response_model=Watchlist,
+    response_model=list[WatchlistFilm],
 )
 def get_watchlist(
     *,
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
-) -> Watchlist:
+) -> list[WatchlistFilm]:
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 

@@ -6,26 +6,26 @@ from textual.screen import Screen
 from textual.widgets import Checkbox, Collapsible, Footer, Select
 
 from clients.sql import engine
-from models.bookings import BookingScreening
+from models.bookings import BookingCreate, BookingScreening
 from models.enums import DayBucket, TimeBucket
 from models.preference import ScheduleRequest, TimePreference, VenuePreference
 from models.screening import ScoredScreening
-from models.watchlist import WatchlistFilm
+from models.watchlist import WatchlistEntryCreate, WatchlistFilm
 from services.bookings import (
-    create_booking_db,
+    create_booking_if_required_db,
     delete_booking_db,
     get_booking_screenings,
 )
-from services.festival import get_festival_schedule_db
+from services.schedule import get_festival_schedule
 from services.watchlist import (
-    create_watchlist_entry_db,
+    create_watchlist_entry_if_required_db,
     delete_watchlist_entry_db,
     get_watchlist_db,
 )
 
 schedule_request: ScheduleRequest = ScheduleRequest(
     time_zone="Pacific/Auckland",
-    user_uuid="bf9247fc-df6c-4054-9f46-32a720c8c667",
+    user_uuid="bf9247fc-df6c-4054-9f46-32a720c8c667",  # type: ignore
     watchlist_only=False,
     venue_preferences=[
         VenuePreference(venue_name="Embassy Theatre", score=5),
@@ -71,7 +71,7 @@ class WatchlistScreen(Screen):
         with Session(engine) as session:
             watchlist: list[WatchlistFilm] = get_watchlist_db(
                 session=session, user_uuid=schedule_request.user_uuid
-            ).films
+            )
         with VerticalScroll():
             for entry in watchlist:
                 yield Checkbox(
@@ -84,16 +84,15 @@ class WatchlistScreen(Screen):
     def on_checkbox_changed(self, event: Checkbox.Changed):
         with Session(engine) as session:
             if event.control.value:
-                create_watchlist_entry_db(
+                create_watchlist_entry_if_required_db(
                     session=session,
-                    user_uuid=schedule_request.user_uuid,
-                    film_id=int(event.control.id.strip("id_")),
+                    watchlist_entry=WatchlistEntryCreate(user_uuid=schedule_request.user_uuid, film_id=int(event.control.id.strip("id_"))),  # type: ignore
                 )
             else:
                 delete_watchlist_entry_db(
                     session=session,
                     user_uuid=schedule_request.user_uuid,
-                    film_id=int(event.control.id.strip("id_")),
+                    film_id=int(event.control.id.strip("id_")),  # type: ignore
                 )
 
 
@@ -138,16 +137,18 @@ class SessionsScreen(Screen):
     def on_checkbox_changed(self, event: Checkbox.Changed):
         with Session(engine) as session:
             if event.control.value:
-                create_booking_db(
+                create_booking_if_required_db(
                     session=session,
-                    user_uuid=schedule_request.user_uuid,
-                    screening_id=int(event.control.id.strip("id_")),
+                    booking=BookingCreate(
+                        user_uuid=schedule_request.user_uuid,
+                        screening_id=int(event.control.id.strip("id_")),  # type: ignore
+                    ),
                 )
             else:
                 delete_booking_db(
                     session=session,
                     user_uuid=schedule_request.user_uuid,
-                    screening_id=int(event.control.id.strip("id_")),
+                    screening_id=int(event.control.id.strip("id_")),  # type: ignore
                 )
 
 
@@ -156,7 +157,7 @@ class ScheduleScreen(Screen):
 
     def get_data(self):
         with Session(engine) as session:
-            self.schedule = get_festival_schedule_db(
+            self.schedule = get_festival_schedule(
                 session=session, festival_id=1, schedule_request=schedule_request
             )
 
@@ -192,16 +193,18 @@ class ScheduleScreen(Screen):
     def on_checkbox_changed(self, event: Checkbox.Changed):
         with Session(engine) as session:
             if event.control.value:
-                create_booking_db(
+                create_booking_if_required_db(
                     session=session,
-                    user_uuid=schedule_request.user_uuid,
-                    screening_id=int(event.control.id.strip("id_")),
+                    booking=BookingCreate(
+                        user_uuid=schedule_request.user_uuid,
+                        screening_id=int(event.control.id.strip("id_")),  # type: ignore
+                    ),
                 )
             else:
                 delete_booking_db(
                     session=session,
                     user_uuid=schedule_request.user_uuid,
-                    screening_id=int(event.control.id.strip("id_")),
+                    screening_id=int(event.control.id.strip("id_")),  # type: ignore
                 )
 
 

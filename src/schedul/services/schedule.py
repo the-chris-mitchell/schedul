@@ -3,9 +3,40 @@ from collections import Counter
 from datetime import timedelta
 
 import arrow
+from sqlmodel import Session
 
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening, ScreeningPublic
+from services.bookings import get_bookings_db
+from services.festival import get_sessions_db
+from services.venue import get_venues_db
+from services.watchlist import get_watchlist_entries_db
+
+
+def get_festival_schedule(
+    session: Session, festival_id: int, schedule_request: ScheduleRequest
+):
+    screenings = get_sessions_db(session=session, festival_id=festival_id)
+
+    watchlist_entries = get_watchlist_entries_db(
+        session=session, user_uuid=schedule_request.user_uuid
+    )
+
+    watchlist_ids = [watchlist_entry.film_id for watchlist_entry in watchlist_entries]
+
+    bookings = get_bookings_db(session=session, user_uuid=schedule_request.user_uuid)
+    booked_session_ids = [booking.screening_id for booking in bookings]
+
+    venues = []
+    [
+        venues.extend(get_venues_db(session=session, venue_name=venue.venue_name))
+        for venue in schedule_request.venue_preferences
+    ]
+    venue_ids = [venue.id for venue in venues if venue.id is not None]
+
+    return generate_schedule(
+        screenings, schedule_request, watchlist_ids, booked_session_ids, venue_ids
+    )
 
 
 def generate_schedule(

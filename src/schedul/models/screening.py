@@ -50,15 +50,6 @@ class Screening(ScreeningBase, table=True):
     venue: Venue = Relationship()
     festival: Festival = Relationship()
 
-    def format(self, time_zone: str):
-        elements: list[str] = [
-            self.film.name,
-            self.venue.name,
-            arrow.get(self.start_time_utc).to(time_zone).format("h:mm a"),
-            self.get_time_bucket(time_zone=time_zone).name,
-        ]
-        return " | ".join(elements)
-
 
 class ScreeningCreate(ScreeningBase):
     pass
@@ -68,6 +59,15 @@ class ScreeningPublic(ScreeningBase):
     id: int
     film: Film
     venue: Venue
+
+    def format(self, time_zone: str):
+        elements: list[str] = [
+            self.film.name,
+            self.venue.name,
+            arrow.get(self.start_time_utc).to(time_zone).format("h:mm a"),
+            self.get_time_bucket(time_zone=time_zone).name,
+        ]
+        return " | ".join(elements)
 
 
 @dataclass
@@ -80,10 +80,9 @@ class ScoredScreening:
     in_watchlist: bool = False
 
     def format(self, time_zone: str):
-        screening = Screening.model_validate(self.screening)
+        screening = self.screening
         elements: list[str] = []
         if self.in_watchlist:
             elements.append("👀")
-        elements.append(screening.format(time_zone=time_zone))
-        elements.append(f"Score: {self.score}")
+        elements.extend((screening.format(time_zone=time_zone), f"Score: {self.score}"))
         return " | ".join(elements)

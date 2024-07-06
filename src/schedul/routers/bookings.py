@@ -5,17 +5,18 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 from ics import Calendar, Event
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
-from models.bookings import Booking, Bookings
-from models.screening import Screening
+from models.bookings import Booking, BookingCreate, BookingScreening
 from models.user import User
 from services.bookings import (
-    create_booking_db,
+    create_booking_if_required_db,
     delete_booking_db,
     get_booking_screenings,
 )
+from services.screening import get_screening_db
+from services.users import get_user_db
 
 router = APIRouter(tags=["Users"])
 
@@ -27,7 +28,7 @@ def delete_booking(
     user_uuid: uuid_pkg.UUID,
     screening_id: int,
 ) -> dict[str, bool]:
-    if not session.get(User, user_uuid):
+    if not get_user_db(session=session, user_uuid=user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
     if delete_booking_db(
@@ -48,43 +49,39 @@ def create_booking(
     user_uuid: uuid_pkg.UUID,
     screening_id: int,
 ) -> JSONResponse:
-    if not session.get(User, user_uuid):
+    if not get_user_db(session=session, user_uuid=user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    if not session.get(Screening, screening_id):
+    if not get_screening_db(session=session, screening_id=screening_id):
         raise HTTPException(status_code=404, detail="Screening not found")
 
-    if existing_booking := session.exec(
-        select(Booking)
-        .where(Booking.user_uuid == user_uuid)
-        .where(Booking.screening_id == screening_id)
-    ).first():
+    booking, created = create_booking_if_required_db(
+        session=session,
+        booking=BookingCreate(user_uuid=user_uuid, screening_id=screening_id),
+    )
+    if created:
         return JSONResponse(
-            status_code=status.HTTP_202_ACCEPTED,
-            content=jsonable_encoder(existing_booking),
+            status_code=status.HTTP_201_CREATED, content=jsonable_encoder(booking)
         )
-
-    booking = create_booking_db(
-        session=session, user_uuid=user_uuid, screening_id=screening_id
-    )
-    return JSONResponse(
-        status_code=status.HTTP_201_CREATED, content=jsonable_encoder(booking)
-    )
+    else:
+        return JSONResponse(
+            status_code=status.HTTP_202_ACCEPTED, content=jsonable_encoder(booking)
+        )
 
 
 @router.get(
     "/users/{user_uuid}/bookings",
-    response_model=Bookings,
+    response_model=list[BookingScreening],
 )
 def get_bookings(
     *,
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
-) -> Bookings:
+) -> list[BookingScreening]:
     if not session.get(User, user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
-    return Bookings(get_booking_screenings(session=session, user_uuid=user_uuid))
+    return get_booking_screenings(session=session, user_uuid=user_uuid)
 
 
 @router.get(
@@ -104,7 +101,7 @@ async def get_bookings_ics(
     for screening in screenings:
         if screening.is_booked:
             event = Event()
-            event.name = screening.film.name
+            event.name = screening.screening.film.name
             event.begin = screening.screening.start_time_utc
             event.end = screening.screening.end_time_utc
             event.location = screening.screening.venue.name

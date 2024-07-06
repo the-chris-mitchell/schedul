@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from clients.sql import get_session
 from models.screening import Screening, ScreeningCreate, ScreeningPublic
+from services.screening import (
+    create_screening_db,
+    delete_screening_db,
+    get_screenings_db,
+)
 
 router = APIRouter(tags=["Screening"])
 
@@ -17,25 +22,19 @@ def get_screening(*, session: Session = Depends(get_session), screening_id: int)
 
 @router.get("/screenings", response_model=list[ScreeningPublic])
 def get_screenings(*, session: Session = Depends(get_session)):
-    return session.exec(select(Screening)).all()
+    return get_screenings_db(session=session)
 
 
 @router.post("/screenings", response_model=ScreeningPublic, status_code=201)
 def create_screening(
     *, session: Session = Depends(get_session), screening: ScreeningCreate
 ):
-    db_screening = Screening.from_orm(screening)
-    session.add(db_screening)
-    session.commit()
-    session.refresh(db_screening)
-    return db_screening
+    return create_screening_db(session=session, screening=screening)
 
 
 @router.delete("/screenings/{screening_id}")
 def delete_screening(*, session: Session = Depends(get_session), screening_id: int):
-    if screening := session.get(Screening, screening_id):
-        session.delete(screening)
-        session.commit()
+    if delete_screening_db(session=session, screening_id=screening_id):
         return {"deleted": True}
     else:
         raise HTTPException(status_code=404, detail="Screening not found")

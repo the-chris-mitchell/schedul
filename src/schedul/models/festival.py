@@ -18,8 +18,3 @@ class FestivalCreate(FestivalBase):
 
 class FestivalPublic(FestivalBase):
     id: int
-
-
-class FestivalUpdate(FestivalBase):
-    full_name: Optional[str] = None  # type: ignore
-    short_name: Optional[str] = None  # type: ignore

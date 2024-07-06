@@ -14,11 +14,6 @@ class WatchlistFilm:
     in_watchlist: bool
 
 
-@dataclass
-class Watchlist:
-    films: list[WatchlistFilm]
-
-
 class WatchlistEntryBase(SQLModel):
     user_uuid: uuid_pkg.UUID = Field(foreign_key="user.uuid")
     film_id: int = Field(foreign_key="film.id")
