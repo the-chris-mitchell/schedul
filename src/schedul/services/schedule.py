@@ -6,7 +6,6 @@ import arrow
 
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening, ScreeningRead
-from services.screening import get_day_bucket, get_time_bucket
 
 
 def generate_schedule(
@@ -66,8 +65,8 @@ def generate_schedule(
     # 1. Score the screenings
     for screening in selected_screenings:
         scored_screening = ScoredScreening(
-            get_day_bucket(screening.start_time_utc, schedule_request.time_zone),
-            get_time_bucket(screening.start_time_utc, schedule_request.time_zone),
+            day_bucket=screening.get_day_bucket(time_zone=schedule_request.time_zone),
+            time_bucket=screening.get_time_bucket(time_zone=schedule_request.time_zone),
             screening=ScreeningRead.model_validate(screening),
         )
 

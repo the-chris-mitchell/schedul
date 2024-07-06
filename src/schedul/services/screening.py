@@ -1,10 +1,8 @@
-from datetime import datetime, time
+from datetime import datetime
 
-import arrow
 from sqlmodel import Session, select
 
 from clients.sql import engine
-from models.enums import DayBucket, TimeBucket
 from models.screening import Screening
 
 
@@ -55,29 +53,3 @@ def create_screening_if_required(
             venue_id=venue_id,
             festival_id=festival_id,
         )
-
-
-def get_day_bucket(start_time: datetime, time_zone: str) -> DayBucket:
-    match arrow.get(start_time).to(time_zone).date().weekday():
-        case 5 | 6:
-            return DayBucket.WEEKEND
-        case 0 | 1 | 2 | 3 | 4:
-            return DayBucket.WEEKDAY
-        case _:
-            return DayBucket.NONE
-
-
-def get_time_bucket(start_time: datetime, time_zone: str) -> TimeBucket:
-    start_time_time = arrow.get(start_time).to(time_zone).time()
-    if start_time_time < time(12):
-        return TimeBucket.MORNING
-    elif start_time_time < time(15):
-        return TimeBucket.EARLY_AFTERNOON
-    elif start_time_time < time(18):
-        return TimeBucket.LATE_AFTERNOON
-    elif start_time_time < time(21):
-        return TimeBucket.EVENING
-    elif start_time_time >= time(21):
-        return TimeBucket.LATE
-    else:
-        return TimeBucket.NONE

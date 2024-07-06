@@ -127,7 +127,9 @@ class SessionsScreen(Screen):
                     key=lambda item: item.screening.start_time_utc,
                 ):
                     yield Checkbox(
-                        label=f"{entry.film.name} @ {entry.venue.name} @ {arrow.get(entry.screening.start_time_utc).to(schedule_request.time_zone).format(arrow.FORMAT_RFC2822)}",
+                        label=entry.screening.format(
+                            time_zone=schedule_request.time_zone
+                        ),
                         id=f"id_{str(entry.screening.id)}",
                         value=entry.is_booked,
                     )
@@ -181,7 +183,7 @@ class ScheduleScreen(Screen):
                     == day
                 ]:
                     yield Checkbox(
-                        label=f"{'👀' if entry.in_watchlist else ''} {entry.screening.film.name} @ {entry.screening.venue.name} @ {arrow.get(entry.screening.start_time_utc).to(schedule_request.time_zone).format(arrow.FORMAT_RFC2822)} ({entry.time_bucket.name})",
+                        label=entry.format(time_zone=schedule_request.time_zone),
                         id=f"id_{str(entry.screening.id)}",
                         value=entry.booked,
                     )
