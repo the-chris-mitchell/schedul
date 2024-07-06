@@ -9,7 +9,6 @@ from sqlmodel import Session
 
 from clients.sql import get_session
 from models.bookings import Booking, BookingCreate, BookingScreening
-from models.user import User
 from services.bookings import (
     create_booking_if_required_db,
     delete_booking_db,
@@ -78,7 +77,7 @@ def get_bookings(
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
 ) -> list[BookingScreening]:
-    if not session.get(User, user_uuid):
+    if not get_user_db(session=session, user_uuid=user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
     return get_booking_screenings(session=session, user_uuid=user_uuid)
@@ -92,7 +91,7 @@ async def get_bookings_ics(
     session: Session = Depends(get_session),
     user_uuid: uuid_pkg.UUID,
 ):
-    if not session.get(User, user_uuid):
+    if not get_user_db(session=session, user_uuid=user_uuid):
         raise HTTPException(status_code=404, detail="User not found")
 
     screenings = get_booking_screenings(session=session, user_uuid=user_uuid)

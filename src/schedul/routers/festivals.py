@@ -4,10 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlmodel import Session
 
 from clients.sql import get_session
-from models.festival import Festival, FestivalCreate, FestivalPublic
+from models.festival import FestivalCreate, FestivalPublic
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, ScreeningPublic
-from models.user import User
 from services.festival import (
     create_festival_db,
     delete_festival_db,
@@ -16,6 +15,7 @@ from services.festival import (
     get_sessions_db,
 )
 from services.schedule import get_festival_schedule
+from services.users import get_user_db
 
 router = APIRouter(tags=["Festivals"])
 
@@ -61,9 +61,9 @@ def get_schedule(
     festival_id: int,
     schedule_request: ScheduleRequest,
 ):
-    if not session.get(Festival, festival_id):
+    if not get_festival_db(session=session, festival_id=festival_id):
         raise HTTPException(status_code=404, detail="Festival not found")
-    if not session.get(User, schedule_request.user_uuid):
+    if not get_user_db(session=session, user_uuid=schedule_request.user_uuid):
         raise HTTPException(status_code=400, detail="User not found")
 
     if len(schedule_request.venue_preferences) == 0:
@@ -78,7 +78,7 @@ def get_schedule(
 
 @router.get("/festivals/{festival_id}/sessions", response_model=list[ScreeningPublic])
 def get_sessions(*, session: Session = Depends(get_session), festival_id: int):
-    if session.get(Festival, festival_id):
+    if get_festival_db(session=session, festival_id=festival_id):
         return get_sessions_db(session=session, festival_id=festival_id)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")
