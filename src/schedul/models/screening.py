@@ -14,7 +14,8 @@ from models.venue import Venue, VenueBase
 class ScreeningBase(SQLModel):
     start_time_utc: datetime
     end_time_utc: datetime
-    link: str
+    link: str | None = None
+    strand: str | None = None
     film_id: int = Field(foreign_key="film.id")
     venue_id: int = Field(foreign_key="venue.id")
     festival_id: int = Field(foreign_key="festival.id")
@@ -64,9 +65,15 @@ class ScreeningPublic(ScreeningBase):
         elements: list[str] = [
             self.film.name,
             self.venue.name,
-            arrow.get(self.start_time_utc).to(time_zone).format("h:mm a"),
-            self.get_time_bucket(time_zone=time_zone).name,
         ]
+        if self.strand:
+            elements.append(self.strand)
+        elements.extend(
+            [
+                arrow.get(self.start_time_utc).to(time_zone).format("h:mm a"),
+                self.get_time_bucket(time_zone=time_zone).name,
+            ]
+        )
         return " | ".join(elements)
 
 
@@ -93,4 +100,5 @@ class FilmScreening:
     film: FilmBase
     venue: VenueBase
     screening_start_time_utc: datetime
-    screening_link: str
+    screening_link: str | None = None
+    strand: str | None = None

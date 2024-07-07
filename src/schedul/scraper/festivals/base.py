@@ -74,6 +74,7 @@ class Festival(ABC):
                     end_time_utc=screening.screening_start_time_utc
                     + timedelta(minutes=film.runtime),
                     link=screening.screening_link,
+                    strand=screening.strand,
                     film_id=film.id,
                     venue_id=venue.id,
                     festival_id=festival.id,
