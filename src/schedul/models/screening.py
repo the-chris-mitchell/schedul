@@ -7,8 +7,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from models.enums import DayBucket, TimeBucket
 from models.festival import Festival
-from models.film import Film
-from models.venue import Venue
+from models.film import Film, FilmBase
+from models.venue import Venue, VenueBase
 
 
 class ScreeningBase(SQLModel):
@@ -86,3 +86,11 @@ class ScoredScreening:
             elements.append("👀")
         elements.extend((screening.format(time_zone=time_zone), f"Score: {self.score}"))
         return " | ".join(elements)
+
+
+@dataclass
+class FilmScreening:
+    film: FilmBase
+    venue: VenueBase
+    screening_start_time_utc: datetime
+    screening_link: str

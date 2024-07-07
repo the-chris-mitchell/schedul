@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from models.film import FilmBase
-from models.film_screening import FilmScreening
+from models.screening import FilmScreening
 from models.venue import VenueBase
 from scraper.festivals.base import Festival
 

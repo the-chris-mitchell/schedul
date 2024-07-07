@@ -8,8 +8,7 @@ from sqlmodel import Session
 from clients.sql import engine
 from models.festival import FestivalCreate, FestivalPublic
 from models.film import FilmCreate, FilmPublic
-from models.film_screening import FilmScreening
-from models.screening import ScreeningCreate
+from models.screening import FilmScreening, ScreeningCreate
 from models.venue import VenueCreate, VenuePublic
 from services.festival import create_festival_if_required_db
 from services.film import create_film_if_required_db
