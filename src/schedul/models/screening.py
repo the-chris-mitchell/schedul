@@ -70,7 +70,7 @@ class ScreeningPublic(ScreeningBase):
             elements.append(self.strand)
         elements.extend(
             [
-                arrow.get(self.start_time_utc).to(time_zone).format("h:mm a"),
+                f"{arrow.get(self.start_time_utc).to(time_zone).format('h:mm a')} -> {arrow.get(self.end_time_utc).to(time_zone).format('h:mm a')}",
                 self.get_time_bucket(time_zone=time_zone).name,
             ]
         )
