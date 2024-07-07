@@ -34,7 +34,7 @@ schedule_request: ScheduleRequest = ScheduleRequest(
     ],
     time_preferences=[
         TimePreference(
-            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE, score=10
+            day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.LATE, score=7
         ),
         TimePreference(
             day_bucket=DayBucket.WEEKDAY, time_bucket=TimeBucket.MORNING, score=10
@@ -62,7 +62,7 @@ schedule_request: ScheduleRequest = ScheduleRequest(
             day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE_AFTERNOON, score=1
         ),
     ],
-    max_daily_screenings=2,
+    max_daily_screenings=3,
 )
 
 
