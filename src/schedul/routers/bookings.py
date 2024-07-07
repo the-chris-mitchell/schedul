@@ -1,6 +1,7 @@
 import io
 import uuid as uuid_pkg
 
+import arrow
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -98,7 +99,7 @@ async def get_bookings_ics(
 
     calendar = Calendar()
     for screening in screenings:
-        if screening.is_booked:
+        if screening.is_booked and screening.screening.start_time_utc > arrow.utcnow():
             event = Event()
             event.name = screening.screening.film.name
             event.begin = screening.screening.start_time_utc
