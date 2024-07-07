@@ -1,9 +1,12 @@
 import uuid as uuid_pkg
 
+from fastapi import HTTPException
 from sqlmodel import Session, select
 
 from models.film import Film
 from models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
+from services.film import get_film_db
+from services.users import get_user_db
 
 
 def get_watchlist_entries_db(
@@ -46,6 +49,11 @@ def create_watchlist_entry_db(
 def create_watchlist_entry_if_required_db(
     session: Session, watchlist_entry: WatchlistEntryCreate
 ) -> tuple[WatchlistEntry, bool]:
+    if not get_user_db(session=session, user_uuid=watchlist_entry.user_uuid):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not get_film_db(session=session, film_id=watchlist_entry.film_id):
+        raise HTTPException(status_code=404, detail="Film not found")
     if response := session.exec(
         select(WatchlistEntry)
         .where(WatchlistEntry.user_uuid == watchlist_entry.user_uuid)

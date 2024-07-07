@@ -1,10 +1,12 @@
 import uuid as uuid_pkg
 
+from fastapi import HTTPException
 from sqlmodel import Session, select
 
 from models.bookings import Booking, BookingCreate, BookingScreening
 from models.screening import ScreeningPublic
-from services.screening import get_screenings_db
+from services.screening import get_screening_db, get_screenings_db
+from services.users import get_user_db
 
 
 def create_booking_db(session: Session, booking: BookingCreate) -> Booking:
@@ -18,6 +20,11 @@ def create_booking_db(session: Session, booking: BookingCreate) -> Booking:
 def create_booking_if_required_db(
     session: Session, booking: BookingCreate
 ) -> tuple[Booking, bool]:
+    if not get_user_db(session=session, user_uuid=booking.user_uuid):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not get_screening_db(session=session, screening_id=booking.screening_id):
+        raise HTTPException(status_code=404, detail="Screening not found")
     if response := session.exec(
         select(Booking)
         .where(Booking.user_uuid == booking.user_uuid)

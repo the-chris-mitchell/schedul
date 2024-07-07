@@ -7,7 +7,6 @@ from sqlmodel import Session
 
 from clients.sql import get_session
 from models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
-from services.film import get_film_db
 from services.users import get_user_db
 from services.watchlist import (
     create_watchlist_entry_if_required_db,
@@ -38,12 +37,6 @@ def delete_watchlist_entry(
 def create_watchlist_entry(
     *, session: Session = Depends(get_session), user_uuid: uuid_pkg.UUID, film_id: int
 ) -> JSONResponse:
-    if not get_user_db(session=session, user_uuid=user_uuid):
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not get_film_db(session=session, film_id=film_id):
-        raise HTTPException(status_code=404, detail="Film not found")
-
     watchlist_entry, created = create_watchlist_entry_if_required_db(
         session=session,
         watchlist_entry=WatchlistEntryCreate(user_uuid=user_uuid, film_id=film_id),

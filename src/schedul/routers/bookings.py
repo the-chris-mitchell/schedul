@@ -15,7 +15,6 @@ from services.bookings import (
     delete_booking_db,
     get_booking_screenings,
 )
-from services.screening import get_screening_db
 from services.users import get_user_db
 
 router = APIRouter(tags=["Users"])
@@ -49,12 +48,6 @@ def create_booking(
     user_uuid: uuid_pkg.UUID,
     screening_id: int,
 ) -> JSONResponse:
-    if not get_user_db(session=session, user_uuid=user_uuid):
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not get_screening_db(session=session, screening_id=screening_id):
-        raise HTTPException(status_code=404, detail="Screening not found")
-
     booking, created = create_booking_if_required_db(
         session=session,
         booking=BookingCreate(user_uuid=user_uuid, screening_id=screening_id),
