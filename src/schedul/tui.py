@@ -26,7 +26,7 @@ from services.watchlist import (
 schedule_request: ScheduleRequest = ScheduleRequest(
     time_zone="Pacific/Auckland",
     user_uuid="bf9247fc-df6c-4054-9f46-32a720c8c667",  # type: ignore
-    watchlist_only=False,
+    watchlist_only=True,
     venue_preferences=[
         VenuePreference(venue_name="Embassy Theatre", score=5),
         VenuePreference(venue_name="Light House Cinema Cuba", score=4),
@@ -62,7 +62,7 @@ schedule_request: ScheduleRequest = ScheduleRequest(
             day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE_AFTERNOON, score=1
         ),
     ],
-    max_daily_sessions=2,
+    max_daily_screenings=2,
 )
 
 
@@ -96,7 +96,7 @@ class WatchlistScreen(Screen):
                 )
 
 
-class SessionsScreen(Screen):
+class ScreeningsScreen(Screen):
     def compose(self) -> ComposeResult:
         with Session(engine) as session:
             bookings: list[BookingScreening] = get_booking_screenings(
@@ -218,13 +218,13 @@ class CheckboxApp(App):
     SCREENS = {
         "watchlist": WatchlistScreen(),
         "user": UserScreen(),
-        "sessions": SessionsScreen,
+        "screenings": ScreeningsScreen,
         "schedule": ScheduleScreen,
     }
     BINDINGS = [
         ("u", "push_screen('user')", "Users"),
         ("w", "push_screen('watchlist')", "Watchlist"),
-        ("s", "push_screen('sessions')", "Sessions"),
+        ("s", "push_screen('screenings')", "Screenings"),
         ("x", "push_screen('schedule')", "Schedule"),
     ]
 

@@ -69,7 +69,7 @@ async function getSchedule(festival_id: string) {
       "Maria Into Life"
     ],
     "watchlist_only": false,
-    "max_daily_sessions": 1,
+    "max_daily_screenings": 1,
     "time_zone": "Pacific/Auckland"
   }
 

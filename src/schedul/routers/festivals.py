@@ -12,9 +12,9 @@ from services.festival import (
     delete_festival_db,
     get_festival_db,
     get_festivals_db,
-    get_sessions_db,
 )
 from services.schedule import get_festival_schedule
+from services.screening import get_festival_screenings_db
 from services.users import get_user_db
 
 router = APIRouter(tags=["Festivals"])
@@ -76,9 +76,11 @@ def get_schedule(
     )
 
 
-@router.get("/festivals/{festival_id}/sessions", response_model=list[ScreeningPublic])
-def get_sessions(*, session: Session = Depends(get_session), festival_id: int):
+@router.get("/festivals/{festival_id}/screenings", response_model=list[ScreeningPublic])
+def get_festival_screenings(
+    *, session: Session = Depends(get_session), festival_id: int
+):
     if get_festival_db(session=session, festival_id=festival_id):
-        return get_sessions_db(session=session, festival_id=festival_id)
+        return get_festival_screenings_db(session=session, festival_id=festival_id)
     else:
         raise HTTPException(status_code=404, detail="Festival not found")

@@ -1,7 +1,6 @@
 from sqlmodel import Session, select
 
 from models.festival import Festival, FestivalCreate
-from models.screening import Screening
 
 
 def get_festival_db(session: Session, festival_id: int) -> Festival | None:
@@ -38,11 +37,3 @@ def create_festival_if_required_db(
         select(Festival).where(Festival.short_name == festival.short_name)
     ).first()
     return query or create_festival_db(session=session, festival=festival)
-
-
-def get_sessions_db(session: Session, festival_id) -> list[Screening]:
-    return list(
-        session.exec(
-            select(Screening).where(Screening.festival_id == festival_id)
-        ).all()
-    )

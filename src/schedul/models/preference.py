@@ -23,7 +23,7 @@ class ScheduleRequest(BaseModel):
     excluded_dates: list[datetime.date] = []
     venue_preferences: list[VenuePreference] = []
     time_preferences: list[TimePreference] = []
-    max_daily_sessions: int = 1
+    max_daily_screenings: int = 1
     buffer_minutes: int = 30
     watchlist_only: bool = True
     future_only: bool = True

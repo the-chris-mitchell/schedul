@@ -38,3 +38,11 @@ def delete_screening_db(session: Session, screening_id: int):
         session.commit()
         return True
     return False
+
+
+def get_festival_screenings_db(session: Session, festival_id) -> list[Screening]:
+    return list(
+        session.exec(
+            select(Screening).where(Screening.festival_id == festival_id)
+        ).all()
+    )

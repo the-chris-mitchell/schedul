@@ -8,7 +8,7 @@ from sqlmodel import Session
 from models.preference import ScheduleRequest
 from models.screening import ScoredScreening, Screening, ScreeningPublic
 from services.bookings import get_bookings_db
-from services.festival import get_sessions_db
+from services.screening import get_festival_screenings_db
 from services.venue import get_venues_db
 from services.watchlist import get_watchlist_entries_db
 
@@ -16,7 +16,7 @@ from services.watchlist import get_watchlist_entries_db
 def get_festival_schedule(
     session: Session, festival_id: int, schedule_request: ScheduleRequest
 ):
-    screenings = get_sessions_db(session=session, festival_id=festival_id)
+    screenings = get_festival_screenings_db(session=session, festival_id=festival_id)
 
     watchlist_entries = get_watchlist_entries_db(
         session=session, user_uuid=schedule_request.user_uuid
@@ -130,7 +130,7 @@ def generate_schedule(
         scored_screenings, key=lambda item: item.score, reverse=True
     )
 
-    # 2. Add booked sessions first
+    # 2. Add booked screenings first
     schedule.extend(
         scored_screening
         for scored_screening in sorted_scored_screenings
@@ -189,5 +189,5 @@ def should_add(
                 .date()
             ]
         )
-        < schedule_request.max_daily_sessions
+        < schedule_request.max_daily_screenings
     )
