@@ -88,8 +88,8 @@ class WatchlistScreen(Screen):
                     session=session,
                     watchlist_entry=WatchlistEntryCreate(
                         user_uuid=schedule_request.user_uuid,
-                        film_id=int(event.control.id.strip("id_")),
-                    ),  # type: ignore
+                        film_id=int(event.control.id.strip("id_")),  # type: ignore
+                    ),
                 )
             else:
                 delete_watchlist_entry_db(
