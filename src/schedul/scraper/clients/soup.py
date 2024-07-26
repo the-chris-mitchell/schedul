@@ -26,13 +26,6 @@ def get_cached_soup(
     return BeautifulSoup(response.text, features="html.parser")
 
 
-# def get_rendered_soup(url: str) -> BeautifulSoup:
-#     session = HTMLSession()
-#     response = session.get(url)
-#     response.html.render(timeout=60)  # type: ignore
-#     return BeautifulSoup(response.html.raw_html, features="html.parser")  # type: ignore
-
-
 def get_selenium_soup(url: str) -> BeautifulSoup:
     options = Options()
     options.headless = True  # type: ignore

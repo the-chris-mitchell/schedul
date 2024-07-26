@@ -9,7 +9,6 @@ dependencies = [
     "fastapi~=0.111.1",
     "pydantic~=2.8.2",
     "sqlmodel~=0.0.21",
-    "requests-html~=0.10.0",
     "uvicorn~=0.30.3",
     "httpx~=0.27.0",
     "psycopg2-binary~=2.9.9",
@@ -25,9 +24,6 @@ requires-python = ">= 3.12"
 [tool.rye]
 managed = true
 dev-dependencies = [
-    "types-requests~=2.32.0.20240712",
-    "types-beautifulsoup4~=4.12.0.20240511",
-    "types-tqdm~=4.66.0.20240417",
     "pre-commit~=3.7.1",
     "deptry~=0.17.0",
     "textual-dev~=1.5.1",
@@ -37,6 +33,12 @@ dev-dependencies = [
 serve = "uvicorn src.schedul.main:app --reload --port 8001"
 scrape = { call = "src.schedul.scrape:main" }
 tui = "textual run --dev src/schedul/tui.py"
+
+[tool.deptry]
+known_first_party = ["schedul"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["uvicorn", "psycopg2-binary"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
