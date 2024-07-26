@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from models.film import Film, FilmCreate
+from schedul.models.film import Film, FilmCreate
 
 
 def create_film_db(session: Session, film: FilmCreate) -> Film:

@@ -5,10 +5,10 @@ from typing import Optional
 import arrow
 from sqlmodel import Field, Relationship, SQLModel
 
-from models.enums import DayBucket, TimeBucket
-from models.festival import Festival
-from models.film import Film, FilmBase
-from models.venue import Venue, VenueBase
+from schedul.models.enums import DayBucket, TimeBucket
+from schedul.models.festival import Festival
+from schedul.models.film import Film, FilmBase
+from schedul.models.venue import Venue, VenueBase
 
 
 class ScreeningBase(SQLModel):

@@ -5,19 +5,19 @@ from textual.containers import VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Checkbox, Collapsible, Footer, Select
 
-from clients.sql import engine
-from models.bookings import BookingCreate, BookingScreening
-from models.enums import DayBucket, TimeBucket
-from models.preference import ScheduleRequest, TimePreference, VenuePreference
-from models.screening import ScoredScreening
-from models.watchlist import WatchlistEntryCreate, WatchlistFilm
-from services.bookings import (
+from schedul.clients.sql import engine
+from schedul.models.bookings import BookingCreate, BookingScreening
+from schedul.models.enums import DayBucket, TimeBucket
+from schedul.models.preference import ScheduleRequest, TimePreference, VenuePreference
+from schedul.models.screening import ScoredScreening
+from schedul.models.watchlist import WatchlistEntryCreate, WatchlistFilm
+from schedul.services.bookings import (
     create_booking_if_required_db,
     delete_booking_db,
     get_booking_screenings,
 )
-from services.schedule import get_festival_schedule
-from services.watchlist import (
+from schedul.services.schedule import get_festival_schedule
+from schedul.services.watchlist import (
     create_watchlist_entry_if_required_db,
     delete_watchlist_entry_db,
     get_watchlist_db,
@@ -62,7 +62,7 @@ schedule_request: ScheduleRequest = ScheduleRequest(
             day_bucket=DayBucket.WEEKEND, time_bucket=TimeBucket.LATE_AFTERNOON, score=1
         ),
     ],
-    max_daily_screenings=3,
+    max_daily_screenings=1,
 )
 
 

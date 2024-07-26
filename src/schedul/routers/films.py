@@ -3,9 +3,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.film import Film, FilmCreate, FilmPublic
-from services.film import create_film_db, delete_film_db, get_film_db, get_films_db
+from schedul.clients.sql import get_session
+from schedul.models.film import Film, FilmCreate, FilmPublic
+from schedul.services.film import (
+    create_film_db,
+    delete_film_db,
+    get_film_db,
+    get_films_db,
+)
 
 router = APIRouter(tags=["Films"])
 

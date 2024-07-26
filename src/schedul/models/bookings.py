@@ -4,8 +4,8 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from models.screening import Screening, ScreeningPublic
-from models.user import User
+from schedul.models.screening import Screening, ScreeningPublic
+from schedul.models.user import User
 
 
 @dataclass

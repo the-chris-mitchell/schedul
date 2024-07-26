@@ -4,8 +4,8 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from models.film import Film
-from models.user import User
+from schedul.models.film import Film
+from schedul.models.user import User
 
 
 @dataclass

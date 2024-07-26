@@ -3,10 +3,10 @@ import uuid as uuid_pkg
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
-from models.film import Film
-from models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
-from services.film import get_film_db
-from services.users import get_user_db
+from schedul.models.film import Film
+from schedul.models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
+from schedul.services.film import get_film_db
+from schedul.services.users import get_user_db
 
 
 def get_watchlist_entries_db(

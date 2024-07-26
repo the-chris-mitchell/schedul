@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 
-from models.film import FilmBase
-from models.screening import FilmScreening
-from models.venue import VenueBase
-from scraper.festivals.base import Festival
+from schedul.models.film import FilmBase
+from schedul.models.screening import FilmScreening
+from schedul.models.venue import VenueBase
+from schedul.scraper.festivals.base import Festival
 
 
 class TestFest(Festival):

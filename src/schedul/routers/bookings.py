@@ -8,14 +8,14 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from ics import Calendar, Event
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.bookings import Booking, BookingCreate, BookingScreening
-from services.bookings import (
+from schedul.clients.sql import get_session
+from schedul.models.bookings import Booking, BookingCreate, BookingScreening
+from schedul.services.bookings import (
     create_booking_if_required_db,
     delete_booking_db,
     get_booking_screenings,
 )
-from services.users import get_user_db
+from schedul.services.users import get_user_db
 
 router = APIRouter(tags=["Users"])
 
@@ -92,7 +92,10 @@ async def get_bookings_ics(
 
     calendar = Calendar()
     for screening in screenings:
-        if screening.is_booked and screening.screening.start_time_utc > arrow.utcnow():
+        if (
+            screening.is_booked
+            and arrow.get(screening.screening.start_time_utc) > arrow.utcnow()
+        ):
             event = Event()
             event.name = screening.screening.film.name
             event.begin = screening.screening.start_time_utc

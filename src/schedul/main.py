@@ -3,8 +3,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from clients.sql import create_db_and_tables
-from routers import bookings, festivals, films, screenings, users, venues, watchlist
+from schedul.clients.sql import create_db_and_tables
+from schedul.routers import (
+    bookings,
+    festivals,
+    films,
+    screenings,
+    users,
+    venues,
+    watchlist,
+)
 
 
 @asynccontextmanager

@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from models.festival import Festival, FestivalCreate
+from schedul.models.festival import Festival, FestivalCreate
 
 
 def get_festival_db(session: Session, festival_id: int) -> Festival | None:

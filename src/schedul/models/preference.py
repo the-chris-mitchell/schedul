@@ -3,7 +3,7 @@ import uuid as uuid_pkg
 
 from pydantic import BaseModel
 
-from models.enums import DayBucket, TimeBucket
+from schedul.models.enums import DayBucket, TimeBucket
 
 
 class Preference(BaseModel):

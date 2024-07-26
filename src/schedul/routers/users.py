@@ -3,9 +3,14 @@ import uuid as uuid_pkg
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.user import User
-from services.users import create_user_db, delete_user_db, get_user_db, get_users_db
+from schedul.clients.sql import get_session
+from schedul.models.user import User
+from schedul.services.users import (
+    create_user_db,
+    delete_user_db,
+    get_user_db,
+    get_users_db,
+)
 
 router = APIRouter(tags=["Users"])
 

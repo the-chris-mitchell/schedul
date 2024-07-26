@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from models.venue import Venue, VenueCreate
+from schedul.models.venue import Venue, VenueCreate
 
 
 def get_venue_db(session: Session, venue_id: int) -> Venue | None:

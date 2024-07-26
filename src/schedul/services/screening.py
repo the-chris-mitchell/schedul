@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from models.screening import Screening, ScreeningCreate
+from schedul.models.screening import Screening, ScreeningCreate
 
 
 def create_screening_db(session: Session, screening: ScreeningCreate) -> Screening:

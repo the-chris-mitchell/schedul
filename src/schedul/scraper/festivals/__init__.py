@@ -1,12 +1,12 @@
 import os
 
-from scraper.festivals.base import Festival
+from schedul.scraper.festivals.base import Festival
 
 try:
     for module in os.listdir(f"{os.path.dirname(__file__)}/custom"):
         if module == "__init__.py" or module[-3:] != ".py":
             continue
-        module_name = f"scraper.festivals.custom.{module[:-3]}"
+        module_name = f"schedul.scraper.festivals.custom.{module[:-3]}"
         __import__(module_name, locals(), globals())
 except (ModuleNotFoundError, FileNotFoundError) as err:
     raise Exception(

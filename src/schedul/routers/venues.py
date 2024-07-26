@@ -3,9 +3,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.venue import VenueCreate, VenuePublic
-from services.venue import create_venue_db, delete_venue_db, get_venue_db, get_venues_db
+from schedul.clients.sql import get_session
+from schedul.models.venue import VenueCreate, VenuePublic
+from schedul.services.venue import (
+    create_venue_db,
+    delete_venue_db,
+    get_venue_db,
+    get_venues_db,
+)
 
 router = APIRouter(tags=["Venues"])
 

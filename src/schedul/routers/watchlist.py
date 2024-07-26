@@ -5,10 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
-from services.users import get_user_db
-from services.watchlist import (
+from schedul.clients.sql import get_session
+from schedul.models.watchlist import WatchlistEntry, WatchlistEntryCreate, WatchlistFilm
+from schedul.services.users import get_user_db
+from schedul.services.watchlist import (
     create_watchlist_entry_if_required_db,
     delete_watchlist_entry_db,
     get_watchlist_db,

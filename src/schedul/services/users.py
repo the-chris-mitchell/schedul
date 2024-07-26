@@ -2,7 +2,7 @@ import uuid as uuid_pkg
 
 from sqlmodel import Session, select
 
-from models.user import User
+from schedul.models.user import User
 
 
 def create_user_db(session: Session, user: User) -> User:

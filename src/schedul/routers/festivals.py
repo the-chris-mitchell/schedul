@@ -3,19 +3,19 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.festival import FestivalCreate, FestivalPublic
-from models.preference import ScheduleRequest
-from models.screening import ScoredScreening, ScreeningPublic
-from services.festival import (
+from schedul.clients.sql import get_session
+from schedul.models.festival import FestivalCreate, FestivalPublic
+from schedul.models.preference import ScheduleRequest
+from schedul.models.screening import ScoredScreening, ScreeningPublic
+from schedul.services.festival import (
     create_festival_db,
     delete_festival_db,
     get_festival_db,
     get_festivals_db,
 )
-from services.schedule import get_festival_schedule
-from services.screening import get_festival_screenings_db
-from services.users import get_user_db
+from schedul.services.schedule import get_festival_schedule
+from schedul.services.screening import get_festival_screenings_db
+from schedul.services.users import get_user_db
 
 router = APIRouter(tags=["Festivals"])
 

@@ -5,15 +5,15 @@ from datetime import timedelta
 import httpx
 from sqlmodel import Session
 
-from clients.sql import engine
-from models.festival import FestivalCreate, FestivalPublic
-from models.film import FilmCreate, FilmPublic
-from models.screening import FilmScreening, ScreeningCreate
-from models.venue import VenueCreate, VenuePublic
-from services.festival import create_festival_if_required_db
-from services.film import create_film_if_required_db
-from services.screening import create_screening_if_required_db
-from services.venue import create_venue_if_required
+from schedul.clients.sql import engine
+from schedul.models.festival import FestivalCreate, FestivalPublic
+from schedul.models.film import FilmCreate, FilmPublic
+from schedul.models.screening import FilmScreening, ScreeningCreate
+from schedul.models.venue import VenueCreate, VenuePublic
+from schedul.services.festival import create_festival_if_required_db
+from schedul.services.film import create_film_if_required_db
+from schedul.services.screening import create_screening_if_required_db
+from schedul.services.venue import create_venue_if_required
 
 SCHEDUL_URL_PROD = "https://schedul-production.up.railway.app"
 

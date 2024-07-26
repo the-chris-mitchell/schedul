@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
-from clients.sql import get_session
-from models.screening import ScreeningCreate, ScreeningPublic
-from services.screening import (
+from schedul.clients.sql import get_session
+from schedul.models.screening import ScreeningCreate, ScreeningPublic
+from schedul.services.screening import (
     create_screening_db,
     delete_screening_db,
     get_screening_db,

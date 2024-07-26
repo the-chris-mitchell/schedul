@@ -5,12 +5,12 @@ from datetime import timedelta
 import arrow
 from sqlmodel import Session
 
-from models.preference import ScheduleRequest
-from models.screening import ScoredScreening, Screening, ScreeningPublic
-from services.bookings import get_bookings_db
-from services.screening import get_festival_screenings_db
-from services.venue import get_venues_db
-from services.watchlist import get_watchlist_entries_db
+from schedul.models.preference import ScheduleRequest
+from schedul.models.screening import ScoredScreening, Screening, ScreeningPublic
+from schedul.services.bookings import get_bookings_db
+from schedul.services.screening import get_festival_screenings_db
+from schedul.services.venue import get_venues_db
+from schedul.services.watchlist import get_watchlist_entries_db
 
 
 def get_festival_schedule(
