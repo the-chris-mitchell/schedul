@@ -23,7 +23,6 @@ selected_festival: Festival = [
 ][0]
 
 
-# if __name__ == "__main__":
 def main():
     if ARGS.env == "dev":
         create_db_and_tables()
@@ -31,3 +30,7 @@ def main():
         selected_festival.create_resources_dev()
     if ARGS.env == "prod":
         selected_festival.create_resources_prod()
+
+
+if __name__ == "__main__":
+    main()
