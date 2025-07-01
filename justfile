@@ -7,8 +7,12 @@ start: setup
 tui: setup
     uv run textual run --dev src/schedul/tui.py
 
-scrape: setup
-    uv run src/schedul/scrape.py
+scrape env festival: setup
+    uv run src/schedul/scrape.py {{env}} {{festival}}
 
 deptry: setup
     uv run deptry .
+
+lint:
+    uvx ruff check --fix
+    uvx ruff format
