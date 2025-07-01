@@ -1,11 +1,14 @@
-start:
-    uvicorn src.schedul.main:app --reload --port 8001
+setup:
+    uv run pre-commit install
 
-tui:
-    textual run --dev src/schedul/tui.py
+start: setup
+    uv run uvicorn src.schedul.main:app --reload --port 8001
 
-scrape:
-    src/schedul/scrape.py
+tui: setup
+    uv run textual run --dev src/schedul/tui.py
 
-deptry:
-    deptry .
+scrape: setup
+    uv run src/schedul/scrape.py
+
+deptry: setup
+    uv run deptry .

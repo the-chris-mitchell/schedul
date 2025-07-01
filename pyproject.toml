@@ -31,11 +31,10 @@ dev-dependencies = [
     "pre-commit~=3.7.1",
     "deptry~=0.17.0",
     "textual-dev~=1.5.1",
-    "just-bin>=1.40.0",
 ]
 
 [tool.deptry]
 known_first_party = ["schedul"]
 
 [tool.deptry.per_rule_ignores]
-DEP002 = ["uvicorn", "psycopg2-binary"]
+DEP002 = ["uvicorn", "psycopg"]

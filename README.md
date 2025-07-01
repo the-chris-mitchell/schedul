@@ -1,3 +1,5 @@
 # schedul
 
-`uv run just -l`
+* `brew install just`
+* `just setup`
+* `just -l`
