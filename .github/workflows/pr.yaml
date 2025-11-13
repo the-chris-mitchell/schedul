@@ -18,8 +18,8 @@ jobs:
         id: set_matrix
         run: |
           DYNAMIC_MATRIX='[
-            {"env": "test"}
-            {"env": "uat}
+            {"env": "test"},
+            {"env": "uat},
             {"env": "prod}
           ]'
           
@@ -33,4 +33,4 @@ jobs:
         include: ${{ fromJson(needs.generate_matrix.outputs.matrix) }}
         
     steps:          
-      - run: echo "${{ matrix.module }}"
+      - run: echo "${{ matrix.env }}"
