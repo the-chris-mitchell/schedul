@@ -19,8 +19,8 @@ jobs:
         run: |
           DYNAMIC_MATRIX='[
             {"env": "test"},
-            {"env": "uat},
-            {"env": "prod}
+            {"env": "uat"},
+            {"env": "prod"}
           ]'
           
           echo "matrix_json=$DYNAMIC_MATRIX" >> $GITHUB_OUTPUT
