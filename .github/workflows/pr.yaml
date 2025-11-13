@@ -17,12 +17,8 @@ jobs:
       - name: 📝 Set Dynamic Matrix
         id: set_matrix
         run: |
-          DYNAMIC_MATRIX='[
-            {"env": "test"},
-            {"env": "uat"},
-            {"env": "prod"}
-          ]'
-          
+          DYNAMIC_MATRIX='[{"env":"test"},{"env":"uat"},{"env":"prod"}]'
+
           echo "matrix_json=$DYNAMIC_MATRIX" >> $GITHUB_OUTPUT
 
   run_tests:
