@@ -1,0 +1,36 @@
+name: ⚙️ Dynamic Matrix Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+
+  generate_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set_matrix.outputs.matrix_json }}
+    
+    steps:
+      - name: 📝 Set Dynamic Matrix
+        id: set_matrix
+        run: |
+          DYNAMIC_MATRIX='[
+            {"env": "test",
+            {"env": "uat,
+            {"env": "prod"
+          ]'
+          
+          echo "matrix_json=$DYNAMIC_MATRIX" >> $GITHUB_OUTPUT
+
+  run_tests:
+    needs: generate_matrix
+    runs-on: [ self-hosted, linux, x64, runners-ap-southeast-2 ]
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate_matrix.outputs.matrix) }}
+        
+    steps:          
+      - run: echo "${{ matrix.module }}"
